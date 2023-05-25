@@ -1,8 +1,6 @@
 # Template for bastion kickstart configuration file. Some parts come from the create_bastion role.
 # This kickstart file was tested with RHEL 8.7
-# Related links:
-# https://anaconda-installer.readthedocs.io/en/latest/boot-options.html
-#
+
 %pre --log=/root/pre.log
 %end
 
@@ -23,7 +21,7 @@ repo --install --name="AppStream" --baseurl={{ env.file_server.protocol }}://{{ 
 repo --install --name="BaseOS" --baseurl={{ env.file_server.protocol }}://{{ env.file_server.user + ':' + env.file_server.pass + '@' if env.file_server.protocol == 'ftp' else '' }}{{ env.file_server.ip }}/{{ env.file_server.iso_mount_dir }}/BaseOS/
 
 # Keyboard layouts
-keyboard --vckeymap=us --xlayouts='us'
+keyboard --vckeymap={{ env.keyboard }} --xlayouts='{{ env.keyboard }}'
 
 # System language
 lang {{ env.language }}
