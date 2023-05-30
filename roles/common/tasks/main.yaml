@@ -1,5 +1,4 @@
 ---
-
 - name: Gather facts
   when: ansible_architecture is not defined
   ansible.builtin.gather_facts:

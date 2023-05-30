@@ -1,4 +1,2 @@
 ---
 _vm_console: "console=ttyS0,115200n8"
-# rhcos image architecture
-_rhcos_arch: "x86_64"

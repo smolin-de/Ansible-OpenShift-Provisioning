@@ -5,9 +5,14 @@
 # day2_compute_node:
 #   vm_name: <your VM name>
 #   vm_hostname: <your VM host name>
-#   vm_ip: <node VM IP address>
+#   vm_ip: <your VM IP address>
 #   hostname: <KVM host name where the VM is created>
 #   host_arch: <KVM host architecture>
+#
+# rhcos_download_url: <your rhcos download url>
+# rhcos_live_kernel: <your live kernel filename>
+# rhcos_live_initrd: <your live initrd filename>
+# rhcos_live_rootfs: <your live rootfs filename>
 #
 # Execute the playbook with '--extra-vars' option.
 # E.g.:

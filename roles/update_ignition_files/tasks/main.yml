@@ -1,13 +1,12 @@
 ---
-# tasks file for ignition file update
+
+# Ignition file update
 - name: Update master and worker ignition files on bastion host
   # Requires sudo access
   become: true
   block:
     - name: Update master and worker ignition files on bastion
-      # delegate_to: "{{ ignition_update_host }}"
       ansible.builtin.shell: |
-        set -o pipefail
         echo "Print machineconfigs:"
         oc get mc
         echo "Update worker ignition file ..."
