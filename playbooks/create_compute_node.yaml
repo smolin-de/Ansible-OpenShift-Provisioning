@@ -18,6 +18,12 @@
 # E.g.:
 # ansible-playbook playbooks/add_compute_node.yaml --extra-vars "@extra-cnode1.yml"
 
+- name: Configure storage and macvtap interface on KVM host
+  hosts: kvm_host
+  roles:
+    - configure_storage
+    - { role: macvtap, when: env.network_mode | upper != 'NAT' }
+
 - name: Add an additional compute node
   # Select bastion host
   hosts: bastion
