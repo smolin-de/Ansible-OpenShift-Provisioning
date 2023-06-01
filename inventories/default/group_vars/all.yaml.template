@@ -159,8 +159,6 @@ env:
     hypershift: [ make, jq, git, virt-install ]
 
 # Section 12 - OpenShift Settings
-  openshift:
-    version: 4.12.0
   install_config:
     api_version: v1
     compute:
@@ -201,7 +199,13 @@ env:
     path_to_keypair:
 
 
-# Section 15 - RHCOS (CoreOS)
+# Section 15 - OCP and RHCOS (CoreOS)
+
+# ocp_download_url with '/' at the end !
+ocp_download_url: "https://mirror.openshift.com/pub/openshift-v4/multi/clients/ocp/4.13.1/s390x/"
+# ocp client and installer filenames
+ocp_client_tgz: "openshift-client-linux.tar.gz"
+ocp_install_tgz: "openshift-install-linux.tar.gz"
 
 # rhcos_download_url with '/' at the end !
 rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/4.12/4.12.3/"
