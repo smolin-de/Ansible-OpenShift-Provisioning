@@ -198,11 +198,10 @@ env:
     pass:
     path_to_keypair:
 
-
 # Section 15 - OCP and RHCOS (CoreOS)
 
 # ocp_download_url with '/' at the end !
-ocp_download_url: "https://mirror.openshift.com/pub/openshift-v4/multi/clients/ocp/4.13.1/{{ env.install_config.control.architecture }}/"
+ocp_download_url: "https://mirror.openshift.com/pub/openshift-v4/multi/clients/ocp/4.13.1/s390x/"
 # ocp client and installer filenames
 ocp_client_tgz: "openshift-client-linux.tar.gz"
 ocp_install_tgz: "openshift-install-linux.tar.gz"
@@ -243,8 +242,6 @@ hypershift:
     # Make sure to enclose pull_secret in 'single quotes'
     pull_secret:
 
-
-
   # AgentServiceConfig Parameters
 
   asc:
@@ -256,3 +253,11 @@ hypershift:
     root_fs_url:
     mce_namespace: "multicluster-engine" # This is the Recommended Namespace for Multicluster Engine operator
 
+# Section 17 - (Optional) Create additional compute node in a day-2 operation
+
+day2_compute_node:
+  vm_name:
+  vm_hostname:
+  vm_ip:
+  hostname:
+  host_arch:
