@@ -5,6 +5,7 @@
   shell: "dig +short {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }} | tail -n1"
   register: bastion_lookup
   failed_when: env.bastion.networking.ip != bastion_lookup.stdout
+  ignore_errors: true
 
 - name: Check internal cluster DNS resolution for external API and apps services
   tags: check_dns, dns
