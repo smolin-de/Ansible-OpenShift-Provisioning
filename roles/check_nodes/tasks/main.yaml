@@ -7,9 +7,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     oc get nodes | grep "^{{ node | lower }}" | awk '{print $2}'
-#  TODO: Disabled because of issue: https://github.ibm.com/Systems-BOE-TechOps/D3170-HelpDesk/issues/1513
-#  loop: "{{ env.cluster.nodes.control.hostname + env.cluster.nodes.compute.hostname }}"
-  loop: "{{ env.cluster.nodes.compute.hostname }}"
+  loop: "{{ env.cluster.nodes.control.hostname + env.cluster.nodes.compute.hostname }}"
   loop_control:
     loop_var: node
   register: cmd_output
