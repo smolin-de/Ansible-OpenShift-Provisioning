@@ -5,7 +5,7 @@
   shell: |
     virsh destroy {{ env.cluster.nodes.compute.vm_name[i] }} || true
     virsh undefine {{ env.cluster.nodes.compute.vm_name[i] }} --remove-all-storage || true
-    IP_OPT=="{{ env.cluster.nodes.compute.ip[i] }}::{{ env.cluster.networking.gateway }}:{{ env.cluster.networking.subnetmask }}:{{ env.cluster.nodes.compute.hostname[i] }}::none:1500"
+    IP_OPT="{{ env.cluster.nodes.compute.ip[i] }}::{{ env.cluster.networking.gateway }}:{{ env.cluster.networking.subnetmask }}:{{ env.cluster.nodes.compute.hostname[i] }}::none:1500"
     {{ ("IP_OPT=dhcp") if env.cluster.nodes.compute.mac[i] is defined }}
     virt-install \
     --name {{ env.cluster.nodes.compute.vm_name[i] }} \
