@@ -18,12 +18,6 @@
 # E.g.:
 # ansible-playbook playbooks/add_compute_node.yaml --extra-vars "@extra-cnode1.yml"
 
-#- name: Configure storage and macvtap interface on KVM host
-#  hosts: kvm_host
-#  roles:
-#    - configure_storage
-#    - { role: macvtap, when: env.network_mode | upper != 'NAT' }
-
 - name: Add an additional compute node
   # Select bastion host
   hosts: bastion
@@ -49,7 +43,7 @@
     - role: update_ignition_files
 
     - role: dns_update
-      when: env.bastion.options.dns
+      when: env.bastion.options.dns is defined and env.bastion.options.dns
       param_dns_cmd: add
       param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
       param_dns_ip: "{{ day2_compute_node.vm_ip }}"
