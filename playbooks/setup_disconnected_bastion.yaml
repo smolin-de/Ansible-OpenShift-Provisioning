@@ -1,0 +1,44 @@
+---
+
+- name: setup disconnected bastion - copy SSH key from localhost to access bastion.
+  hosts: localhost
+  tags: ssh, ssh_copy_id, section_1
+  gather_facts: true
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  vars:
+    ssh_target: ["{{ env.bastion.networking.ip }}", "{{ env.bastion.access.user }}", "{{ env.bastion.access.pass }}","{{ path_to_key_pair }}"]
+  roles:
+    - ssh_copy_id
+
+- name: setup disconnected bastion - configure bastion node with essential services
+  hosts: bastion
+  tags: services, section_2
+  become: true
+  vars:
+    packages: "{{ env.pkgs.bastion }}"
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  pre_tasks:
+    - import_role:
+        name: dns
+        tasks_from: initial-resolv.yaml
+  roles:
+    - { role: attach_subscription, when: env.redhat.username is defined and env.redhat.password is defined }
+    - install_packages
+    - ssh_ocp_key_gen
+    - set_firewall
+    - { role: dns, when: env.bastion.options.dns }
+    - check_dns
+    - { role: haproxy, when: env.bastion.options.loadbalancer.on_bastion }
+    - httpd
+
+- hosts: bastion
+  tags: get_ocp_disconnected, section_3
+  become: true
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  roles:
+    - common
+    - { role: install_mirror_registry, when: install_mirror_registry == True }
+    - get_ocp_disconnected

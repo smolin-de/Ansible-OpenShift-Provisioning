@@ -1,0 +1,17 @@
+apiVersion: {{ env.install_config.api_version }}
+baseDomain: {{ env.cluster.networking.base_domain }}
+compute:
+platform:
+  none: {}
+fips: {{ env.install_config.fips }}
+## TODO: pullSecret should be replaced with local registry auth
+pullSecret: '{{ env.redhat.pull_secret }}'
+additionalTrustBundle: | REPLACE_CERT
+imageContentSources:
+## TODO: check the hostname
+- mirrors:
+  - {$bastion-hostname -f}:8443/ocp4/openshift4
+  source: quay.io/openshift-release-dev/ocp-release
+- mirrors:
+  - {$bastion-hostname -f}:8443/ocp4/openshift4
+  source: quay.io/openshift-release-dev/ocp-v4.0-art-dev
