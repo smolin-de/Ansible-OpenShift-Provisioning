@@ -35,7 +35,6 @@
     path: /root/mirror_registry
     state: directory
 
-## mr_download_url: "http://172.23.236.55/redhat/chen/mirror-registry/mirror-registry.tar.gz"
 - name: Unzip mirror registry package.
   tags: install_mirror_registry
   ansible.builtin.unarchive:
@@ -43,8 +42,6 @@
     dest: /root/mirror_registry/
     remote_src: yes
 
-## TODO: Create local mirror registry directory for certs...data ...
-## Check if we need idempotency
 - name: Create local mirror registry directory.
   tags: install_mirror_registry
   file:
@@ -57,35 +54,39 @@
     - /opt/registry/certs
     - /opt/registry/data
 
-## TODO: Create the openssl certs for registry
 - name: Generate SSL certificate for the registry.
   tags: install_mirror_registry
   become: true
-  command: openssl req -newkey rsa:4096 -nodes -sha256 -keyout /opt/registry/certs/domain.key -x509 -days 365 -out /opt/registry/certs/domain.crt -subj "/C=US/ST=New York/O=IBM/CN=$(hostname -f)" -addext "subjectAltName = DNS:$(hostname -f)"
+  shell: openssl req -newkey rsa:4096 -nodes -sha256 -keyout /opt/registry/certs/domain.key -x509 -days 365 -out /opt/registry/certs/domain.crt -subj "/C=US/ST=New York/O=IBM/CN=$(hostname -f)" -addext "subjectAltName = DNS:$(hostname -f)"
 
 - name: Copy the generated SSL certificate to the trusted CA certificates directory.
   tags: install_mirror_registry
   become: true
-  command: cp -f /opt/registry/certs/domain.crt /etc/pki/ca-trust/source/anchors/
+  shell: cp -f /opt/registry/certs/domain.crt /etc/pki/ca-trust/source/anchors/
 
 - name: Update the system's certificate trust store.
   tags: install_mirror_registry
   become: true
-  command: update-ca-trust
+  shell: update-ca-trust
 
-## Save pull-secret
-- name: Save pull-secret to disconnectedinstall directory.
+- name: Save pull-secret to mirror_registry directory.
   ansible.builtin.copy:
     content: "{{ env.redhat.pull_secret }}"
     dest: /root/mirror_registry/pull-secret.json
 
-## validate cat /root/disconnectedinstall/pull-secret.json | jq
 - name: Check pull-secret files
   tags: install_mirror_registry
   become: true
-  command: cat /root/mirror_registry/pull-secret.json | jq
+  shell: |
+    set -opipefail
+    cat /root/mirror_registry/pull-secret.json | jq
+  register: pullsecret
 
-## copy OCP binaries to usr/local/sbin
+- name: Print pullsecret
+  tags: install_mirror_registry
+  debug:
+    var: pullsecret.stdout_lines
+
 - name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
   tags: get_ocp_disconnected
   become: true
@@ -101,7 +102,6 @@
     - oc
     - openshift-install
 
-## copy mirror-registry binaries to usr/local/sbin
 - name: Copy mirror-registry binaries to /usr/local/sbin
   tags: install_mirror_registry
   become: true
@@ -113,14 +113,43 @@
     mode: "755"
     remote_src: yes
 
-## Install the mirror registry
 - name: Install mirror-registry with the hostname, you will see the public endpoint for this registry. With credential generated.
   tags: install_mirror_registry
   become: true
-  command: /root/mirror_registry/mirror-registry install --quayHostname $(hostname -f) --quayRoot /opt/registry/data --sslCert /opt/registry/certs/domain.crt --sslKey /opt/registry/certs/domain.key
+  shell: /root/mirror_registry/mirror-registry install --quayHostname $(hostname -f) --initUser multiarch --initPassword pass4multi --quayRoot /opt/registry/data --sslCert /opt/registry/certs/domain.crt --sslKey /opt/registry/certs/domain.key
 
+- name: Capture hostname
+  shell: hostname -f
+  register: hostname_result
 
+- name: Set local_registry variable
+  set_fact:
+    local_registry: "{{ hostname_result.stdout }}:8443"
 
-################
-### Local mirror-registrty installation done!! 
-################
+- name: Login with authfile, and it will automatically include the login credential for this registry
+  tags: install_mirror_registry
+  become: true
+  shell: podman login -u multiarch -p pass4multi --authfile /root/mirror_registry/pull-secret.json "{{ local_registry.stdout }}"
+
+- name: Check pull-secret files
+  tags: install_mirror_registry
+  become: true
+  shell: |
+    set -opipefail
+    cat /root/mirror_registry/pull-secret.json | jq
+  register: pullsecret
+
+- name: Print pullsecret
+  tags: install_mirror_registry
+  debug:
+    var: pullsecret.stdout_lines
+
+- name: Mirror the version images to the mirror registry.
+  tags: install_mirror_registry
+  become: true
+  shell: | 
+    oc adm release mirror -a /root/mirror_registry/pull-secret.json \
+      --from=quay.io/"{{ product_repo }}"/"{{ release_name }}":"{{ ocp_release }}"-"{{ architecture }}" \
+      --to="{{ local_registry.stdout }}"/"{{ local_repository }}" \
+      --to-release-image="{{ local_registry.stdout }}"/"{{ local_repository }}":"{{ ocp_release }}"-"{{ architecture }}" \
+      --keep-manifest-list
