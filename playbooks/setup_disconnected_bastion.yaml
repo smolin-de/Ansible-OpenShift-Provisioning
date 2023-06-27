@@ -40,5 +40,5 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
-    - { role: install_mirror_registry, when: install_mirror_registry == True }
+    - { role: install_mirror_registry, when: mr_install_registry == True }
     - get_ocp_disconnected

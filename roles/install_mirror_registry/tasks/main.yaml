@@ -149,7 +149,7 @@
   become: true
   shell: | 
     oc adm release mirror -a /root/mirror_registry/pull-secret.json \
-      --from=quay.io/"{{ product_repo }}"/"{{ release_name }}":"{{ ocp_release }}"-"{{ architecture }}" \
-      --to="{{ local_registry.stdout }}"/"{{ local_repository }}" \
-      --to-release-image="{{ local_registry.stdout }}"/"{{ local_repository }}":"{{ ocp_release }}"-"{{ architecture }}" \
+      --from=quay.io/"{{ mr_product_repo }}"/"{{ mr_release_name }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \
+      --to="{{ local_registry.stdout }}"/"{{ mr_local_repository }}" \
+      --to-release-image="{{ local_registry.stdout }}"/"{{ mr_local_repository }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \
       --keep-manifest-list
