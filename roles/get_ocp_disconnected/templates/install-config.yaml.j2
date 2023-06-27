@@ -4,7 +4,7 @@ compute:
 platform:
   none: {}
 fips: {{ env.install_config.fips }}
-pullSecret: {{ pullsecret }}
+pullSecret: '{{ pullsecret }}'
 additionalTrustBundle: | 
   {{ replace_cert }}
 imageContentSources:
