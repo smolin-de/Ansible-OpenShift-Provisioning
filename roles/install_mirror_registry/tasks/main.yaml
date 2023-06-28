@@ -92,7 +92,7 @@
   become: true
   ansible.builtin.copy:
     src: /root/ocpinst/{{ item }}
-    dest: /usr/sbin/{{ item }}
+    dest: /usr/local/sbin{{ item }}
     owner: root
     group: root
     mode: "755"
@@ -107,7 +107,7 @@
   become: true
   ansible.builtin.copy:
     src: /root/mirror_registry/mirror-registry
-    dest: /usr/sbin/mirror-registry
+    dest: /usr/local/sbin/mirror-registry
     owner: root
     group: root
     mode: "755"
