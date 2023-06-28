@@ -92,7 +92,7 @@
   become: true
   ansible.builtin.copy:
     src: /root/ocpinst/{{ item }}
-    dest: /usr/local/sbin{{ item }}
+    dest: /usr/local/sbin/{{ item }}
     owner: root
     group: root
     mode: "755"
