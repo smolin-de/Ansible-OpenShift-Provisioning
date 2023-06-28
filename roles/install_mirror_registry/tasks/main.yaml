@@ -3,20 +3,20 @@
   tags: get_ocp_disconnected
   become: true
   file:
-    path: /root/disconnectedinstall
+    path: /root/ocpinst
     state: absent
 
 - name: Create OCP download directory
   tags: get_ocp_disconnected
   file:
-    path: /root/disconnectedinstall
+    path: /root/ocpinst
     state: directory
 
 - name: Unzip OCP client and installer
   tags: get_ocp_disconnected
   ansible.builtin.unarchive:
     src: "{{ item }}"
-    dest: /root/disconnectedinstall/
+    dest: /root/ocpinst/
     remote_src: yes
   loop:
     - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
@@ -78,7 +78,7 @@
   tags: install_mirror_registry
   become: true
   shell: |
-    set -opipefail
+    set -o pipefail
     cat /root/mirror_registry/pull-secret.json | jq
   register: pullsecret
 
@@ -91,7 +91,7 @@
   tags: get_ocp_disconnected
   become: true
   ansible.builtin.copy:
-    src: /root/disconnectedinstall/{{ item }}
+    src: /root/ocpinst/{{ item }}
     dest: /usr/sbin/{{ item }}
     owner: root
     group: root
@@ -129,13 +129,13 @@
 - name: Login with authfile, and it will automatically include the login credential for this registry
   tags: install_mirror_registry
   become: true
-  shell: podman login -u multiarch -p pass4multi --authfile /root/mirror_registry/pull-secret.json "{{ local_registry.stdout }}"
+  shell: podman login -u multiarch -p pass4multi --authfile /root/mirror_registry/pull-secret.json "{{ local_registry }}"
 
 - name: Check pull-secret files
   tags: install_mirror_registry
   become: true
   shell: |
-    set -opipefail
+    set -o pipefail
     cat /root/mirror_registry/pull-secret.json | jq
   register: pullsecret
 
@@ -144,12 +144,12 @@
   debug:
     var: pullsecret.stdout_lines
 
-- name: Mirror the version images to the mirror registry.
+- name: Mirror the version images to the mirror registry, it takes about 40 minutes.
   tags: install_mirror_registry
   become: true
   shell: | 
     oc adm release mirror -a /root/mirror_registry/pull-secret.json \
       --from=quay.io/"{{ mr_product_repo }}"/"{{ mr_release_name }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \
-      --to="{{ local_registry.stdout }}"/"{{ mr_local_repository }}" \
-      --to-release-image="{{ local_registry.stdout }}"/"{{ mr_local_repository }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \
+      --to="{{ local_registry }}"/"{{ mr_local_repository }}" \
+      --to-release-image="{{ local_registry }}"/"{{ mr_local_repository }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \
       --keep-manifest-list

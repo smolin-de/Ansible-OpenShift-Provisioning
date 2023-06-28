@@ -19,13 +19,13 @@
   tags: get_ocp_disconnected
   become: true
   file:
-    path: /root/disconnectedinstall
+    path: /root/ocpinst
     state: absent
 
 - name: Create OCP download directory
   tags: get_ocp_disconnected
   file:
-    path: /root/disconnectedinstall
+    path: /root/ocpinst
     state: directory
 
 - name: Get Red Hat CoreOS rootfs file if it's not there already.
@@ -39,7 +39,7 @@
   tags: get_ocp_disconnected
   ansible.builtin.unarchive:
     src: "{{ item }}"
-    dest: /root/disconnectedinstall/
+    dest: /root/ocpinst/
     remote_src: yes
   loop:
     - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
@@ -49,7 +49,7 @@
   tags: get_ocp_disconnected
   become: true
   ansible.builtin.copy:
-    src: /root/disconnectedinstall/{{ item }}
+    src: /root/ocpinst/{{ item }}
     dest: /usr/sbin/{{ item }}
     owner: root
     group: root
@@ -71,14 +71,12 @@
 - name: Login with authfile, and it will automatically include the login credential for this registry
   tags: install_mirror_registry
   become: true
-  shell: podman login -u multiarch -p pass4multi --authfile /root/mirror_registry/pull-secret.json "{{ local_registry.stdout }}"
+  shell: podman login -u multiarch -p pass4multi --authfile /root/mirror_registry/pull-secret.json "{{ local_registry }}"
 
 - name: Check pull-secret files
   tags: install_mirror_registry
   become: true
-  shell: |
-    set -opipefail
-    cat /root/mirror_registry/pull-secret.json | jq
+  shell: jq -c . /root/mirror_registry/pull-secret.json
   register: pullsecret
 
 - name: Print pullsecret
@@ -87,22 +85,24 @@
     var: pullsecret.stdout_lines
 
 - name: Capture replace_cert
-  shell: cat /etc/pki/ca-trust/source/anchors/domain.crt
+  shell: |
+    set -o pipefail
+    cat /etc/pki/ca-trust/source/anchors/domain.crt | nl -bn -w 1
   register: replace_cert
 
 - name: Use template file to create install-config and backup.
   tags: get_ocp_disconnected, patch_install_config
   vars:
     local_registry: local_registry
-    pullsecret: "{{ pullsecret.stdout_lines | join('') }}"
+    pullsecret: pullsecret
     replace_cert: replace_cert
   template:
     src: install-config.yaml.j2
     dest: "{{ item }}"
     force: yes
   loop:
-    - /root/disconnectedinstall/install-config.yaml
-    - /root/disconnectedinstall/install-config-backup.yaml
+    - /root/ocpinst/install-config.yaml
+    - /root/ocpinst/install-config-backup.yaml
 
 - name: Capture OCP public key
   tags: get_ocp_disconnected
@@ -115,41 +115,41 @@
     line: "sshKey: '{{ ocp_pub_key.stdout }}'"
     path: "{{ item }}"
   loop:
-    - /root/disconnectedinstall/install-config.yaml
-    - /root/disconnectedinstall/install-config-backup.yaml
+    - /root/ocpinst/install-config.yaml
+    - /root/ocpinst/install-config-backup.yaml
 
 - name: Create the installation program that is based on the mirrored content.
   tags: get_ocp_disconnected
   become: true
-  shell: oc adm release extract -a /root/mirror_registry/pull-secret.json --command=openshift-install "{{ local_registry.stdout }}/"{{ mr_local_repository }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}""
+  shell: oc adm release extract -a /root/mirror_registry/pull-secret.json --command=openshift-install "{{ local_registry }}/"{{ mr_local_repository }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}""
 
 - name: Create manifests
   tags: get_ocp_disconnected
-  shell: /root/disconnectedinstall/openshift-install create manifests --dir=/root/disconnectedinstall/
+  shell: /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
   become: true
 
 - name: Set masters schedulable parameter to false
   tags: get_ocp_disconnected
   become: true
   replace:
-    path: /root/disconnectedinstall/manifests/cluster-scheduler-02-config.yml
+    path: /root/ocpinst/manifests/cluster-scheduler-02-config.yml
     regexp: ": true"
     replace: ": false"
 
-- name: Set permissions for disconnectedinstall directory contents to root
+- name: Set permissions for ocpinst directory contents to root
   tags: get_ocp_disconnected
   become: true
-  shell: chmod 0755 /root/disconnectedinstall/{{item}}
+  shell: chmod 0755 /root/ocpinst/{{item}}
   loop:
     - manifests
     - openshift
     - .openshift_install.log
     - .openshift_install_state.json
 
-- name: Set ownership of disconnectedinstall directory contents to root
+- name: Set ownership of ocpinst directory contents to root
   tags: get_ocp_disconnected
   become: true
-  shell: chown root:root /root/disconnectedinstall/{{item}}
+  shell: chown root:root /root/ocpinst/{{item}}
   loop:
     - manifests
     - openshift
@@ -159,13 +159,13 @@
 - name: Create ignition files
   tags: get_ocp_disconnected
   become: true
-  shell: /root/disconnectedinstall/openshift-install create ignition-configs  --dir=/root/disconnectedinstall/
+  shell: /root/ocpinst/openshift-install create ignition-configs  --dir=/root/ocpinst/
 
 - name: Set ownership to root and permissions of ignitions and related files.
   tags: get_ocp_disconnected
   file:
     state: "{{ item.state }}"
-    path: /root/disconnectedinstall/{{ item.path }}
+    path: /root/ocpinst/{{ item.path }}
     owner: root
     group: root
     mode: "{{ item.mode }}"
@@ -195,7 +195,7 @@
 - name: Make kubeconfig admin user's default (for non-root user).
   tags: get_ocp_disconnected, config
   copy:
-    src: /root/disconnectedinstall/auth/kubeconfig
+    src: /root/ocpinst/auth/kubeconfig
     dest: /home/{{ env.bastion.access.user }}/.kube/config
     owner: "{{ env.bastion.access.user }}"
     group: "{{ env.bastion.access.user }}"
@@ -205,7 +205,7 @@
 - name: Make kubeconfig admin user's default (for root user).
   tags: get_ocp_disconnected, config
   copy:
-    src: /root/disconnectedinstall/auth/kubeconfig
+    src: /root/ocpinst/auth/kubeconfig
     dest: /{{ env.bastion.access.user }}/.kube/config
     owner: "{{ env.bastion.access.user }}"
     group: "{{ env.bastion.access.user }}"
@@ -215,7 +215,7 @@
 - name: Make kubeconfig root user's default.
   tags: get_ocp_disconnected, config
   copy:
-    src: /root/disconnectedinstall/auth/kubeconfig
+    src: /root/ocpinst/auth/kubeconfig
     dest: /root/.kube/config
     owner: root
     group: root
@@ -232,7 +232,7 @@
   tags: get_ocp_disconnected
   become: true
   copy:
-    src: /root/disconnectedinstall/{{ item }}.ign
+    src: /root/ocpinst/{{ item }}.ign
     dest: /var/www/html/ignition
     remote_src: yes
     mode: "775"
