@@ -87,32 +87,6 @@
   debug:
     var: pullsecret.stdout_lines
 
-- name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
-  tags: get_ocp_disconnected
-  become: true
-  ansible.builtin.copy:
-    src: /root/ocpinst/{{ item }}
-    dest: /usr/local/sbin/{{ item }}
-    owner: root
-    group: root
-    mode: "755"
-    remote_src: yes
-  loop:
-    - kubectl
-    - oc
-    - openshift-install
-
-- name: Copy mirror-registry binaries to /usr/local/sbin
-  tags: install_mirror_registry
-  become: true
-  ansible.builtin.copy:
-    src: /root/mirror_registry/mirror-registry
-    dest: /usr/local/sbin/mirror-registry
-    owner: root
-    group: root
-    mode: "755"
-    remote_src: yes
-
 - name: Install mirror-registry with the hostname, you will see the public endpoint for this registry. With credential generated.
   tags: install_mirror_registry
   become: true
@@ -148,7 +122,7 @@
   tags: install_mirror_registry
   become: true
   shell: | 
-    oc adm release mirror -a /root/mirror_registry/pull-secret.json \
+    /root/ocpinst/oc adm release mirror -a /root/mirror_registry/pull-secret.json \
       --from=quay.io/"{{ mr_product_repo }}"/"{{ mr_release_name }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \
       --to="{{ local_registry }}"/"{{ mr_local_repository }}" \
       --to-release-image="{{ local_registry }}"/"{{ mr_local_repository }}":"{{ mr_ocp_release }}"-"{{ mr_architecture }}" \

@@ -45,7 +45,7 @@
     - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
     - "{{ ocp_download_url }}{{ ocp_install_tgz }}"
 
-- name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
+- name: Copy kubectl, oc, and openshift-install binaries to /usr/sbin/
   tags: get_ocp_disconnected
   become: true
   ansible.builtin.copy:
