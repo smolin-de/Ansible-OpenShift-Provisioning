@@ -76,16 +76,16 @@ wget
 
 %post
 #!/bin/bash
-# allow root login
+# Allow ssh root login
 sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
 %end
 
 %post --log=/root/post.log
 #!/usr/bin/env bash
-#
+
 # Install and update pip packages
 python3 -m pip install --upgrade pip setuptools wheel
-#
+
 # Yum repository configuration adjustments
 echo "gpgcheck=0" >> /etc/yum.repos.d/AppStream.repo
 echo "skip_if_unavailable=True" >> /etc/yum.repos.d/AppStream.repo
