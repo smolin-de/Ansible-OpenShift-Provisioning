@@ -63,12 +63,14 @@ logvol / --fstype=xfs --name=root --vgname=vgsystem --size=1 --grow
 # Packages selection
 %packages
 @^minimal-environment
-net-tools
-mc
-python3-pip
-rsync
+# Add required bastion packages
+bind
+bind-utils
+expect
+haproxy
+httpd
+mod_ssl
 vim
-wget
 %end
 
 %addon com_redhat_kdump --disable
@@ -82,9 +84,6 @@ sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
 
 %post --log=/root/post.log
 #!/usr/bin/env bash
-
-# Install and update pip packages
-python3 -m pip install --upgrade pip setuptools wheel
 
 # Yum repository configuration adjustments
 echo "gpgcheck=0" >> /etc/yum.repos.d/AppStream.repo

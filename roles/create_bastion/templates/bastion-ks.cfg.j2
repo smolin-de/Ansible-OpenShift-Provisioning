@@ -63,18 +63,19 @@ logvol / --fstype=xfs --name=root --vgname=vgsystem --size=1 --grow
 # Packages selection
 %packages --multilib --ignoremissing
 @^minimal-environment
+# Add required bastion packages
+bind
 bind-utils
-curl
-jq
-mc
-net-tools
+expect
+haproxy
+httpd
 # TODO: python3.6 is not supported anymore on RHEL8
 python3
 python3-pip
-rsync
-vim
-wget
+mod_ssl
+net-tools
 network-scripts
+vim
 %end
 
 %addon com_redhat_kdump --disable
