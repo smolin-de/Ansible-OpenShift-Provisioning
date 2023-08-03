@@ -20,9 +20,11 @@
   systemd:
     name: httpd
     enabled: yes
+  ignore_errors: true
 
 - name: restart httpd
   tags: httpd
   service:
     name: httpd
     state: restarted
+  ignore_errors: true
