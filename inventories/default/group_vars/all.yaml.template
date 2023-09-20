@@ -30,6 +30,12 @@ env:
 #      ip:
 #      user:
 #      pass:
+    lpar4:
+      create: False
+#      hostname:
+#      ip:
+#      user:
+#      pass:
 
 # Section 3 - File Server
   file_server:
@@ -228,19 +234,19 @@ hypershift:
 
   create_bastion: true
   networking_device: enc1100
-  gateway: 
+  gateway:
 
   bastion_parms:
-    interface: 
-    hostname: 
-    base_domain: 
-    os_variant: 
+    interface:
+    hostname:
+    base_domain:
+    os_variant:
     nameserver:
-    gateway: 
-    subnet_mask: 
+    gateway:
+    subnet_mask:
 
-  mgmt_cluster_nameserver:  
-  oc_url: 
+  mgmt_cluster_nameserver:
+  oc_url:
 
   #Hosted Control Plane Parameters
 
@@ -257,7 +263,7 @@ hypershift:
 
   # MultiClusterEngine Parameters
   mce:
-    version: 
+    version:
     instance_name: engine
     delete: false
 
@@ -276,13 +282,13 @@ hypershift:
     static_ip_parms:
       static_ip: true
       ip:     # Required only if static_ip is true
-        #- 
-        #- 
+        #-
+        #-
       interface: eth0
-    agents_count: 
+    agents_count:
     # If you want to use specific mac addresses, provide them here
-    agent_mac_addr:  
-      #- 
+    agent_mac_addr:
+      #-
     disk_size: 100G
     ram: 16384
     vcpus: 4
