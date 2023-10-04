@@ -20,7 +20,7 @@ SSH to root@bastion, SSH to core@bootstrap-ip and run 'journalctl -b -f -u relea
   tags: wait_for_bootstrap
   ansible.builtin.command: openshift-install wait-for bootstrap-complete --dir=/root/ocpinst
   # Installer will wait up to ~50 min
-  async: 3600
+  async: 3060
   poll: 0
   register: watch_bootstrap
 
