@@ -38,7 +38,7 @@ network --hostname={{ env.bastion.networking.hostname }}.{{ env.cluster.networki
 
 # Firewall and SELinux
 firewall --enabled --http --ftp --smtp --ssh --port=443,9090
-selinux --enforcing
+selinux --disabled
 
 # Root password (will fill in during create_bastion role)
 
@@ -70,9 +70,7 @@ expect
 haproxy
 httpd
 jq
-# TODO: python3.6 is not supported anymore on RHEL8
-python3-pip
-python3-policycoreutils
+python39-pip
 mod_ssl
 net-tools
 network-scripts
@@ -84,9 +82,6 @@ vim
 
 %post --log=/root/post.log
 #!/usr/bin/env bash
-#
-# Install and update pip packages
-pip3 install --upgrade pip setuptools wheel
 #
 # Yum repository configuration adjustments
 echo "gpgcheck=0" >> /etc/yum.repos.d/AppStream.repo
