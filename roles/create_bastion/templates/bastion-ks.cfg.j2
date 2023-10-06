@@ -38,7 +38,7 @@ network --hostname={{ env.bastion.networking.hostname }}.{{ env.cluster.networki
 
 # Firewall and SELinux
 firewall --enabled --http --ftp --smtp --ssh --port=443,9090
-selinux --disabled
+selinux --permissive
 
 # Root password (will fill in during create_bastion role)
 
