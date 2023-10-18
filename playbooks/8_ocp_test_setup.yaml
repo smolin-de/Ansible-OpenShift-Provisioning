@@ -1,0 +1,17 @@
+---
+
+# Setup environment to test OCP
+- name: 8 Setup OCP test environment
+  hosts: bastion
+  become: true
+#  environment:
+#    KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
+  gather_facts: false
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: Get ".kube/config" and store file into "~/.kube/{{ env.cluster.networking.metadata_name }}.config"
+      ansible.builtin.fetch:
+        src: "{{ '/home/' if (env.bastion.access.user != 'root') else '/' }}{{ env.bastion.access.user }}/.kube/config"
+        dest: "~/.kube/{{ env.cluster.networking.metadata_name }}.config"
+        flat: true
