@@ -33,9 +33,9 @@
           ansible.builtin.debug:
             var: cmd_output.stdout_lines
 
-    - name: Get ".kube/config" and store file into "~/.kube/{{ env.cluster.networking.metadata_name }}.config"
+    - name: Get OCP cluster ".kube/config" and store file into "~/.kube/ocp.config"
       ansible.builtin.fetch:
         src: "{{ '/home/' if (env.bastion.access.user != 'root') else '/' }}{{ env.bastion.access.user }}/.kube/config"
-        dest: "~/.kube/{{ env.cluster.networking.metadata_name }}.config"
+        # Use hardcoded filename. The user can rename the file later, if required
+        dest: "~/.kube/ocp.config"
         flat: true
-      ignore_errors: true

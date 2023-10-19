@@ -1,4 +1,11 @@
 ---
+- name: Get OCP cluster ".kube/config" and store file into "~/.kube/ocp.config"
+  ansible.builtin.fetch:
+    src: "{{ '/home/' if (env.bastion.access.user != 'root') else '/' }}{{ env.bastion.access.user }}/.kube/config"
+    # Use hardcoded filename. The user can rename the file later, if required
+    dest: "~/.kube/ocp.config"
+    flat: true
+
 - name: Almost there! Add host info to /etc/hosts so you can login to the cluster via web browser. Ansible Controller sudo password required
   tags: wait_for_install_complete
   become: true
