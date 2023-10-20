@@ -1,6 +1,7 @@
 # Assume we have an existing ftp/http server already
 - name: 4 create bastion
-  hosts: kvm_host[0]
+  # Install bastion always on 2nd LPAR definition
+  hosts: kvm_host[1]
   become: false
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
