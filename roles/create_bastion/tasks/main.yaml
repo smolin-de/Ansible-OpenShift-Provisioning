@@ -73,7 +73,7 @@
     --initrd-inject "/{{ kvm_host_home.stdout }}/{{ env.file_server.cfgs_dir }}/{{ env.bastion.networking.hostname }}/bastion-ks.cfg" \
     --extra-args "inst.ks=file:/bastion-ks.cfg" \
     --extra-args "{{ _vm_console }}"
-  timeout: 420
+  timeout: 480
   register: cmd_output
 
 - name: Debug, print above command output
