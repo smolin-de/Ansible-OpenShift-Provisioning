@@ -72,12 +72,6 @@
         command: undefine
       ignore_errors: true
 
-    - name: Hack to delete old bootstrap files
-      ansible.builtin.shell:
-        virsh vol-delete --pool default "/var/lib/libvirt/images/{{ env.cluster.nodes.bootstrap.vm_name }}.qcow2" || true
-        virsh vol-delete --pool default "/var/lib/libvirt/images/{{ env.cluster.nodes.bootstrap.vm_name }}-1.qcow2" || true
-        virsh vol-delete --pool default "/var/lib/libvirt/images/{{ env.cluster.nodes.bootstrap.vm_name }}-2.qcow2" || true
-
 - name: 6 create nodes - once bootstrapping is complete, create compute nodes.
   hosts: kvm_host
   tags: create_compute_nodes
