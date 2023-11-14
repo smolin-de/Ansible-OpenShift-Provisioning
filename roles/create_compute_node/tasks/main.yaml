@@ -51,8 +51,6 @@
 
         - name: "Create compute node VM on {{ param_compute_node.host_arch }}"
           ansible.builtin.shell: |
-            IP_OPT="{{ param_compute_node.vm_ip }}::{{ env.bastion.networking.gateway }}:{{ env.bastion.networking.subnetmask }}:{{ param_compute_node.vm_hostname }}::none:1500"
-            {{ ("IP_OPT=dhcp") if param_compute_node.vm_mac is defined }}
             CPU_MODEL="--cpu host"
             # CPU host model is not supported on arm64 yet, we need to disable it
             {{ ("CPU_MODEL=''") if param_compute_node.host_arch == 'aarch64' }}
@@ -60,21 +58,27 @@
             --name {{ param_compute_node.vm_name }} \
             --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
             --autostart \
-            --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }} \
+            --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }}  \
             --ram {{ env.cluster.nodes.compute.ram }} \
             ${CPU_MODEL} \
             --vcpus {{ env.cluster.nodes.compute.vcpu }} \
-            --network network={{ env.bridge_name }},mac={{ ('RANDOM') if param_compute_node.vm_mac is not defined else (param_compute_node.vm_mac) }} \
+            --network network={{ env.bridge_name }}{{ (',mac=' + param_compute_node.vm_mac) if env.use_dhcp }} \
             --graphics none \
             --console pty,target_type=serial \
             --wait -1 \
             --noautoconsole \
             --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
-            --extra-args "rd.neednet=1 ip=${IP_OPT} \
-            nameserver={{ env.cluster.networking.nameserver1 }} {{ ('nameserver=' + env.cluster.networking.nameserver2) if env.cluster.networking.nameserver2 is defined }} \
-            coreos.inst=yes \
-            coreos.inst.install_dev=vda coreos.live.rootfs_url=http://{{ env.bastion.networking.ip }}:8080/bin/{{ rhcos_live_rootfs }} \
-            coreos.inst.ignition_url=http://{{ env.bastion.networking.ip }}:8080/ignition/worker.ign {{ _vm_console }}"
+            --extra-args "rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda" \
+            {% if env.use_dhcp %}
+            --extra-args "ip=dhcp" \
+            {% else %}
+            --extra-args "ip={{ param_compute_node.vm_ip }}::{{ env.bastion.networking.gateway }}:{{ env.bastion.networking.subnetmask }}:{{ param_compute_node.vm_hostname }}:{{ param_compute_node.vm_interface }}:none:1500" \
+            --extra-args "{{ ('ip=[' + param_compute_node.vm_ipv6 + ']::[' + env.cluster.networking.ipv6_gateway +']:' + env.cluster.networking.ipv6_prefix | string + '::' + param_compute_node.vm_interface + ':none' ) if env.use_ipv6 == True else '' }}" \
+            {% endif %}
+            --extra-args "nameserver={{ env.cluster.networking.nameserver1 }}{{ (',' + env.cluster.networking.nameserver2) if env.cluster.networking.nameserver2 is defined else '' }}" \
+            --extra-args "coreos.live.rootfs_url=http://{{ env.bastion.networking.ip }}:8080/bin/{{ rhcos_live_rootfs }}" \
+            --extra-args "coreos.inst.ignition_url=http://{{ env.bastion.networking.ip }}:8080/ignition/worker.ign" \
+            --extra-args "{{ _vm_console }}"
           timeout: 360
           register: cmd_output
         - name: Debug, print above command output
