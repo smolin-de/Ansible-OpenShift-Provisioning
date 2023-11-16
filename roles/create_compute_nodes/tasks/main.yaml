@@ -76,7 +76,7 @@
     compute_ipv6: "{{ env.cluster.nodes.compute.ipv6[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     {% if env.use_dhcp %}
     compute_mac: "{{ env.cluster.nodes.compute.mac[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
-    {% else %}
+    {% endif %}
   when: env.z.high_availability == True
 
 - name: Split information for infra nodes into groups. The number of groups being equal to the number of KVM hosts there are.
