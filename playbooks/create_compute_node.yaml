@@ -99,3 +99,6 @@
     - role: approve_certs
       approve_certs_cleanup: true
     - role: print_node_status
+    - role: haproxy_update
+      param_haproxy_cmd: add
+      param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
