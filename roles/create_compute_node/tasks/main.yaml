@@ -23,6 +23,7 @@
         mode: "0644"
       loop:
         - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_rootfs }}" }
+        - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_iso }}" }
 
 - name: "Create compute node on KVM host {{ param_compute_node.hostname }}"
   tags: create_compute_node
