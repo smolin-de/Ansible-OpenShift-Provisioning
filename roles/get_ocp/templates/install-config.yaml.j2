@@ -33,9 +33,14 @@ networking:
   clusterNetwork:
   - cidr: {{ env.install_config.cluster_network.cidr }}
     hostPrefix: {{ env.install_config.cluster_network.host_prefix }}
-  networkType: {{ env.install_config.cluster_network.type }}
   serviceNetwork:
   - {{ env.install_config.service_network }}
+  networkType: {{ env.install_config.cluster_network.type }}
+{% if env.install_config.cluster_network.ipsec is defined %}
+  ipsec: {{ env.install_config.cluster_network.ipsec }}
+{% else %}
+  ipsec: false
+{% endif %}
 platform:
   none: {}
 fips: {{ env.install_config.fips }}
