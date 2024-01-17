@@ -71,6 +71,7 @@ expect
 haproxy
 httpd
 jq
+libosinfo
 net-tools
 python3-pip
 rsync
@@ -89,6 +90,10 @@ sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
 %post --log=/root/post.log
 #!/usr/bin/env bash
 #
+# Basic /root/.ssh/config setup
+echo "UserKnownHostsFile=/dev/null" >> /root/.ssh/config
+echo "StrictHostKeyChecking=no" >> /root/.ssh/config
+
 # Yum repository configuration adjustments
 echo "gpgcheck=0" >> /etc/yum.repos.d/AppStream.repo
 echo "skip_if_unavailable=True" >> /etc/yum.repos.d/AppStream.repo
