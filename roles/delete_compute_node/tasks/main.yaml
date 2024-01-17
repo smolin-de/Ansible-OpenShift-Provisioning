@@ -12,9 +12,9 @@
             exit 0
         fi
         NODE=$(oc get nodes --no-headers=true | grep "^{{ param_compute_node.vm_hostname | lower }}" | cut -f 1 -d " ")
-        oc adm cordon ${NODE}
-        oc adm drain ${NODE} --force --delete-emptydir-data --ignore-daemonsets --timeout=30s
-        oc delete nodes ${NODE}
+        oc adm cordon "${NODE}"
+        oc adm drain "${NODE}" --force --delete-emptydir-data --ignore-daemonsets --timeout=30s
+        oc delete nodes "${NODE}"
       register: cmd_output
     - name: Print cmd output
       ansible.builtin.debug:
