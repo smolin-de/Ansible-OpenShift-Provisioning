@@ -33,12 +33,13 @@ timezone {{ env.timezone }}
 eula --agreed
 
 # Network information
-network --bootproto=static --device={{ env.bastion.networking.interface }} --ip={{ env.bastion.networking.ip }} --gateway={{ env.bastion.networking.gateway }} --netmask={{ env.bastion.networking.subnetmask }} --noipv6 --nameserver={{ env.bastion.networking.nameserver1 }}{{ (',' + env.bastion.networking.nameserver2) if env.bastion.networking.nameserver2 is defined else '' }} --activate
+network --bootproto=static --device={{ env.bastion.networking.interface }} --ip={{ env.bastion.networking.ip }} --gateway={{ env.bastion.networking.gateway }} --netmask={{ env.bastion.networking.subnetmask }} {{'--ipv6=' + env.bastion.networking.ipv6 if env.use_ipv6 else '--noipv6' }} {{'--ipv6gateway=' + env.bastion.networking.ipv6_gateway if env.use_ipv6 else ''}} --nameserver={{ env.bastion.networking.nameserver1 }}{{ (',' + env.bastion.networking.nameserver2) if env.bastion.networking.nameserver2 is defined else '' }} --activate
 network --hostname={{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}
 
 # Firewall and SELinux
 firewall --enabled --http --ftp --smtp --ssh --port=443,9090
-selinux --enforcing
+#selinux --enforcing
+selinux --permissive
 
 # Root password (will fill in during create_bastion role)
 
@@ -63,12 +64,17 @@ logvol / --fstype=xfs --name=root --vgname=vgsystem --size=1 --grow
 # Packages selection
 %packages
 @^minimal-environment
+# Add required bastion packages
+bind
+bind-utils
+expect
+haproxy
+httpd
+jq
 net-tools
-mc
 python3-pip
 rsync
 vim
-wget
 %end
 
 %addon com_redhat_kdump --disable
@@ -82,9 +88,6 @@ sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
 
 %post --log=/root/post.log
 #!/usr/bin/env bash
-#
-# Install and update pip packages
-python3 -m pip install --upgrade pip setuptools wheel
 #
 # Yum repository configuration adjustments
 echo "gpgcheck=0" >> /etc/yum.repos.d/AppStream.repo
