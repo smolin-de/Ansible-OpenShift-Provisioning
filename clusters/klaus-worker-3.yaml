@@ -1,0 +1,8 @@
+---
+day2_compute_node:
+  vm_name: klaus-worker-3
+  vm_hostname: worker-3
+  vm_ip: 172.23.235.67
+  vm_interface: ""
+  hostname: xkvmocp05
+  host_arch: x86_64

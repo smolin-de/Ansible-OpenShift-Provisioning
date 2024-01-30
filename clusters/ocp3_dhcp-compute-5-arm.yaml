@@ -1,0 +1,10 @@
+---
+day2_compute_node:
+  vm_name: ocp3-compute-5
+  # Use dhcp hostname
+  vm_hostname: worker5
+  vm_ip: dhcp
+  vm_mac: 52:54:00:17:E8:E5
+  vm_interface: ""
+  hostname: akvmocp01
+  host_arch: aarch64

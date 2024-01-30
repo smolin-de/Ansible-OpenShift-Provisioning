@@ -1,0 +1,8 @@
+---
+day2_compute_node:
+  vm_name: addon-compute-5
+  vm_hostname: compute-5-s390x
+  vm_ip: 172.23.235.159
+  vm_interface: ""
+  hostname: m13lp41
+  host_arch: s390x

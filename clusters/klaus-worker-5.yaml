@@ -1,0 +1,8 @@
+---
+day2_compute_node:
+  vm_name: klaus-worker-5
+  vm_hostname: worker-5-arm
+  vm_ip: 172.23.235.69
+  vm_interface: ""
+  hostname: akvmocp01
+  host_arch: aarch64

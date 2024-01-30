@@ -1,0 +1,26 @@
+---
+# User ID's and password file
+
+id_lpar_default:
+  user:
+  pass:
+
+id_xkvmocp:
+  user:
+  pass:
+
+id_redhat:
+  username:
+  password:
+  # Make sure to enclose pull_secret in 'single quotes'
+  pull_secret: ''
+
+id_file_server:
+  user: redhat
+  pass:
+  cfgs_dir: redhat/<user>
+
+id_bastion:
+  user: admin
+  pass:
+  root_pass:

@@ -1,0 +1,256 @@
+---
+# Copy this file to 'all.yaml' in the same folder and add your required values there !
+#
+# For a comprehensive description of each variable, please see documentation here:
+# https://ibm.github.io/Ansible-OpenShift-Provisioning/set-variables-group-vars/
+
+# Section 1 - Ansible Controller
+env:
+  controller:
+    sudo_pass: none
+
+  # Section 2 - LPAR(s)
+  z:
+    high_availability: False
+    lpar1:
+      create: False
+      hostname: xkvmocp05
+      ip: 172.23.15.15
+      user: {{ id_xkvmocp.user }}
+      pass: {{ id_xkvmocp.pass }}
+    lpar2:
+      create: False
+      hostname: m13lp41
+      ip: 172.23.230.41
+      user: {{ id_lpar_default.user }}
+      pass: {{ id_lpar_default.pass }}
+    lpar3:
+      create: False
+      # hostname:
+      # ip:
+      # user:
+      # pass:
+
+  # Section 3 - File Server
+  file_server:
+    ip: 172.23.143.25
+    user: {{ id_file_server.user }}
+    pass: {{ id_file_server.pass }}
+    protocol: http
+    iso_mount_dir: redhat/x86_64/RHEL8.8/DVD
+    iso_os_variant: rhel8.8
+    cfgs_dir: {{ id_file_server.cfgs_dir }}/
+
+  # Section 4 - Red Hat
+  redhat:
+    # username: {{ id_redhat.username }}
+    # password: {{ id_redhat.password }}
+    manage_subscription: false
+    # Make sure to enclose pull_secret in 'single quotes'
+    pull_secret: '{{ id_redhat.pull_secret }}'
+
+  # Section 5 - Bastion
+  bastion:
+    create: True
+    vm_name:  addon-bastion
+    resources:
+      disk_size: 50
+      ram: 4096
+      swap: 4096
+      vcpu: 4
+    networking:
+      ip: 172.23.235.150
+      hostname:  addon-bastion
+      subnetmask: 255.255.0.0
+      gateway: 172.23.0.1
+      # ns that resolves the bastion's hostname.
+      nameserver1: 172.23.235.150
+      # nameserver2:
+      forwarder: 1.1.1.1
+      interface: ""
+      base_domain: test.multiarch
+    access:
+      user: root
+      pass: {{ id_bastion.root_pass }}
+      root_pass: {{ id_bastion.root_pass }}
+    options:
+      dns: True
+      loadbalancer:
+        on_bastion: True
+  #        public_ip:
+  #        private_ip:
+
+  # Section 6 - Cluster Networking
+  cluster:
+    networking:
+      metadata_name: addon
+      base_domain: test.multiarch
+      subnetmask: 255.255.0.0
+      gateway: 172.23.0.1
+      nameserver1: 172.23.235.150
+      # nameserver2:
+      forwarder: 1.1.1.1
+      interface: ""
+
+    # Section 7 - Bootstrap Node
+    nodes:
+      bootstrap:
+        disk_size: 100
+        # Min size is 16384
+        ram: 16384
+        vcpu: 6
+        vm_name:  addon-bootstrap
+        ip: 172.23.235.154
+        hostname:  addon-bootstrap
+
+      # Section 8 - Control Nodes
+      control:
+        disk_size: 100
+        # Min size is 16384
+        ram: 16384
+        vcpu: 8
+        vm_name:
+          -  addon-master-1
+          -  addon-master-2
+          -  addon-master-3
+        ip:
+          - 172.23.235.151
+          - 172.23.235.152
+          - 172.23.235.153
+        hostname:
+          - master-1
+          - master-2
+          - master-3
+
+      # Section 9 - Compute Nodes (day 1)
+      compute:
+        disk_size: 200
+        ram: 20480
+        vcpu: 12
+        vm_name:
+          -  addon-compute-1
+          -  addon-compute-2
+        ip:
+          - 172.23.235.155
+          - 172.23.235.156
+        hostname:
+          - compute-1
+          - compute-2
+
+  # Section 10 - Infra Nodes
+  # infra:
+  #   disk_size: 100
+  #   ram: 10240
+  #   vcpu: 24
+  #   vm_name:
+  #     -  addon-infra-1
+  #   ip:
+  #     - 172.23.235.69
+  #   hostname:
+  #     - infra-1
+
+  #######################################################################################
+  # All variables below this point do not need to be changed for a default installation #
+  #######################################################################################
+
+  # Section 11 - (Optional) Packages
+  pkgs:
+    galaxy:
+      [community.general, community.crypto, ansible.posix, community.libvirt]
+    controller: []
+    kvm:
+      [
+        libguestfs,
+        libvirt-client,
+        libvirt-daemon-config-network,
+        libvirt-daemon-kvm,
+        cockpit-machines,
+        virt-top,
+        qemu-kvm,
+        python3-lxml,
+        cockpit,
+        lvm2,
+      ]
+    bastion:
+      [
+        haproxy,
+        httpd,
+        bind,
+        bind-utils,
+        expect,
+        firewalld,
+        mod_ssl,
+        rsync,
+        # Add to test origin test suite
+        git,
+        httpd-tools,
+        jq,
+        make,
+        podman
+      ]
+
+  # Section 12 - OpenShift Settings
+  install_config:
+    api_version: v1
+    compute:
+      architecture: amd64
+      hyperthreading: Enabled
+    control:
+      architecture: amd64
+      hyperthreading: Enabled
+    cluster_network:
+      cidr: 10.128.0.0/14
+      host_prefix: 23
+      type: OVNKubernetes
+    service_network: 172.30.0.0/16
+    fips: "false"
+
+  # Section 13 - (Optional) Proxy
+  #  proxy:
+  #    http:
+  #    https:
+  #    no:
+
+  # Section 14 - (Optional) Misc
+  language: en_US.UTF-8
+  #  timezone: America/New_York
+  timezone: Europe/Berlin
+  keyboard: us
+  root_access: false
+  ansible_key_name: ansible-ocpz
+  ocp_ssh_key_comment: OpenShift key
+  bridge_name: macvtap
+  network_mode: macvtap
+  use_ipv6: false
+  use_dhcp: false
+
+path_to_key_pair: ~/.ssh/ansible-ocpz.pub
+
+{% raw %}
+# Section 15 - OCP and RHCOS (CoreOS)
+
+# ocp_download_url with '/' at the end !
+##ocp_download_url: "https://mirror.openshift.com/pub/openshift-v4/multi/clients/ocp/4.13.0/{{ env.install_config.control.architecture }}/"
+ocp_download_url: "http://172.23.143.25/redhat/ksmolin/ocp/4.14.0/{{ env.install_config.control.architecture }}/"
+
+# ocp client and installer filenames
+ocp_client_tgz: "openshift-client-linux.tar.gz"
+ocp_install_tgz: "openshift-install-linux.tar.gz"
+
+# rhcos_download_url with '/' at the qend !
+#rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/4.12/4.12.3/"
+rhcos_download_url: "http://172.23.143.25/redhat/ksmolin/rhcos/"
+
+# For rhcos_os_variant use the OS string as defined in 'osinfo-query os -f short-id'
+rhcos_os_variant: rhel8.6
+
+# RHCOS live image filenames
+rhcos_live_kernel: "rhcos-4.14.0-x86_64-live-kernel-x86_64"
+rhcos_live_initrd: "rhcos-4.14.0-x86_64-live-initramfs.x86_64.img"
+rhcos_live_rootfs: "rhcos-4.14.0-x86_64-live-rootfs.x86_64.img"
+{% endraw %}
+
+# Section 17 - (Optional) Setup disconnected clusters
+# Warning: currently, the oc-mirror plugin is officially downloadable to amd64 only.
+disconnected:
+  enabled: False
