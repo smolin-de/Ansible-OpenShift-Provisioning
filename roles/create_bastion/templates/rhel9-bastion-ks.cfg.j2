@@ -1,7 +1,7 @@
 # Template for bastion kickstart configuration file. Some parts come from the create_bastion role.
-# This kickstart file was tested with RHEL 9.1
+# This kickstart file was tested with RHEL 9.1, 9.2 and 9.3
 
-%pre --log=/root/pre.log
+%pre
 %end
 
 # Reboot after installation
@@ -62,7 +62,7 @@ logvol swap --fstype=swap --name=swap --vgname=vgsystem --size={{ env.bastion.re
 logvol / --fstype=xfs --name=root --vgname=vgsystem --size=1 --grow
 
 # Packages selection
-%packages
+%packages --ignoremissing
 @^minimal-environment
 # Add required bastion packages
 bind
@@ -81,15 +81,12 @@ vim
 %addon com_redhat_kdump --disable
 %end
 
-%post
-#!/bin/bash
-# allow root login
-sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
-%end
-
 %post --log=/root/post.log
 #!/usr/bin/env bash
-#
+
+# allow root login
+sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
+
 # Basic /root/.ssh/config setup
 echo "UserKnownHostsFile=/dev/null" >> /root/.ssh/config
 echo "StrictHostKeyChecking=no" >> /root/.ssh/config
