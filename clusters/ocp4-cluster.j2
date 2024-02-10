@@ -12,6 +12,15 @@ env:
   # Section 2 - LPAR(s)
   z:
     high_availability: False
+    hmc:
+      host: hmca1.boeblingen.de.ibm.com
+      user: {{ id_hmc.user }}
+      pass: {{ id_hmc.pass }}
+    hmc_load_from_ftp:
+      ip: 9.152.85.9
+      user: {{ id_hmc.user }}
+      pass: {{ id_hmc.pass }}
+      protocol: ftp
     lpar1:
       create: False
       hostname: a3elp60

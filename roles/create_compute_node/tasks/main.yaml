@@ -1,5 +1,7 @@
 ---
 
+# TODO: Improve temporary config file handling
+
 # Paranoia check. This task should be executed only from ONE host
 - name: Check role/task parameters
   tags: create_compute_node
@@ -9,6 +11,7 @@
 
 - name: "If not available, download Red Hat CoreOS rootfs for {{ param_compute_node.host_arch }}"
   tags: create_compute_node
+  when: param_compute_node.vm_name is defined
   delegate_to: "{{ groups['bastion'][0] }}"
   # Need sudo or root access to write the file
   become: true
@@ -29,6 +32,7 @@
 
 - name: "Create compute node on KVM host {{ param_compute_node.hostname }}"
   tags: create_compute_node
+  when: param_compute_node.vm_name is defined
   delegate_to: "{{ param_compute_node.hostname }}"
   block:
     - name: Delete compute node VM, if already exists
@@ -87,3 +91,39 @@
         - name: Debug, print above command output
           ansible.builtin.debug:
             var: cmd_output
+
+
+- name: "Create compute node on LPAR {{ param_compute_node.hostname }}"
+  tags: create_compute_node
+  when: param_compute_node.vm_name is not defined and param_compute_node.lpar_name is defined
+  delegate_to: 127.0.0.1
+  block:
+    - name: Define required LPAR variables
+      ansible.builtin.set_fact:
+        hmc_load_from_ftp_file_path: "{{ param_compute_node.file_path }}"
+        hmc_load_from_ftp_lpar_name: "{{ param_compute_node.lpar_name }}"
+
+    - name: Create temporary config file
+      ansible.builtin.tempfile:
+        state: file
+        suffix: temp
+      register: _config_yaml_tempfile
+
+    - name: Create HMC load from ftp config file from template
+      ansible.builtin.template:
+        src: "hmc_load_from_ftp.j2"
+        dest: "{{ _config_yaml_tempfile.path }}"
+        mode: u=rw,g=r,o=r
+        force: true
+
+    - name: Execute HMC load from ftp function
+      ansible.builtin.shell: |
+        whoami
+        "{{ role_path }}/files/hmc_load_from_ftp.py" "{{ _config_yaml_tempfile.path }}"
+        # Delete tempfile
+        rm -f "{{ _config_yaml_tempfile.path }}"
+      register: cmd_output
+
+    - name: Execute HMC load from ftp function - command output
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines

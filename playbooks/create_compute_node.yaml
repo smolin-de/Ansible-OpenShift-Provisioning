@@ -10,6 +10,9 @@
 #   vm_interface: <your VM network interface used for the IP addresses>
 #   hostname: <KVM host name where the VM is created>
 #   host_arch: <KVM host architecture>
+#   # If LPAR mode is used, set the following variables:
+#   lpar_name: <LPAR name as shown in the HMC>
+#   file_path: "<path to the boot ins file>"
 #
 # Execute the playbook with '--extra-vars' option.
 # E.g.:
@@ -93,7 +96,6 @@
       param_dns_ip: "{{ day2_compute_node.vm_ip }}"
 
     - role: create_compute_node
-      when: param_compute_node.hostname is defined
       # Some tasks will be delegated to the bastion host and target KVM host
       param_compute_node: "{{ day2_compute_node }}"
 

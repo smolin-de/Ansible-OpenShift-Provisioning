@@ -1,7 +1,7 @@
 ---
 # Install via LPAR mode. Under development !!!
 day2_compute_node:
-  vm_name: ocp4-compute-5
+  # vm_name: ocp4-compute-5
   # LPAR hostname
   vm_hostname: compute-5
   # LPAR IP
@@ -11,3 +11,6 @@ day2_compute_node:
   # Uncomment 'hostname' in LPAR mode
   # hostname:
   host_arch: s390x
+  # If LPAR load from ftp is used, define LPAR name as shown in HMC. Case sensitive !
+  lpar_name: A314LP71
+  file_path: "ftp/ocp4-compute-5-a3elp71.ins"
