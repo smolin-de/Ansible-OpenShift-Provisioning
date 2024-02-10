@@ -1,8 +1,0 @@
----
-day2_compute_node:
-  vm_name: ocp4-compute-3
-  vm_hostname: compute-3
-  vm_ip: 172.23.232.247
-  vm_interface: ""
-  hostname: xkvmocp05
-  host_arch: x86_64
