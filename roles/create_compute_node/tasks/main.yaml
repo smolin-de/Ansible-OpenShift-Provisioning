@@ -1,7 +1,5 @@
 ---
 
-# TODO: Improve temporary config file handling
-
 # Paranoia check. This task should be executed only from ONE host
 - name: Check role/task parameters
   tags: create_compute_node

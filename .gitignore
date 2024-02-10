@@ -1,3 +1,6 @@
+clusters
+get-sm-secret.py
+Makefile
 .DS_Store
 .iso
 .vscode
