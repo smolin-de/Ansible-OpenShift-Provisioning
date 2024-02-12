@@ -116,8 +116,7 @@
 
     - name: Execute HMC load from ftp function
       ansible.builtin.shell: |
-        whoami
-        "{{ role_path }}/files/hmc_load_from_ftp.py" "{{ _config_yaml_tempfile.path }}"
+        "hmc_load_from_ftp.py" "{{ _config_yaml_tempfile.path }}"
         # Delete tempfile
         rm -f "{{ _config_yaml_tempfile.path }}"
       register: cmd_output
