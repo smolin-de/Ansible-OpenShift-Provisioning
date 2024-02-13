@@ -118,14 +118,14 @@
       ansible.builtin.shell: |
         set -x
         echo "hallo"
+        hostname
+        pwd
+        echo $PATH
+        ls -al
         hmc_load_from_ftp.py "{{ _config_yaml_tempfile.path }}"
         # Delete tempfile
         rm -f "{{ _config_yaml_tempfile.path }}"
       register: cmd_output
-
-    - name: Execute HMC load from ftp function - command output
-      ansible.builtin.debug:
-        var: cmd_output.stdout_lines
 
     - name: Execute HMC load from ftp function - command output
       ansible.builtin.debug:
