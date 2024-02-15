@@ -16,6 +16,7 @@
     {{ env.cluster.nodes.bootstrap.vcpu_model_option }} \
     {% else %}
     --cpu host \
+    {% endif %}
     --vcpus {{ env.cluster.nodes.bootstrap.vcpu }} \
     --network network={{ env.bridge_name }}{{ (',mac=' + env.cluster.nodes.bootstrap.mac) if env.use_dhcp }} \
     --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
