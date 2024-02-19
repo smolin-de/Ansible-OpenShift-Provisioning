@@ -1,14 +1,13 @@
 # Template for bastion kickstart configuration file. Some parts come from the create_bastion role.
 # This kickstart file was tested with RHEL 8.7
 
-%pre
-%end
-
 # Reboot after installation
 reboot
 
 # Use text mode install
 text --non-interactive
+# Uncomment next line, if you need to debug kickstart install issues
+#text
 
 # Run the Setup Agent on first boot
 firstboot --enable
