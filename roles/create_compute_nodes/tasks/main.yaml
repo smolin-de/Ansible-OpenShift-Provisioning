@@ -112,11 +112,11 @@
     --cpu host \
     {% endif %}
     --vcpus {{ env.cluster.nodes.compute.vcpu }} \
-    --network network={{ env.bridge_name }}{{ (',mac=' + compute_mac[i]) if env.use_dhcp }} \
+    --network network={{ env.bridge_name }}{{ (',mac=' + env.cluster.nodes.compute.mac[i]) if (env.cluster.nodes.compute.mac[i] is defined and env.use_dhcp) }} \
     --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
     --extra-args "rd.neednet=1 coreos.inst=yes coreos.inst.install_dev=vda" \
     --extra-args "coreos.live.rootfs_url=http://{{ env.bastion.networking.ip }}:8080/bin/{{ rhcos_live_rootfs }}" \
-    {% if env.use_dhcp %}
+    {% if (env.cluster.nodes.compute.mac[i] is defined and env.use_dhcp) %}
     --extra-args "ip=dhcp" \
     {% else %}
     --extra-args "ip={{ compute_ip[i] }}::{{ env.cluster.networking.gateway }}:{{ env.cluster.networking.subnetmask }}:{{ compute_hostname[i] }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:{{ env.cluster.networking.interface }}:none:1500" \
