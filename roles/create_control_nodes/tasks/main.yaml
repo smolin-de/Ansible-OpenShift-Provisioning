@@ -39,6 +39,7 @@
     extended: yes
     index_var: i
   when: env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname
+#    {{ ('ip=[' + env.cluster.nodes.control.ipv6[i] + ']::[' + env.cluster.networking.ipv6_gateway +']:' + env.cluster.networking.ipv6_prefix | string + '::' + env.cluster.networking.interface + ':none' ) if env.use_ipv6 == True else '' }} \
 
 - name: Create the first CoreOS control node on the first KVM host, if cluster is to be highly available.
   tags: create_control_nodes
