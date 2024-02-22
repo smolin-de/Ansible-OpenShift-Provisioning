@@ -18,7 +18,7 @@
       register: cmd_output
     - name: Print cmd output
       ansible.builtin.debug:
-        var: cmd_output
+        var: cmd_output.stdout_lines
 
 - name: Delete compute node VM on KVM host and print command output
   tags: delete_compute_node
