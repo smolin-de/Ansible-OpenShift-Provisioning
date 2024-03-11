@@ -84,7 +84,7 @@
             --extra-args "coreos.live.rootfs_url=http://{{ env.bastion.networking.ip }}:8080/bin/{{ rhcos_live_rootfs }}" \
             --extra-args "coreos.inst.ignition_url=http://{{ env.bastion.networking.ip }}:8080/ignition/worker.ign" \
             --extra-args "{{ _vm_console }}"
-          timeout: 420
+          timeout: 360
           register: cmd_output
         - name: Debug, print above command output
           ansible.builtin.debug:
