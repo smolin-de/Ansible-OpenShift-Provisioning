@@ -21,7 +21,7 @@
     {% if (env.cluster.nodes.bootstrap.mac is defined and env.use_dhcp) %}
     --extra-args "ip=dhcp" \
     {% else %}
-    --extra-args "ip={{ env.cluster.nodes.bootstrap.ip }}::{{ env.cluster.networking.gateway }}:{{ env.cluster.networking.subnetmask }}::{{ env.cluster.networking.interface }}:none:1500" \
+    --extra-args "ip={{ env.cluster.nodes.bootstrap.ip }}::{{ env.cluster.networking.gateway }}:{{ env.cluster.networking.subnetmask }}:{{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:{{ env.cluster.networking.interface }}:none:1500" \
     --extra-args "{{ ('ip=[' + env.cluster.nodes.bootstrap.ipv6 + ']::[' + env.cluster.networking.ipv6_gateway + ']:' + env.cluster.networking.ipv6_prefix | string + '::' + env.cluster.networking.interface + ':none' ) if env.use_ipv6 == True else '' }}" \
     {% endif %}
     --extra-args "nameserver={{ env.cluster.networking.nameserver1 }}" \
