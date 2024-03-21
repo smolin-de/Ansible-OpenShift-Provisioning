@@ -20,14 +20,53 @@
     - common
     - create_bootstrap
 
-- name: 6 create nodes - create control nodes
+- name: 6 create nodes - create control nodes using KVM
   hosts: kvm_host
   gather_facts: false
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
-    - create_control_nodes
+    - role: create_control_nodes
+      when: env.cluster.nodes.control.vm_name is defined
+
+- name: 6 create nodes - create control node SNO using LPAR
+  hosts: localhost
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: create control node SNO using LPAR
+      when: env.cluster.nodes.control.vm_name is not defined
+      block:
+        - name: Define required LPAR variables
+          ansible.builtin.set_fact:
+            hmc_load_from_ftp_file_path: "{{ env.cluster.nodes.control.file_path }}"
+            hmc_load_from_ftp_lpar_name: "{{ env.cluster.nodes.control.lpar_name }}"
+
+        - name: Create temporary config file
+          ansible.builtin.tempfile:
+            state: file
+            suffix: temp
+          register: _config_yaml_tempfile
+
+        - name: Create HMC load from ftp config file from template
+          ansible.builtin.template:
+            src: "hmc_load_from_ftp.j2"
+            dest: "{{ _config_yaml_tempfile.path }}"
+            mode: u=rw,g=r,o=r
+            force: true
+
+        - name: Execute HMC load from ftp function
+          ansible.builtin.shell: |
+            set -e
+            hmc_load_from_ftp.py "{{ _config_yaml_tempfile.path }}"
+            # Delete tempfile
+            rm -f "{{ _config_yaml_tempfile.path }}"
+          register: cmd_output
+
+        - name: Execute HMC load from ftp function - command output
+          ansible.builtin.debug:
+            var: cmd_output
 
 - name: 6 create nodes - wait for bootstrap to connect control plane (for non-root user)
   hosts: bastion
@@ -71,7 +110,7 @@
         name: "{{ env.cluster.nodes.bootstrap.vm_name }}"
         command: undefine
       ignore_errors: true
-      
+
 - name: 6 create nodes - once bootstrapping is complete, create compute nodes.
   hosts: kvm_host
   tags: create_compute_nodes
