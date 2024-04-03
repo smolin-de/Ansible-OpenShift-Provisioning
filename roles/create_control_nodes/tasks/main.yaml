@@ -10,7 +10,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,cache=none,\
     size={{ env.cluster.nodes.control.disk_size }}\
     {{ (',format' + env.cluster.nodes.control.disk_format) if env.cluster.nodes.control.disk_format is defined }}\
-    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io is defined }} \
+    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io[0] is defined }} \
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
     --vcpus {{ env.cluster.nodes.control.vcpu }} \
@@ -51,7 +51,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,cache=none,\
     size={{ env.cluster.nodes.control.disk_size }}\
     {{ (',format' + env.cluster.nodes.control.disk_format) if env.cluster.nodes.control.disk_format is defined }}\
-    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io is defined }} \
+    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io[0] is defined }} \
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
     --vcpus {{ env.cluster.nodes.control.vcpu }} \
@@ -85,7 +85,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,cache=none,\
     size={{ env.cluster.nodes.control.disk_size }}\
     {{ (',format' + env.cluster.nodes.control.disk_format) if env.cluster.nodes.control.disk_format is defined }}\
-    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io is defined }} \
+    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io[0] is defined }} \
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
     --vcpus {{ env.cluster.nodes.control.vcpu }} \
@@ -119,7 +119,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,cache=none,\
     size={{ env.cluster.nodes.control.disk_size }}\
     {{ (',format' + env.cluster.nodes.control.disk_format) if env.cluster.nodes.control.disk_format is defined }}\
-    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io is defined }} \
+    {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io[0] is defined }} \
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
     --vcpus {{ env.cluster.nodes.control.vcpu }} \
