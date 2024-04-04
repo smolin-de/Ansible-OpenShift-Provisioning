@@ -1,0 +1,11 @@
+---
+kvm_domain_list: []
+
+_kvm_domain_iothreads:
+  - iothread:
+      id: '1'
+  - iothread:
+      id: '2'
+
+_domain_boot_disk_devices_iothread_id: '1'
+

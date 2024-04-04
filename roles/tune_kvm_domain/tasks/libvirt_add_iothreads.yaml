@@ -1,0 +1,32 @@
+---
+
+- name: Retrieve XML of KVM domain
+  community.libvirt.virt:
+    command: get_xml
+    name: '{{ kvm_domain_name }}'
+  register: kvm_domain_name_xml
+
+- name: Add iothreads XML node
+  community.general.xml:
+    xmlstring: '{{ kvm_domain_name_xml.get_xml }}'
+    xpath: /domain/iothreads
+    value: '{{ domain_iothreads | length }}'
+  register: iothreads_xml
+
+- name: Add iothreadids XML node
+  community.general.xml:
+    xmlstring: '{{ iothreads_xml.xmlstring }}'
+    xpath: /domain/iothreadids
+  register: iothreadids_xml
+
+- name: Add dedicated iothread ID XML nodes
+  community.general.xml:
+    xmlstring: '{{ iothreadids_xml.xmlstring }}'
+    xpath: /domain/iothreadids
+    set_children: '{{ _kvm_domain_iothreads }}'
+  register: iothreadids_children_xml
+
+- name: Reload KVM domain configuration
+  community.libvirt.virt:
+    command: define
+    xml: '{{ iothreadids_children_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'
