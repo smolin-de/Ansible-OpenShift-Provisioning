@@ -27,7 +27,7 @@
     xmlstring: '{{ io_native_xml.xmlstring }}'
     xpath: /domain/devices/disk/driver[@name='qemu']
     attribute: iothread
-    value: '{{ _domain_boot_disk_devices_iothread_id }}'
+    value: '{{ _kvm_domain_boot_disk_iothread_id }}'
   register: iothreads_xml
 
 - name: Reload KVM domain configuration

@@ -10,7 +10,7 @@
   community.general.xml:
     xmlstring: '{{ kvm_domain_name_xml.get_xml }}'
     xpath: /domain/iothreads
-    value: '{{ domain_iothreads | length }}'
+    value: '{{ _kvm_domain_iothreads | length }}'
   register: iothreads_xml
 
 - name: Add iothreadids XML node
