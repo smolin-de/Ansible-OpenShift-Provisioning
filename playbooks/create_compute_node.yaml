@@ -113,6 +113,7 @@
       param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
 
     - role: tune_kvm_domain
+      when: day2_compute_node.vm_name[0] is defined
       delegate_to: "{{ day2_compute_node.hostname }}"
       param_kvm_domain_list:
         - "{{ day2_compute_node.vm_name }}"
