@@ -117,3 +117,4 @@
       delegate_to: "{{ day2_compute_node.hostname }}"
       param_kvm_domain_list:
         - "{{ day2_compute_node.vm_name }}"
+    - role: print_node_status
