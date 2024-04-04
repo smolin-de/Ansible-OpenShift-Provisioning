@@ -2,7 +2,6 @@
 
 - name: Tune KVM node
   ansible.builtin.include_tasks: '{{ role_path }}/tasks/tune_kvm_node.yaml'
-  register: cmd_output
   loop: "{{ param_kvm_domain_list }}"
   loop_control:
     loop_var: kvm_domain_name
