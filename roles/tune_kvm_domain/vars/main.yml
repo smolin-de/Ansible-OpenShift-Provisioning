@@ -7,4 +7,4 @@ _kvm_domain_iothreads:
   - iothread:
       id: '2'
 
-_kvm_domain_boot_disk_iothread_id: '1'
+_kvm_domain_boot_disk_iothread_id: '2'

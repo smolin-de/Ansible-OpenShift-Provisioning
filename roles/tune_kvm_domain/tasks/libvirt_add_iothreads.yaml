@@ -13,20 +13,20 @@
     value: '{{ _kvm_domain_iothreads | length }}'
   register: iothreads_xml
 
-- name: Add iothreadids XML node
-  community.general.xml:
-    xmlstring: '{{ iothreads_xml.xmlstring }}'
-    xpath: /domain/iothreadids
-  register: iothreadids_xml
+# - name: Add iothreadids XML node
+#   community.general.xml:
+#     xmlstring: '{{ iothreads_xml.xmlstring }}'
+#     xpath: /domain/iothreadids
+#   register: iothreadids_xml
 
-- name: Add dedicated iothread ID XML nodes
-  community.general.xml:
-    xmlstring: '{{ iothreadids_xml.xmlstring }}'
-    xpath: /domain/iothreadids
-    set_children: '{{ _kvm_domain_iothreads }}'
-  register: iothreadids_children_xml
+# - name: Add dedicated iothread ID XML nodes
+#   community.general.xml:
+#     xmlstring: '{{ iothreadids_xml.xmlstring }}'
+#     xpath: /domain/iothreadids
+#     set_children: '{{ _kvm_domain_iothreads }}'
+#   register: iothreadids_children_xml
 
 - name: Reload KVM domain configuration
   community.libvirt.virt:
     command: define
-    xml: '{{ iothreadids_children_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'
+    xml: '{{ iothreads_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'
