@@ -116,7 +116,7 @@
     --name {{ env.cluster.nodes.control.vm_name[2] }} \
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,cache=none,\
+    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,cache=none,io=native,\
     size={{ env.cluster.nodes.control.disk_size }}\
     {{ (',format' + env.cluster.nodes.control.disk_format) if env.cluster.nodes.control.disk_format is defined }}\
     {{ (',io=' + env.cluster.nodes.control.disk_io) if env.cluster.nodes.control.disk_io[0] is defined }} \
