@@ -44,3 +44,7 @@
       until: kvm_domain_name in online_libvirt_domains.list_vms
       retries: 20
       delay: 10
+
+    - name: Sleep for 45 seconds and continue with play
+      ansible.builtin.wait_for:
+        timeout: 45
