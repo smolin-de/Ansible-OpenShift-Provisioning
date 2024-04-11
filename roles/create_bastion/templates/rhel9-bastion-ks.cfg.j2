@@ -79,11 +79,18 @@ haproxy
 httpd
 jq
 libosinfo
-net-tools
-python3-devel
+net-tool
 python3-pip
 rsync
 vim
+# Add required python packages for cryptography.s390x,
+openssl-devel
+python3-devel
+redhat-rpm-config
+gcc
+libffi-devel
+cargo
+pkg-config
 %end
 
 %addon com_redhat_kdump --disable
