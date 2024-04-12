@@ -16,6 +16,22 @@
         name: '{{ kvm_domain_name }}'
         state: shutdown
 
+    # Libvirt shutdown seems not always to work on ARM server, so we make sure that the VM is down
+    - name: Destroy the KVM via libvirt - {{ kvm_domain_name }}
+      community.libvirt.virt:
+        command: destroy
+        name: '{{ kvm_domain_name }}'
+        state: destroyed
+
+    - name: Check if the KVM have been shutdown successfully
+      community.libvirt.virt:
+        command: list_vms
+        state: shutdown
+      register: offline_libvirt_domains
+      until: kvm_domain_name in offline_libvirt_domains.list_vms
+      retries: 15
+      delay: 10
+
     - name: Add iothreads
       ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_add_iothreads.yaml'
 

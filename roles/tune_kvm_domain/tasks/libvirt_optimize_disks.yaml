@@ -30,7 +30,7 @@
     value: '{{ _kvm_domain_boot_disk_iothread_id }}'
   register: iothreads_xml
 
-- name: Reload KVM domain configuration
+- name: Update the KVM domain configuration
   community.libvirt.virt:
     command: define
     xml: '{{ iothreads_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'

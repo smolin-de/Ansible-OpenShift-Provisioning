@@ -26,7 +26,7 @@
 #     set_children: '{{ _kvm_domain_iothreads }}'
 #   register: iothreadids_children_xml
 
-- name: Reload KVM domain configuration
+- name: Update the KVM domain configuration
   community.libvirt.virt:
     command: define
     xml: '{{ iothreads_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'
