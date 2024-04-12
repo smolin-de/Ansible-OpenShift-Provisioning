@@ -89,7 +89,7 @@
     --extra-args "ip={{ env.bastion.networking.ip }}::{{ env.bastion.networking.gateway }}:{{ env.bastion.networking.subnetmask }}:{{ env.bastion.networking.hostname }}::none" \
     {% endif %}
     --extra-args "{{ _vm_console }}"
-  timeout: 420
+  timeout: 450
   register: cmd_output
 
 - name: Debug, print above command output
