@@ -16,15 +16,6 @@
         name: '{{ kvm_domain_name }}'
         state: shutdown
 
-    - name: Check if the KVM have been shutdown successfully
-      community.libvirt.virt:
-        command: list_vms
-        state: shutdown
-      register: offline_libvirt_domains
-      until: kvm_domain_name in offline_libvirt_domains.list_vms
-      retries: 20
-      delay: 10
-
     - name: Add iothreads
       ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_add_iothreads.yaml'
 
@@ -36,15 +27,6 @@
       community.libvirt.virt:
         name: '{{ kvm_domain_name }}'
         state: running
-
-    - name: Wait until the KVM have been started successfully
-      community.libvirt.virt:
-        command: list_vms
-        state: running
-      register: online_libvirt_domains
-      until: kvm_domain_name in online_libvirt_domains.list_vms
-      retries: 20
-      delay: 10
 
     - name: Sleep for some seconds and then continue with play
       ansible.builtin.wait_for:
