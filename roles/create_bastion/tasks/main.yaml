@@ -97,7 +97,8 @@
   ansible.builtin.debug:
     var: cmd_output
 
-- name: Waiting 1 minute for automated bastion installation and configuration to complete
-  tags: create_bastion, virt-install
-  ansible.builtin.pause:
-    minutes: 1
+# Disable wait time, becuase the VM is down
+#- name: Waiting 1 minute for automated bastion installation and configuration to complete
+#  tags: create_bastion, virt-install
+#  ansible.builtin.pause:
+#    minutes: 1
