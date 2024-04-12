@@ -1,5 +1,6 @@
 ---
 param_kvm_domain_list: []
+param_wait_for_domain_started: 45
 
 _kvm_domain_iothreads:
   - iothread:
