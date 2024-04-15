@@ -1,11 +1,10 @@
 ---
 param_kvm_domain_list: []
-param_wait_for_domain_started: 45
+param_wait_for_domain_started: 60
 
-_kvm_domain_iothreads:
-  - iothread:
-      id: '1'
-  - iothread:
-      id: '2'
-
+# _kvm_domain_iothreads:
+#   - iothread:
+#       id: '1'
+#   - iothread:
+#       id: '2'
 _kvm_domain_boot_disk_iothread_id: '2'
