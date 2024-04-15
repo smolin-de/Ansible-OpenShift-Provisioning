@@ -1,7 +1,7 @@
 ---
 
 # Tune OCP cluster
-- name: 8 Tune OCP CLuster
+- name: 8 Tune OCP CLuster nodes
   hosts: kvm_host
   gather_facts: false
   vars_files:
@@ -10,12 +10,3 @@
     - role: tune_kvm_domain
       param_kvm_domain_list: "{{ (env.cluster.nodes.control.vm_name | default([])) + \
         (env.cluster.nodes.compute.vm_name | default([])) }}"
-
-- name: 8 Show OCP CLuster status
-  hosts: bastion
-  gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-  roles:
-    - role: print_node_status
-
