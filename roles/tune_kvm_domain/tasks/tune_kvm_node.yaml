@@ -35,8 +35,8 @@
     - name: Add iothreads
       ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_add_iothreads.yaml'
 
-    - name: Optimize disk usage mode
-      ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_optimize_disks.yaml'
+#    - name: Optimize disk usage mode
+#      ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_optimize_disks.yaml'
 
   always:
     - name: Start the KVM via libvirt - {{ kvm_domain_name }}

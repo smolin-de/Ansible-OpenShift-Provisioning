@@ -26,7 +26,15 @@
 #     set_children: '{{ _kvm_domain_iothreads }}'
 #   register: iothreadids_children_xml
 
+- name: Assign dedicated iothread ID to qemu disk devices
+  community.general.xml:
+    xmlstring: '{{ iothreads_xml.xmlstring }}'
+    xpath: /domain/devices/disk/driver[@name='qemu']
+    attribute: iothread
+    value: '{{ _kvm_domain_boot_disk_iothread_id }}'
+  register: iothread_id_xml
+
 - name: Update the KVM domain configuration
   community.libvirt.virt:
     command: define
-    xml: '{{ iothreads_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'
+    xml: '{{ iothread_id_xml.xmlstring | regex_replace("^<[?]xml .*[?]>", "") }}'
