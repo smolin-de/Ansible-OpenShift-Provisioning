@@ -16,14 +16,16 @@
       when: disconnected.enabled
 
   post_tasks:
-    - name: Ensure Ansible Galaxy collections have been installed.
+    - name: Ensure Ansible Galaxy collections have been installed with latest version.
       tags: galaxy
-      command: ansible-galaxy collection install {{ item }}
+      command: ansible-galaxy collection install {{ item }} --upgrade
       loop: "{{ env.pkgs.galaxy }}"
 
     - name: Find ibm_zhmc collection install location, if automated LPAR creation is to be used.
       tags: galaxy
-      shell: ansible-galaxy collection list ibm.ibm_zhmc | grep -i ansible | cut -c 3-
+      shell: |
+        set -o pipefail
+        ansible-galaxy collection list ibm.ibm_zhmc | grep -i ansible | cut -c 3-
       register: zhmc_path
       when: env.z.lpar1.create == True or env.z.lpar2.create == True or env.z.lpar3.create == True
 
