@@ -30,6 +30,11 @@
     - role: create_control_nodes
       when: env.cluster.nodes.control.vm_name is defined
 
+    - role: tune_kvm_domain
+      when: env.cluster.nodes.control.vm_name is defined
+      param_kvm_domain_list: "{{ (env.cluster.nodes.control.vm_name | default([])) }}"
+      param_wait_for_domain_started: 0
+
 - name: 6 create nodes - create control node SNO using LPAR
   hosts: localhost
   vars_files:
@@ -120,3 +125,6 @@
   roles:
     - common
     - create_compute_nodes
+    - role: tune_kvm_domain
+      param_kvm_domain_list: "{{ (env.cluster.nodes.compute.vm_name | default([])) }}"
+      param_wait_for_domain_started: 0
