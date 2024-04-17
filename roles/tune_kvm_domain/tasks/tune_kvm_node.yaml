@@ -16,13 +16,6 @@
         name: '{{ kvm_domain_name }}'
         state: shutdown
 
-    # Libvirt shutdown seems not always to work on ARM server, so we make sure that the VM is down
-    - name: Destroy the KVM via libvirt - {{ kvm_domain_name }}
-      community.libvirt.virt:
-        command: destroy
-        name: '{{ kvm_domain_name }}'
-        state: destroyed
-
     - name: Check if the KVM have been shutdown successfully
       community.libvirt.virt:
         command: list_vms
@@ -41,6 +34,7 @@
   always:
     - name: Start the KVM via libvirt - {{ kvm_domain_name }}
       community.libvirt.virt:
+        command: start
         name: '{{ kvm_domain_name }}'
         state: running
 
