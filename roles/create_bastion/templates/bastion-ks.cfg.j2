@@ -1,5 +1,5 @@
 # Template for bastion kickstart configuration file. Some parts come from the create_bastion role.
-# This kickstart file was tested with RHEL 8.7
+# This kickstart file was tested with RHEL 9.2 and 9.3
 
 # Reboot after installation
 reboot
@@ -70,18 +70,26 @@ logvol / --fstype=xfs --name=root --vgname=vgsystem --size=1 --grow
 # Packages selection
 %packages --multilib --ignoremissing
 @^minimal-environment
-# Add required bastion packages
+# Add required Bastion DNS, http and haproxy packages
 bind
 bind-utils
 expect
 haproxy
 httpd
 jq
-python39-pip
-mod_ssl
+libosinfo
 net-tools
-network-scripts
+python3-pip
+rsync
 vim
+# Add required python packages to build cryptography python module
+openssl-devel
+python3-devel
+redhat-rpm-config
+gcc
+libffi-devel
+cargo
+pkg-config
 %end
 
 %addon com_redhat_kdump --disable
@@ -89,7 +97,14 @@ vim
 
 %post --log=/root/post.log
 #!/usr/bin/env bash
-#
+
+# Allow root login, required change for RHEL9
+sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
+
+# Basic /root/.ssh/config setup
+echo "UserKnownHostsFile=/dev/null" >> /root/.ssh/config
+echo "StrictHostKeyChecking=no" >> /root/.ssh/config
+
 # Yum repository configuration adjustments
 echo "gpgcheck=0" >> /etc/yum.repos.d/AppStream.repo
 echo "skip_if_unavailable=True" >> /etc/yum.repos.d/AppStream.repo
