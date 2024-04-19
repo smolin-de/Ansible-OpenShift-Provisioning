@@ -24,8 +24,8 @@
     - name: Find ibm_zhmc collection install location, required for LPAR mode
       tags: galaxy
       shell: |
-        #!/usr/bin/env bash
-        set -o pipefail
+        # the following line, hang on ubuntu  #!/usr/bin/env bash
+        # set -o pipefail
         ansible-galaxy collection list ibm.ibm_zhmc | grep -i ansible | cut -c 3-
       register: zhmc_path
 
