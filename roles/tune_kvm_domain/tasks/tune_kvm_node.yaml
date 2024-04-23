@@ -6,38 +6,42 @@
   register: kvm_libvirt_domains
   ignore_errors: true
 
-# # Tune VM only, if exists on host
-# - name: Tune KVM (libvirt domain modifications) - {{ kvm_domain_name }}
-#   when: kvm_domain_name in kvm_libvirt_domains.list_vms
-#   block:
-#     - name: Shutdown the KVM via libvirt - {{ kvm_domain_name }}
-#       community.libvirt.virt:
-#         command: shutdown
-#         name: '{{ kvm_domain_name }}'
-#         state: shutdown
+# Tune VM only, if exists on host
+- name: Tune KVM (libvirt domain modifications) - {{ kvm_domain_name }}
+  when: kvm_domain_name in kvm_libvirt_domains.list_vms
+  block:
+    - name: Shutdown the KVM via libvirt - {{ kvm_domain_name }}
+      community.libvirt.virt:
+        command: shutdown
+        name: '{{ kvm_domain_name }}'
+        state: shutdown
 
-#     - name: Check if the KVM have been shutdown successfully
-#       community.libvirt.virt:
-#         command: list_vms
-#         state: shutdown
-#       register: offline_libvirt_domains
-#       until: kvm_domain_name in offline_libvirt_domains.list_vms
-#       retries: 15
-#       delay: 10
+    # Sometimes ansible report an successful shutdown, but it is not. For such cases we destroy the VM
+    - name: Destroy the KVM via libvirt - {{ kvm_domain_name }}
+      community.libvirt.virt:
+        command: destroy
+        name: '{{ kvm_domain_name }}'
+        state: destroyed
 
-#     - name: Add iothreads
-#       ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_add_iothreads.yaml'
+    - name: Check if the KVM have been shutdown successfully
+      community.libvirt.virt:
+        command: list_vms
+        state: shutdown
+      register: offline_libvirt_domains
+      until: kvm_domain_name in offline_libvirt_domains.list_vms
+      retries: 15
+      delay: 10
 
-# #    - name: Optimize disk usage mode
-# #      ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_optimize_disks.yaml'
+    - name: Add iothreads
+      ansible.builtin.include_tasks: '{{ role_path }}/tasks/libvirt_add_iothreads.yaml'
 
-#   always:
-#     - name: Start the KVM via libvirt - {{ kvm_domain_name }}
-#       community.libvirt.virt:
-#         command: start
-#         name: '{{ kvm_domain_name }}'
-#         state: running
+  always:
+    - name: Start the KVM via libvirt - {{ kvm_domain_name }}
+      community.libvirt.virt:
+        command: start
+        name: '{{ kvm_domain_name }}'
+        state: running
 
-#     - name: Sleep for some seconds and then continue with play
-#       ansible.builtin.wait_for:
-#         timeout: "{{ param_wait_for_domain_started | int }}"
+    - name: Sleep for some seconds and then continue with play
+      ansible.builtin.wait_for:
+        timeout: "{{ param_wait_for_domain_started | int }}"
