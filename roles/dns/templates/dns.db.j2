@@ -1,17 +1,17 @@
-$TTL 1W
-@ IN SOA {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. root (
-                                                2020021821 ; Serial
-                                                3600 ; Refresh ( 1 hour)
-                                                1800 ; Retry (30 minutes)
-                                                604800 ; Expire (1 week)
-                                                86400 ; Minimum TTL (1 day)
+$TTL 86400
+@ IN SOA {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. admin.{{ env.bastion.networking.base_domain }}.(
+                                                2020021821 ;Serial
+                                                3600 ;Refresh
+                                                1800 ;Retry
+                                                604800 ;Expire
+                                                86400 ;Minimum TTL
 )
 
 ;Name Server / Bastion Information
 @ IN NS {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
 
 ;IP Address for Name Server
-{{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }} IN A {{ env.bastion.networking.ip }}
+{{ env.bastion.networking.hostname }} IN A {{ env.bastion.networking.ip }}
 
 ;entry for bootstrap host.
 {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}. IN A {{ env.cluster.nodes.bootstrap.ip }}
