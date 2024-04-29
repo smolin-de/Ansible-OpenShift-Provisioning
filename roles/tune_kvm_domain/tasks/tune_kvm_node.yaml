@@ -6,7 +6,7 @@
   register: kvm_libvirt_domains
   ignore_errors: true
 
-# Tune VM only, if exists on host
+# Tune VM only, if exists on host.
 - name: Tune KVM (libvirt domain modifications) - {{ kvm_domain_name }}
   when: kvm_domain_name in kvm_libvirt_domains.list_vms
   block:
@@ -16,7 +16,7 @@
         name: '{{ kvm_domain_name }}'
         state: shutdown
 
-    # Sometimes ansible report an successful shutdown, but it is not. For such cases we destroy the VM
+    # Sometimes ansible report an successful shutdown, but it is not. For such cases we destroy the VM!
     - name: Destroy the KVM via libvirt - {{ kvm_domain_name }}
       community.libvirt.virt:
         command: destroy
