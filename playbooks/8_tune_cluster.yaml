@@ -8,5 +8,9 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - role: tune_kvm_domain
+      param_kvm_domain_list: "{{ (env.bastion.vm_name | split) }}"
+      when: env.bastion.create == True
+
+    - role: tune_kvm_domain
       param_kvm_domain_list: "{{ (env.cluster.nodes.control.vm_name | default([])) + \
         (env.cluster.nodes.compute.vm_name | default([])) }}"
