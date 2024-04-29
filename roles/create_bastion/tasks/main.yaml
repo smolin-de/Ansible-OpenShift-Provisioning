@@ -26,6 +26,7 @@
     dest: "{{ env.file_server.cfgs_dir }}/{{ env.bastion.networking.hostname }}/bastion-ks.cfg"
     mode: "0644"
     force: true
+
 - name: Create hash from bastion's root password to input in kickstart file
   tags: create_bastion
   ansible.builtin.shell: |
