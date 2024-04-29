@@ -8,5 +8,3 @@
   roles:
     - common
     - { role: create_bastion, when: env.bastion.create == True }
-    - { role: tune_kvm_domain, when: env.bastion.create == True,
-        param_kvm_domain_list: "{{ (env.bastion.vm_name | split) }}" }
