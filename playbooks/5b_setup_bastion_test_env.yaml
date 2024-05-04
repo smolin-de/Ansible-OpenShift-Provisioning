@@ -1,0 +1,9 @@
+---
+
+- name: 5b Setup Bastion for testing
+  hosts: bastion
+  become: true
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  roles:
+    - common
