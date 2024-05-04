@@ -1,6 +1,6 @@
-clusters/
+clusters
 get-sm-secret.py
-roles_inernal/
+roles_internal
 Makefile
 .DS_Store
 .iso
