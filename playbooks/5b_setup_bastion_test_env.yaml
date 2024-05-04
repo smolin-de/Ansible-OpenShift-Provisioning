@@ -7,3 +7,4 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
+    - customize_bastion
