@@ -3,7 +3,7 @@ $TTL 1D
                                             2020011800 ;Serial
                                             3600 ;Refresh
                                             1800 ;Retry
-                                            604800 ;Expire
+                                            1W ;Expire
                                             1D ) ;Minimum TTL
   IN NS {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}.
 
