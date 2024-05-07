@@ -5,7 +5,6 @@
   shell: "dig +short {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }} | tail -n1"
   register: bastion_lookup
   failed_when: env.bastion.networking.ip != bastion_lookup.stdout
-  ignore_errors: true
 
 - name: Check internal cluster DNS resolution for external API and apps services
   tags: check_dns, dns
@@ -28,7 +27,6 @@
   shell: "dig +short {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }} | tail -n1"
   register: bootstrap_lookup
   failed_when: env.cluster.nodes.bootstrap.ip != bootstrap_lookup.stdout
-  ignore_errors: true
 
 - name: Print results from bootstrap lookup
   tags: check_dns, dns
@@ -44,7 +42,6 @@
   loop_control:
     extended: yes
     index_var: i
-  ignore_errors: true
 
 - name: Check compute nodes DNS resolution
   tags: check_dns, dns
