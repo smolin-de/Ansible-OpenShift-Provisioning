@@ -4,8 +4,10 @@ $TTL 1D
                                             3600 ;Refresh
                                             1800 ;Retry
                                             1W ;Expire
-                                            1D ) ;Minimum TTL
-  IN NS {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}.
+                                            1D ;Minimum TTL
+)
+;Name Server Information
+@ IN NS {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}.
 
 ;Reverse lookup for Name Server
 {{ bastion_split_ip.3 }} IN PTR {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}.
