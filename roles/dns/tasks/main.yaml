@@ -6,12 +6,6 @@
     name: named
     enabled: yes
 
-- name: Start named
-  tags: dns
-  ansible.builtin.systemd:
-    name: named
-    state: started
-
 - name: Split IP addresses for use in templates
   tags: dns
   ansible.builtin.set_fact:

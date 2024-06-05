@@ -1,5 +1,5 @@
 $TTL 1D
-@ IN SOA {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}. root (
+@ IN SOA {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. root (
                                             2020011800 ;Serial
                                             3600 ;Refresh
                                             1800 ;Retry
@@ -7,10 +7,10 @@ $TTL 1D
                                             1D ;Minimum TTL
 )
 ;Name Server Information
-@ IN NS {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}.
+@ IN NS {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
 
 ;Reverse lookup for Name Server
-{{ bastion_split_ip.3 }} IN PTR {{ env.bastion.networking.hostname }}.{{ env.cluster.networking.base_domain }}.
+{{ bastion_split_ip.3 }} IN PTR {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
 
 ;PTR Record IP address to Hostname
 {{ bootstrap_split_ip.3 }}     IN      PTR     {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
