@@ -15,8 +15,11 @@
 :--- | :--- | :---
 **networking.hostname** | The hostname of the LPAR with RHEL installed natively (the KVM host). | kvm-host-01
 **networking.ip** | The IPv4 address of the LPAR with RHEL installed natively (the KVM host). | 192.168.10.2
+**networking.ipv6** | IPv6 address for the bastion if use_ipv6 variable is 'True'. | fd00::3
 **networking.subnetmask** | The subnet that the LPAR resides in within your network. | 255.255.255.0
 **networking.gateway** | The IPv4 address of the gateway to the network where the KVM host resides. | 192.168.10.0
+**networking.ipv6_gateway** | IPv6 of he bastion's gateway server. | fd00::1
+**networking.ipv6_prefix** | IPv6 prefix. | 64
 **networking.nameserver1** | The IPv4 address from which the KVM host gets its hostname resolved. | 192.168.10.200
 **networking.nameserver2** | <b>(Optional)</b> A second IPv4 address from which the KVM host can get its hostname<br /> resolved. Used for high availability. | 192.168.10.201
 **networking.device1** | The network interface card from Linux's perspective. Usually enc and then a number that comes<br /> from the dev_num of the network adapter. | enc100
@@ -82,3 +85,10 @@
 **lpar.storage_group_2_.storage_wwpn** | <b>(Optional)</b> World-wide port numbers for storage group. Use provided list formatting. | 500708680235c3f0<br />500708680235c3f1<br />500708680235c3f2<br />500708680235c3f3
 **lpar.storage_group_2_.dev_num** | <b>(Optional)</b> The logical device number of the Host Bus Adapter (HBA) for the storage group. | C001
 **lpar.storage_group_2_.lun_name** | <b>(Optional)</b> he Logical Unit Numbers (LUN) that points to a specific virtual disk<br /> behind the WWPN. | 4200569309ahhd240000000000000c001
+
+## 7 - (Optional) Livedisk info
+**Variable Name** | **Description** | **Example**
+:--- | :--- | :---
+**lpar.livedisk.livedisktype** | <b>(Optional)</b> Storage type. DASD is the only tested type as of now. | dasd
+**lpar.livedisk.devicenr** | <b>(Optional)</b> the device no of the DASD live disk | c6h1
+**lpar.livedisk.livedisk_root_pass** | <b>(Optional)</b> root password for the livedisk | p@ssword

@@ -2,8 +2,11 @@
 networking:
   hostname: #X
   ip: #X
+  ipv6: #X
   subnetmask: #X
+  ipv6_prefix: #X
   gateway: #X
+  ipv6_gateway: #X
   nameserver1: #X
 #  nameserver2: 
   device1: #X
