@@ -116,8 +116,7 @@
       tags: create_nodes, teardown_bootstrap
       ansible.builtin.shell: |
         META="{{ env.cluster.networking.metadata_name }}"
-        virsh vol-delete  --pool "${META}-vdisk" "{{ env.cluster.nodes.bootstrap.vm_name }}.qcow2" || true
-        virsh vol-delete  --pool "${META}-vdisk" "{{ env.cluster.nodes.bootstrap.vm_name }}-1.qcow2" || true
+        virsh vol-delete --pool "${META}-vdisk" "{{ env.cluster.nodes.bootstrap.vm_name }}.qcow2" || true
         virsh vol-list "${META}-vdisk"
       register: cmd_output
 
