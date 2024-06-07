@@ -97,25 +97,12 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
-    - name: Destroy bootstrap. Expect ignored errors if bootstrap is already destroyed.
-      tags: create_nodes, teardown_bootstrap
-      community.libvirt.virt:
-        name: "{{ env.cluster.nodes.bootstrap.vm_name }}"
-        command: destroy
-      ignore_errors: true
-
-    - name: Undefine bootstrap. Expect ignored errors if bootstrap is already undefined.
-      tags: create_nodes, teardown_bootstrap
-      community.libvirt.virt:
-        name: "{{ env.cluster.nodes.bootstrap.vm_name }}"
-        command: undefine
-      ignore_errors: true
-
-    # Bootstrap images are not always deleted, verify deletion
     - name: Delete bootstrap volumes and list cluster images
       tags: create_nodes, teardown_bootstrap
       ansible.builtin.shell: |
         META="{{ env.cluster.networking.metadata_name }}"
+        virsh destroy {{ env.cluster.nodes.bootstrap.vm_name }} || true
+        virsh undefine {{ env.cluster.nodes.bootstrap.vm_name }} --remove-all-storage --nvram || true
         virsh vol-delete --pool "${META}-vdisk" "{{ env.cluster.nodes.bootstrap.vm_name }}.qcow2" || true
         virsh vol-list "${META}-vdisk"
       register: cmd_output
@@ -123,7 +110,7 @@
     - name: Debug, print above command output
       tags: create_nodes, teardown_bootstrap
       ansible.builtin.debug:
-        var: cmd_output
+        var: cmd_output.stdout_lines
 
 - name: 6 create nodes - once bootstrapping is complete, create compute nodes.
   hosts: kvm_host
