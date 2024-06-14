@@ -36,7 +36,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot LPAR from ftp
-      when: env.cluster.nodes.control.vm_name[0] is not defined
+      when: env.cluster.nodes.control.lpar_name[0] is defined
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
@@ -107,7 +107,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot LPAR from ftp
-      when: env.cluster.nodes.compute.vm_name[0] is not defined
+      when: env.cluster.nodes.compute.lpar_name[0] is defined
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
