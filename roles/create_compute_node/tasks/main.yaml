@@ -93,38 +93,16 @@
           ansible.builtin.debug:
             var: cmd_output
 
-
-- name: "Create compute node on LPAR {{ param_compute_node.hostname }}"
+- name: "Create compute node on LPAR"
   tags: create_compute_node
-  when: param_compute_node.vm_name is not defined and param_compute_node.lpar_name is defined
-  delegate_to: 127.0.0.1
-  block:
-    - name: Define required LPAR variables
-      ansible.builtin.set_fact:
-        hmc_load_from_ftp_file_path: "{{ param_compute_node.file_path }}"
-        hmc_load_from_ftp_lpar_name: "{{ param_compute_node.lpar_name }}"
-
-    - name: Create temporary config file
-      ansible.builtin.tempfile:
-        state: file
-        suffix: temp
-      register: _config_yaml_tempfile
-
-    - name: Create HMC load from ftp config file from template
-      ansible.builtin.template:
-        src: "hmc_load_from_ftp.j2"
-        dest: "{{ _config_yaml_tempfile.path }}"
-        mode: u=rw,g=r,o=r
-        force: true
-
-    - name: Execute HMC load from ftp function
-      ansible.builtin.shell: |
-        set -e
-        hmc_load_from_ftp.py "{{ _config_yaml_tempfile.path }}"
-        # Delete tempfile
-        rm -f "{{ _config_yaml_tempfile.path }}"
-      register: cmd_output
-
-    - name: Execute HMC load from ftp function - command output
-      ansible.builtin.debug:
-        var: cmd_output
+  when: param_compute_node.vm_name[0] is not defined and param_compute_node.lpar_name is defined
+  ansible.builtin.include_role:
+    name: boot_lpar_from_ftp
+    apply:
+      delegate_to: 127.0.0.1
+  vars:
+    parm_lpar_names: "{{ q('list', param_compute_node.lpar_name) | flatten }}"
+    parm_lpar_prm_files: "{{ q('list', param_compute_node.file_path) | flatten }}"
+  loop: "{{ q('list', param_compute_node.lpar_name) | flatten }}"
+  loop_control:
+    index_var: idx

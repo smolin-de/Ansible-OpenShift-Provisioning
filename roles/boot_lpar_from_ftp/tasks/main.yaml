@@ -1,0 +1,49 @@
+---
+- name: Check role/task parameters
+  ansible.builtin.fail:
+    msg: "Error: loop control variable 'idx' is not defined"
+  when: idx is not defined
+
+- name: Boot LPAR node using boot from ftp function
+  block:
+    - name: Include LPAR host variablese
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
+        name: _node
+
+#    - debug:
+
+    - name: Define local variables
+      ansible.builtin.set_fact:
+        _hmc_load_from_ftp_file_path: "{{ parm_lpar_prm_files[idx] }}"
+
+    - name: Create temporary config file
+      ansible.builtin.tempfile:
+        state: file
+        suffix: temp
+      register: _config_yaml_tempfile
+
+    - name: Create HMC load from ftp config file from template
+      ansible.builtin.template:
+        src: "hmc_load_from_ftp.j2"
+        dest: "{{ _config_yaml_tempfile.path }}"
+        mode: u=rw,g=r,o=r
+        force: true
+
+    - name: Execute HMC load from ftp function
+      ansible.builtin.shell: |
+        set -e
+        {{ role_path }}/files/hmc_load_from_ftp.py "{{ _config_yaml_tempfile.path }}"
+        # Delete tempfile
+        rm -f "{{ _config_yaml_tempfile.path }}"
+      register: cmd_output
+
+    - name: Execute HMC load from ftp function - command output
+      ansible.builtin.debug:
+        var: cmd_output
+
+  rescue:
+    - name: Cleanup on error
+      ansible.builtin.shell: |
+        # Delete tempfile
+        rm -f "{{ _config_yaml_tempfile.path }}"
