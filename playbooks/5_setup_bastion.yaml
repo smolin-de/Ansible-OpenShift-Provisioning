@@ -81,6 +81,7 @@
     - { role: haproxy, when: env.bastion.options.loadbalancer.on_bastion }
 #    - { role: sno_haproxy, when: env.bastion.options.loadbalancer.on_bastion and control_node_count | int == 1 }
     - httpd
+    - { role: install_tessia_baselib, when: env.installation_type|lower == "lpar" }
 
 - hosts: bastion
   tags: services, section_2, openvpn
@@ -178,4 +179,4 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
-    - get_ocp
+    - { role: get_ocp, when: abi.flag is not defined or abi.flag != True }
