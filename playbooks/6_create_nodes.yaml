@@ -1,5 +1,22 @@
 ---
 
+- name: 6 create nodes - find lpar host files
+  hosts: localhost
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: Loop over node types and include role
+      # Disabled function
+      when: 0
+      include_role:
+        name: check_for_lpar_nodes
+      loop:
+        - bootstrap
+        - compute
+        - control
+      loop_control:
+        loop_var: node_type
+
 # Prepare and then create the temporary bootstrap node and the control nodes
 - name: 6 create nodes - prepare KVM guests
   hosts: kvm_host
@@ -19,6 +36,32 @@
   roles:
     - common
     - create_bootstrap
+
+- name: 6 create nodes - bootstrap and control ( if in lpar )
+  hosts: bastion
+  become: true
+  tasks:
+    - name: boot bootstrap
+      vars:
+        node_type: "bootstrap"
+        node_name: "{{ item }}"
+        ignition: "bootstrap"
+      include_tasks:
+        file: ../roles/boot_LPAR/tasks/main.yaml
+      loop: "{{ q('list',env.cluster.nodes[node_type].vm_name) | flatten }}"
+      # Disabled function
+      when: 0
+
+    - name: boot control nodes
+      vars:
+        node_type: "control"
+        node_name: "{{ item }}"
+        ignition: "master"
+      include_tasks:
+        file: ../roles/boot_LPAR/tasks/main.yaml
+      loop: "{{ q('list',env.cluster.nodes[node_type].vm_name) | flatten }}"
+      # Disabled function
+      when: 0
 
 - name: 6 create nodes - create control nodes using KVM
   hosts: kvm_host
