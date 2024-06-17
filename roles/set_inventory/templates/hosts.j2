@@ -4,6 +4,9 @@
 [file_server]
 {{ env.file_server.ip }} ansible_user={{ env.file_server.user }} ansible_become_password={{ env.file_server.pass }}
 
+[hmc_file_server]
+{{ (env.z.hmc_load_from_ftp.hostname + ' ansible_host=' +env.z.hmc_load_from_ftp.ip + ' ansible_user=' + env.z.hmc_load_from_ftp.user + ' ansible_become_password=' + env.z.hmc_load_from_ftp.user ) if env.z.hmc_load_from_ftp.hostname is defined }}
+
 [kvm_host]
 {{ env.z.lpar1.hostname }} ansible_host={{ env.z.lpar1.ip }} ansible_user={{ env.z.lpar1.user }} ansible_become_password={{ env.z.lpar1.pass }}
 {{ (env.z.lpar2.hostname + ' ansible_host=' + env.z.lpar2.ip + ' ansible_user=' + env.z.lpar2.user + ' ansible_become_password=' + env.z.lpar2.pass ) if env.z.lpar2.hostname is defined else '' }}

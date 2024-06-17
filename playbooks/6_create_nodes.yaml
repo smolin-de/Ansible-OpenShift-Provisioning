@@ -1,5 +1,21 @@
 ---
 
+# TODO: Hack to update HMC file servers git repository
+- name: Update HMC file server git repository
+  hosts: hmc_file_server
+  gather_facts: false
+  tasks:
+    - name: Update git repository
+      ansible.builtin.shell: |
+        cd ~/ftp/
+        git pull
+      register: cmd_output
+      changed_when: ("Already up to date." not in cmd_output.stdout_lines)
+
+    - name: Show above command output
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines
+
 - name: 6 create nodes - find lpar host files
   hosts: localhost
   vars_files:
