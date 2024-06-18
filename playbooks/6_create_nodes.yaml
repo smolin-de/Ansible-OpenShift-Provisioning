@@ -1,6 +1,6 @@
 ---
 
-# TODO: Hack to update HMC file servers git repository
+# TODO: Hack to update HMC file server git repository
 - name: Update HMC file server git repository
   hosts: hmc_file_server
   gather_facts: false
@@ -24,7 +24,7 @@
     - name: Loop over node types and include role
       # Disabled function
       when: 0
-      include_role:
+      ansible.builtin.include_role:
         name: check_for_lpar_nodes
       loop:
         - bootstrap
@@ -62,9 +62,9 @@
         node_type: "bootstrap"
         node_name: "{{ item }}"
         ignition: "bootstrap"
-      include_tasks:
+      ansible.builtin.include_tasks:
         file: ../roles/boot_LPAR/tasks/main.yaml
-      loop: "{{ q('list',env.cluster.nodes[node_type].vm_name) | flatten }}"
+      loop: "{{ q('list', env.cluster.nodes[node_type].vm_name) | flatten }}"
       # Disabled function
       when: 0
 
@@ -73,9 +73,9 @@
         node_type: "control"
         node_name: "{{ item }}"
         ignition: "master"
-      include_tasks:
+      ansible.builtin.include_tasks:
         file: ../roles/boot_LPAR/tasks/main.yaml
-      loop: "{{ q('list',env.cluster.nodes[node_type].vm_name) | flatten }}"
+      loop: "{{ q('list', env.cluster.nodes[node_type].vm_name) | flatten }}"
       # Disabled function
       when: 0
 
