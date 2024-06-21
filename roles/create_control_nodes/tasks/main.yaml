@@ -8,8 +8,8 @@
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size }},cache=none,io=native \
-    {% if env.cluster.nodes.control.disk_size2 is defined %}
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size2 }},cache=none,io=native \
+    {% if env.cluster.nodes.control.disk2_size is defined %}
+    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
@@ -49,8 +49,8 @@
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size }},cache=none,io=native \
-    {% if env.cluster.nodes.control.disk_size2 is defined %}
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size2 }},cache=none,io=native \
+    {% if env.cluster.nodes.control.disk2_size is defined %}
+    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
@@ -83,8 +83,8 @@
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size }},cache=none,io=native \
-    {% if env.cluster.nodes.control.disk_size2 is defined %}
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size2 }},cache=none,io=native \
+    {% if env.cluster.nodes.control.disk2_size is defined %}
+    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
@@ -117,8 +117,8 @@
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size }},cache=none,io=native \
-    {% if env.cluster.nodes.control.disk_size2 is defined %}
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size2 }},cache=none,io=native \
+    {% if env.cluster.nodes.control.disk2_size is defined %}
+    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.control.ram }} \
     {{ env.cluster.nodes.control.vcpu_model_option }} \
