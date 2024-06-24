@@ -127,6 +127,7 @@
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.cluster.nodes.compute.disk_size** | How much disk space do you want to allocate to each compute node (in Gigabytes)? 120 or more recommended. | 120
+**env.cluster.nodes.compute.disk2_size** | Second disk for shared compute node storage (in Gigabytes) | 100
 **env.cluster.nodes.compute.ram** | How much memory would you like to allocate to the each compute node (in megabytes)? Recommended 16384 or more. | 16384
 **env.cluster.nodes.compute.vcpu** | How many virtual CPUs would you like to allocate to each compute node? Recommended 2 or more. | 2
 **env.cluster.nodes.compute.vcpu_model_option** | Configure the CPU model and CPU features exposed to the guest | --cpu host
