@@ -11,8 +11,6 @@
         file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
         name: _node
 
-#    - debug:
-
     - name: Define local variables
       ansible.builtin.set_fact:
         _hmc_load_from_ftp_file_path: "{{ parm_lpar_prm_files[idx] }}"
@@ -44,6 +42,14 @@
 
   rescue:
     - name: Cleanup on error
-      ansible.builtin.shell: |
-        # Delete tempfile
-        rm -f "{{ _config_yaml_tempfile.path }}"
+      block:
+        - name: Cleanup on error
+          ansible.builtin.shell: |
+            # cat "{{ _config_yaml_tempfile.path }}"
+            # Delete tempfile
+            rm -f "{{ _config_yaml_tempfile.path }}"
+          register: cmd_output
+
+        - name: Cleanup on error - command output
+          ansible.builtin.debug:
+            var: cmd_output
