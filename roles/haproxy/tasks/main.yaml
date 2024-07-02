@@ -17,7 +17,7 @@
 - name: Add control node information to 6443 section in haproxy config
   tags: haproxy
   lineinfile:
-    line: "  server {{ env.cluster.nodes.control.hostname[i] }} {{ env.cluster.nodes.control.hostname[i] }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:6443 check inter 1s"
+    line: "  server {{ env.cluster.nodes.control.hostname[i] }} {{ env.cluster.nodes.control.hostname[i] }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:6443 weight 1 verify none check check-ssl inter 10s fall 2 rise 3"
     path: /etc/haproxy/haproxy.cfg
     insertafter: "6443 section"
   with_sequence: start=0 end={{(env.cluster.nodes.control.hostname | length) - 1}} stride=1

@@ -76,6 +76,9 @@ def main(argv):
     print("Load from ftp server...")
     ftp_config = config['ftp_config']
     try:
+        # load_from_ftp(host, username, password, load_file, protocol='ftp',
+        # wait_for_completion=True, operation_timeout=None, status_timeout=None,
+        # allow_status_exceptions=False)
         lpar.load_from_ftp(host=ftp_config['host'], username=ftp_config['username'],
                            password=ftp_config['password'], load_file=ftp_config['file_path'],
                            wait_for_completion=True)
