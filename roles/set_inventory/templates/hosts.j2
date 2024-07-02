@@ -2,7 +2,7 @@
 127.0.0.1 ansible_connection=local ansible_become_password={{ env.controller.sudo_pass }}
 
 [file_server]
-{{ env.file_server.ip }} ansible_user={{ env.file_server.user }} ansible_become_password={{ env.file_server.pass }}
+{{ env.file_server.ip }} ansible_connection=local ansible_user={{ env.file_server.user }} ansible_become_password={{ env.file_server.pass }}
 
 [hmc_file_server]
 {{ (env.z.hmc_load_from_ftp.hostname + ' ansible_host=' +env.z.hmc_load_from_ftp.ip + ' ansible_connection=local ansible_user=' + env.z.hmc_load_from_ftp.user + ' ansible_become_password=' + env.z.hmc_load_from_ftp.user ) if env.z.hmc_load_from_ftp.hostname is defined }}
