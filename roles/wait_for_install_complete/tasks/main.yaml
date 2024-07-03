@@ -38,7 +38,12 @@
   tags: wait_for_install_complete
   command: "echo {{ item }}"
   loop:
-    - " URL: {{ ocp_url }} "
-    - " Username: kubeadmin "
-    - " Password: {{ ocp_passwd.stdout }} "
+    - " URL      : {{ ocp_url }} "
+    - " Username : kubeadmin "
+    - " Password : {{ ocp_passwd.stdout }} "
+    - ""
+    - " /etc/hosts/ file:"
+    - " {{ env.bastion.networking.ip }} oauth-openshift.apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }} "
+    - " {{ env.bastion.networking.ip }} console-openshift-console.apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }} "
+    - " {{ env.bastion.networking.ip }} api.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }} "
   changed_when: false
