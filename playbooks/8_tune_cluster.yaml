@@ -1,7 +1,7 @@
 ---
 
 # Tune OCP cluster
-- name: 8 Tune OCP CLuster nodes
+- name: 8 Tune OCP cluster KVM nodes
   tags: tune_ocp_nodes
   hosts: kvm_host
   gather_facts: false
@@ -10,7 +10,7 @@
   roles:
     - role: tune_kvm_domain
       param_kvm_domain_list: "{{ (env.bastion.vm_name | split) }}"
-      when: env.bastion.create == True
+      when: env.bastion.create == True and env.bastion.vm_name is defined
 
     - role: tune_kvm_domain
       param_kvm_domain_list: "{{ (env.cluster.nodes.control.vm_name | default([])) + \
