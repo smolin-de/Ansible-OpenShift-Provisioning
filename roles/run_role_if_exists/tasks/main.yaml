@@ -1,0 +1,22 @@
+---
+
+- name: Check if role exists in defined role path
+  block:
+    - name: Check if role exists in defined role path
+      ansible.builtin.stat:
+        path: "{{ item }}/{{ _role_name }}"
+      register: role_check
+      loop: "{{ lookup('ansible.builtin.config', 'DEFAULT_ROLES_PATH') }}"
+
+    - name: Determine if role exists
+      ansible.builtin.set_fact:
+        _role_exists: "{{ role_check.results | selectattr('stat.exists', 'equalto', True) | list | length > 0 }}"
+
+    - name: Display role existence status
+      ansible.builtin.debug:
+        msg: "Role '{{ _role_name }}' exists: {{ _role_exists }}"
+
+- name: Role exists, run desired role
+  when: _role_exists
+  ansible.builtin.include_role:
+    name: "{{ _role_name }}"
