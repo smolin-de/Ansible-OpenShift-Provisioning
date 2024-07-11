@@ -70,7 +70,7 @@
     virsh undefine {{ env.bastion.vm_name }} --remove-all-storage --nvram || true
     virt-install \
     --name {{ env.bastion.vm_name }} \
-    --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
+    --osinfo detect=on,require=off \
     --autostart \
     --memory={{ env.bastion.resources.ram }} \
     --vcpus={{ env.bastion.resources.vcpu }} \
