@@ -1,5 +1,17 @@
 ---
 
+# TODO
+
+# #!/bin/bash
+
+# NAME={{ env.cluster.networking.metadata_name }}
+
+# virsh pool-define-as ${NAME}-vdisk dir - - - - "/var/lib/libvirt/images/${NAME}"
+# virsh pool-build ${NAME}-vdisk
+# virsh pool-start ${NAME}-vdisk
+# virsh pool-autostart ${NAME}-vdisk
+# virsh pool-list
+
 # TODO: Hack to update HMC file server git repository
 - name: Update HMC file server git repository
   hosts: hmc_file_server
