@@ -10,5 +10,6 @@
 - import_playbook: 6_create_nodes.yaml
 - import_playbook: 7_ocp_verification.yaml
 - import_playbook: 8_tune_cluster.yaml
+  when: tune_cluster is defined and tune_cluster
 - import_playbook: disconnected_apply_operator_manifests.yaml
   when: disconnected.enabled
