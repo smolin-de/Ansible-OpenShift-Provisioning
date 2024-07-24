@@ -14,14 +14,15 @@
 
 # TODO: Hack to update HMC file server git repository
 - name: Update HMC file server git repository
-  hosts: hmc_file_server
+  hosts: hmc_ftp_server
   gather_facts: false
   tasks:
-    - name: Update git repository
+    - name: Update git repository on HMC ftp server
       ignore_errors: true
       block:
-        - name: Update git repository
+        - name: Update git repository on HMC ftp server
           ansible.builtin.shell: |
+            whoami
             cd ~/ftp/
             git pull
           register: cmd_output
@@ -137,6 +138,15 @@
       loop: "{{ q('list', env.cluster.nodes.control.lpar_name) | flatten }}"
       loop_control:
         index_var: idx
+
+- name: 6 create nodes - create control using zVM via tessia (tbd)
+  hosts: localhost
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: Boot control zVM via tessia
+      when: env.cluster.nodes.control.zvm_name[0] is defined
+      ansible.builtin.command: sleep 120
 
 - name: 6 create nodes - wait for bootstrap to connect control plane (for non-root user)
   hosts: bastion
