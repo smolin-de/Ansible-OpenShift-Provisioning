@@ -68,7 +68,7 @@ zone "{{ env.cluster.networking.base_domain }}" IN {
 };
 
 //backward zone
-zone "{{ bastion_split_ip.2 }}.{{ bastion_split_ip.1 }}.{{ bastion_split_ip.0 }}.in-addr.arpa" IN {
+zone "{{ bastion_split_ip.1 }}.{{ bastion_split_ip.0 }}.in-addr.arpa" IN {
      type master;
      file "/var/named/{{ env.cluster.networking.metadata_name }}.rev";
      allow-update { any; };

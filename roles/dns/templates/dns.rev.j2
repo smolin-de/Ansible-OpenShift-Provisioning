@@ -10,9 +10,9 @@ $TTL 1D
 @ IN NS {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
 
 ;Reverse lookup for Name Server
-{{ bastion_split_ip.3 }} IN PTR {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
+{{ bastion_split_ip.3 }}.{{ bastion_split_ip.2 }} IN PTR {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
 
 ;PTR Record IP address to Hostname
-{{ bootstrap_split_ip.3 }}     IN      PTR     {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
-{{ bastion_split_ip.3 }}     IN      PTR     api-int.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
-{{ bastion_split_ip.3 }}     IN      PTR     api.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
+{{ bootstrap_split_ip.3 }}.{{ bootstrap_split_ip.2 }}     IN      PTR     {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
+{{ bastion_split_ip.3 }}.{{ bastion_split_ip.2 }}     IN      PTR     api-int.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
+{{ bastion_split_ip.3 }}.{{ bastion_split_ip.2 }}     IN      PTR     api.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
