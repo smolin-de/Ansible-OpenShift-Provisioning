@@ -7,10 +7,10 @@
       ansible.builtin.lineinfile:
         path: /etc/haproxy/haproxy.cfg
         state: absent
-        regex: "{{ param_haproxy_ip }}:80 check"
+        regex: "{{ param_haproxy_hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:80 check"
 
     - name: Delete haproxy port 443
       ansible.builtin.lineinfile:
         path: /etc/haproxy/haproxy.cfg
         state: absent
-        regex: "{{ param_haproxy_ip }}:443 check"
+        regex: "{{ param_haproxy_hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:443 check"
