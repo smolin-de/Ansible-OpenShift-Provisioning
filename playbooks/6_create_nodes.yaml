@@ -139,14 +139,14 @@
       loop_control:
         index_var: idx
 
-- name: 6 create nodes - create control using zVM via tessia (tbd)
+- name: 6 create nodes - create control using zVM via tessia manually
   hosts: localhost
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
-    - name: Boot control zVM via tessia
+    - name: Boot control zVM via tessia manually in the next 3 min
       when: env.cluster.nodes.control.zvm_name[0] is defined
-      ansible.builtin.command: sleep 120
+      ansible.builtin.command: sleep 180
 
 - name: 6 create nodes - wait for bootstrap to connect control plane (for non-root user)
   hosts: bastion
