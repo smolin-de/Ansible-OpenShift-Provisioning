@@ -3,7 +3,7 @@
 - name: Configure an FTP boot server and start the partition
   ibm.ibm_zhmc.zhmc_partition:
     hmc_host: "{{ _node.hmc.host }}"
-    hmc_auth: "{{ _node.zhmc_auth }}"
+    hmc_auth: "{{ _zhmc_auth }}"
     cpc_name: "{{ _node.cpc_name }}"
     name: "{{ _node.lpar.name }}"
     state: active
