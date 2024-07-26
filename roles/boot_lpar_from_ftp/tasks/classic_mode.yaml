@@ -44,3 +44,5 @@
         - name: Cleanup on error - command output
           ansible.builtin.debug:
             var: cmd_output
+
+        - ansible.builtin.fail:
