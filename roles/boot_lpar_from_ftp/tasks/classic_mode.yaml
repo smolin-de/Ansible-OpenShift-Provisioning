@@ -2,10 +2,6 @@
 
 - name: Boot LPAR node using boot from ftp function
   block:
-    - name: Define local variables
-      ansible.builtin.set_fact:
-        _hmc_load_from_ftp_file_path: "{{ parm_lpar_prm_files[idx] }}"
-
     - name: Create temporary config file
       ansible.builtin.tempfile:
         state: file

@@ -10,11 +10,15 @@
     file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
     name: _node
 
+- name: Define local variables
+  ansible.builtin.set_fact:
+    _hmc_load_from_ftp_file_path: "{{ parm_lpar_prm_files[idx] }}"
+
 - name: Lood classic mode task
-  when: 1
+  when: (_node.cpc_dpm_mode is defined and not _node.cpc_dpm_mode) or _node.cpc_dpm_mode is not defined
   ansible.builtin.include_tasks: "classic_mode.yaml"
 
 - name: Lood dpm mode task
-  when: 0
+  when: _node.cpc_dpm_mode is defined and _node.cpc_dpm_mode
 #  _node.cpc_dpm_mode is defined and _node.cpc_dpm_mode
   ansible.builtin.include_tasks: "dpm_mode.yaml"

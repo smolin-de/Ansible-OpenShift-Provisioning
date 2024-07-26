@@ -1,0 +1,24 @@
+---
+
+- name: Configure an FTP boot server and start the partition
+  ibm.ibm_zhmc.zhmc_partition:
+    hmc_host: "{{ _node.hmc.host }}"
+    hmc_auth: "{{ _node.zhmc_auth }}"
+    cpc_name: "{{ _node.cpc_name }}"
+    name: "{{ _node.lpar.name }}"
+    state: active
+    select_properties:
+    properties:
+      boot_device: ftp
+      boot_ftp_host: "{{ env.z.hmc_ftp_server.ip }}"
+      boot_ftp_username: "{{ env.z.hmc_ftp_server.user }}"
+      boot_ftp_password: "{{ env.z.hmc_ftp_server.pass }}"
+      boot_ftp_insfile: "{{ _hmc_load_from_ftp_file_path }}"
+  register: part1
+# TODO:
+# Ignore ignore error:
+# {"changed": false, "msg": "NotFound: Could not find VirtualSwitch using filter arguments ...
+  failed_when: '"NotFound: Could not find VirtualSwitch" not in part1.msg'
+
+- debug:
+    var: part1
