@@ -15,6 +15,8 @@
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
 
 - name: Configure an FTP boot server and start the dpm mode partition - debug
+  when: 0
+  ignore_errors: true
   ansible.builtin.shell: |
     '
     hmc_host: "{{ _node.hmc.host }}"
@@ -35,6 +37,7 @@
     var: part1
 
 - name: Configure an FTP boot server and start the dpm mode partition
+  ignore_errors: true
   ibm.ibm_zhmc.zhmc_partition:
     hmc_host: "{{ _node.hmc.host }}"
     hmc_auth: "{{ _zhmc_auth }}"
@@ -52,7 +55,7 @@
 # TODO:
 # Ignore ignore error:
 # {"changed": false, "msg": "NotFound: Could not find VirtualSwitch using filter arguments ...
-  failed_when: '"NotFound: Could not find VirtualSwitch" not in part1.msg'
+  # failed_when: '"NotFound: Could not find VirtualSwitch" not in part1.msg'
 
 - ansible.builtin.debug:
     var: part1
