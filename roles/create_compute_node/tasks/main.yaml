@@ -102,7 +102,9 @@
       delegate_to: 127.0.0.1
   vars:
     parm_lpar_names: "{{ q('list', param_compute_node.lpar_name) | flatten }}"
-    parm_lpar_prm_files: "{{ q('list', param_compute_node.file_path) | flatten }}"
+    parm_lpar_ins_files: "{{ q('list', param_compute_node.lpar_ins_file) | flatten }}"
+    parm_lpar_prm_files: "{{ q('list', param_compute_node.lpar_prm_file) | flatten }}"
+    parm_lpar_prm_configs: "{{ q('list', param_compute_node.lpar_prm_config) | flatten }}"
   loop: "{{ q('list', param_compute_node.lpar_name) | flatten }}"
   loop_control:
     index_var: idx

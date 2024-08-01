@@ -10,9 +10,20 @@
     file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
     name: _node
 
+
+#  coreos.live.rootfs_url={{ rhcos_download_url }}{{ rhcos_live_rootfs }}
+- name: Create and upload prm file
+  ansible.builtin.copy:
+    dest: "{{ parm_lpar_prm_files[idx] }}"
+    content: "{{ (_node.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    mode: '0644'
+    force: true
+  remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+
 - name: Define local variables
   ansible.builtin.set_fact:
-    _hmc_load_from_ftp_file_path: "{{ parm_lpar_prm_files[idx] }}"
+    _hmc_load_from_ftp_file_path: "{{ parm_lpar_ins_files[idx] }}"
 
 - name: Lood classic mode task
   when: (_node.cpc_dpm_enabled is defined and not _node.cpc_dpm_enabled) or _node.cpc_dpm_enabled is not defined
