@@ -42,6 +42,7 @@
         name: '{{ kvm_domain_name }}'
         state: running
 
+    # TODO: Static sleep is not good, should be improved
     - name: Sleep for some seconds and then continue with play
       ansible.builtin.wait_for:
         timeout: "{{ param_wait_for_domain_started | int }}"

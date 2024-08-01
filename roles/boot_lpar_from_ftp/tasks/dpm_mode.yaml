@@ -15,7 +15,7 @@
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
 
 - name: Configure an FTP boot server and start the dpm mode partition - debug
-  when: true
+  when: false
   block:
     - name: Configure an FTP boot server and start the dpm mode partition - debug
       ignore_errors: true
