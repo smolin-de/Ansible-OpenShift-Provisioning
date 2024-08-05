@@ -16,7 +16,6 @@
     dest: "{{ parm_lpar_prm_files[idx] }}"
     content: "{{ (_node.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
     mode: '0644'
-    force: true
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
