@@ -41,4 +41,5 @@
           ansible.builtin.debug:
             var: cmd_output
 
-        - ansible.builtin.fail:
+        - name: Boot LPAR node using boot from ftp function failed
+          ansible.builtin.fail:
