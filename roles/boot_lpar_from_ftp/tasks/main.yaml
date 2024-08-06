@@ -10,7 +10,6 @@
     file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
     name: _node
 
-#  coreos.live.rootfs_url={{ rhcos_download_url }}{{ rhcos_live_rootfs }}
 - name: Create and upload prm file
   ansible.builtin.copy:
     dest: "{{ parm_lpar_prm_files[idx] }}"

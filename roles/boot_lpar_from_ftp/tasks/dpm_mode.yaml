@@ -12,6 +12,8 @@
       ifl_processors: "{{ _node.lpar.ifl.count }}"
       initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
+#  async: 600
+#  poll: 0
 
 - name: Configure an FTP boot server and start the dpm mode partition - debug
   when: false
@@ -37,9 +39,9 @@
       ansible.builtin.debug:
         var: part1
 
-- name: Configure an FTP boot server and start the dpm mode partition
+- name: "Configure an FTP boot server and start the dpm mode partition {{ _node.lpar.name }}"
   block:
-    - name: Configure an FTP boot server and start the dpm mode partition
+    - name: "Configure an FTP boot server and start the dpm mode partition {{ _node.lpar.name }}"
       ibm.ibm_zhmc.zhmc_partition:
         hmc_host: "{{ _node.hmc.host }}"
         hmc_auth: "{{ _zhmc_auth }}"
@@ -54,5 +56,7 @@
           boot_ftp_password: "{{ env.z.hmc_ftp_server.pass }}"
           boot_ftp_insfile: "{{ _hmc_load_from_ftp_file_path }}"
       register: part1
-    - ansible.builtin.debug:
+
+    - name: Show above command output
+      ansible.builtin.debug:
         var: part1
