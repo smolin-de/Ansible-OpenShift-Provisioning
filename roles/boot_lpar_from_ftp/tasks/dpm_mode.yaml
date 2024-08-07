@@ -12,8 +12,11 @@
       ifl_processors: "{{ _node.lpar.ifl.count }}"
       initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
-#  async: 600
-#  poll: 0
+  register: part1
+
+- name: Show above command output
+  ansible.builtin.debug:
+    var: part1
 
 - name: Configure an FTP boot server and start the dpm mode partition - debug
   when: false
@@ -35,6 +38,7 @@
           boot_ftp_insfile: "{{ _hmc_load_from_ftp_file_path }}"
         '
       register: part1
+
     - name: Show above command output
       ansible.builtin.debug:
         var: part1
