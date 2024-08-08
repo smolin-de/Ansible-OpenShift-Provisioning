@@ -13,7 +13,7 @@
 - name: Create and upload prm file
   ansible.builtin.copy:
     dest: "{{ parm_lpar_prm_files[idx] }}"
-    content: "{{ (_node.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    content: "{{ (_host.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
@@ -23,7 +23,7 @@
     _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_files[idx] }}"
 
 - name: Lood classic mode task
-  when: (_node.cpc_dpm_enabled is defined and not _host.cpc_dpm_enabled) or _host.cpc_dpm_enabled is not defined
+  when: (_host.cpc_dpm_enabled is defined and not _host.cpc_dpm_enabled) or _host.cpc_dpm_enabled is not defined
   ansible.builtin.include_tasks: "classic_mode.yaml"
 
 - name: Lood dpm mode task
