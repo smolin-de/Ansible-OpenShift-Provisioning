@@ -1,14 +1,12 @@
 ---
 
 - name: "Stop and configure the dpm mode partition {{ _host.lpar.name }}"
-  vars:
-    _zhmc_auth:
+  ibm.ibm_zhmc.zhmc_partition:
+    hmc_host: "{{ _host.hmc.host }}"
+    hmc_auth:
       userid: "{{ _host.hmc.auth.user }}"
       password: "{{ _host.hmc.auth.pass }}"
       verify: false
-  ibm.ibm_zhmc.zhmc_partition:
-    hmc_host: "{{ _host.hmc.host }}"
-    hmc_auth: "{{ _zhmc_auth }}"
     cpc_name: "{{ _host.cpc_name }}"
     name: "{{ _host.lpar.name }}"
     state: stopped
@@ -27,15 +25,13 @@
   when: false
   block:
     - name: Configure an FTP boot server and start the dpm mode partition - debug
-      vars:
-        _zhmc_auth:
-          userid: "{{ _host.hmc.auth.user }}"
-          password: "{{ _host.hmc.auth.pass }}"
-          verify: false
       ansible.builtin.shell: |
         echo '
         hmc_host: "{{ _host.hmc.host }}"
-        hmc_auth: "{{ _zhmc_auth }}"
+        hmc_auth:
+          userid: "{{ _host.hmc.auth.user }}"
+          password: "***"
+          verify: false
         cpc_name: "{{ _host.cpc_name }}"
         name: "{{ _host.lpar.name }}"
         state: active
@@ -57,13 +53,12 @@
   block:
     - name: "Configure an FTP boot server and start the dpm mode partition {{ _host.lpar.name }}"
       vars:
-        _zhmc_auth:
+      ibm.ibm_zhmc.zhmc_partition:
+        hmc_host: "{{ _host.hmc.host }}"
+        hmc_auth:
           userid: "{{ _host.hmc.auth.user }}"
           password: "{{ _host.hmc.auth.pass }}"
           verify: false
-      ibm.ibm_zhmc.zhmc_partition:
-        hmc_host: "{{ _host.hmc.host }}"
-        hmc_auth: "{{ _zhmc_auth }}"
         cpc_name: "{{ _host.cpc_name }}"
         name: "{{ _host.lpar.name }}"
         state: active

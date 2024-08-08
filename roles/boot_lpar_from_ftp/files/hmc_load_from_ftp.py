@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 #
-# Copyright 2024 IBM Corp. All Rights Reserved.
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
-# Written by: Klaus Smolin <smolin@de.ibm.com>
+#   Copyright Red Hat
+#
+#   SPDX-License-Identifier: GPL-2.0
+#
+#   Author: Sebastian Mitterle <smitterl@redhat.com>
+#   Updated by: Klaus Smolin <smolin@de.ibm.com>
+#
+
 
 """
 Ths scripts required an config file with the following yaml syntax:
