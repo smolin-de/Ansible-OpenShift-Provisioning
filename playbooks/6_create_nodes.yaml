@@ -60,6 +60,28 @@
     # Delete control, compute and infra nodes, if exists
     - delete_nodes
 
+- name: 6 create nodes - Stop LPARs, if running in dpm mode
+  hosts: bastion
+  gather_facts: false
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: Stop control node LPARs, if running in dpm mode
+      when: env.cluster.nodes.control.lpar_name[0] is defined
+      ansible.builtin.include_role:
+        name: stop_lpar
+      loop: "{{ env.cluster.nodes.control.lpar_name }}"
+      loop_control:
+        loop_var: lpar_name
+
+    - name: Stop compute node LPARs, if running in dpm mode
+      when: env.cluster.nodes.compute.lpar_name[0] is defined
+      ansible.builtin.include_role:
+        name: stop_lpar
+      loop: "{{ env.cluster.nodes.compute.lpar_name }}"
+      loop_control:
+        loop_var: lpar_name
+
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host[0]
   gather_facts: false
@@ -122,8 +144,6 @@
         parm_lpar_prm_configs: "{{ q('list', env.cluster.nodes.bootstrap.lpar_prm_config) | flatten }}"
       # Loop is not really required, because we have only one bootsrap.
       loop: "{{ q('list', env.cluster.nodes.bootstrap.lpar_name) | flatten }}"
-      loop_control:
-        index_var: idx
 
 - name: 6 create nodes - create control using LPAR boot from ftp
   hosts: localhost
@@ -140,8 +160,6 @@
         parm_lpar_prm_files: "{{ q('list', env.cluster.nodes.control.lpar_prm_file) | flatten }}"
         parm_lpar_prm_configs: "{{ q('list', env.cluster.nodes.control.lpar_prm_config) | flatten }}"
       loop: "{{ q('list', env.cluster.nodes.control.lpar_name) | flatten }}"
-      loop_control:
-        index_var: idx
 
 - name: 6 create nodes - create control using zVM via tessia manually
   hosts: localhost
@@ -228,5 +246,3 @@
         parm_lpar_prm_files: "{{ q('list', env.cluster.nodes.compute.lpar_prm_file) | flatten }}"
         parm_lpar_prm_configs: "{{ q('list', env.cluster.nodes.compute.lpar_prm_config) | flatten }}"
       loop: "{{ env.cluster.nodes.compute.lpar_name }}"
-      loop_control:
-        index_var: idx
