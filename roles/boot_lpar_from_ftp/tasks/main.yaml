@@ -2,25 +2,25 @@
 
 - name: Check role/task parameters
   ansible.builtin.fail:
-    msg: "Error: loop control variable 'index' is not defined"
-  when: index is not defined
+    msg: "Error: loop control variable 'idx' is not defined"
+  when: idx is not defined
 
 - name: Include LPAR host variablese
   ansible.builtin.include_vars:
-    file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[index] }}.yaml"
+    file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
     name: _node
 
 - name: Create and upload prm file
   ansible.builtin.copy:
-    dest: "{{ parm_lpar_prm_files[index] }}"
-    content: "{{ (_node.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[index]) + '\n' }}"
+    dest: "{{ parm_lpar_prm_files[idx] }}"
+    content: "{{ (_node.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
 - name: Define local variables
   ansible.builtin.set_fact:
-    _hmc_load_from_ftp_file_path: "{{ parm_lpar_ins_files[index] }}"
+    _hmc_load_from_ftp_file_path: "{{ parm_lpar_ins_files[idx] }}"
 
 - name: Lood classic mode task
   when: (_node.cpc_dpm_enabled is defined and not _node.cpc_dpm_enabled) or _node.cpc_dpm_enabled is not defined
