@@ -138,10 +138,7 @@
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
-        parm_lpar_names: "{{ q('list', env.cluster.nodes.bootstrap.lpar_name) | flatten }}"
-        parm_lpar_ins_files: "{{ q('list', env.cluster.nodes.bootstrap.lpar_ins_file) | flatten }}"
-        parm_lpar_prm_files: "{{ q('list', env.cluster.nodes.bootstrap.lpar_prm_file) | flatten }}"
-        parm_lpar_prm_configs: "{{ q('list', env.cluster.nodes.bootstrap.lpar_prm_config) | flatten }}"
+        node: "{{ env.cluster.nodes.bootstrap }}"
       # Loop is not really required, because we have only one bootsrap.
       loop: "{{ q('list', env.cluster.nodes.bootstrap.lpar_name) | flatten }}"
       loop_control:
@@ -158,10 +155,7 @@
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
-        parm_lpar_names: "{{ q('list', env.cluster.nodes.control.lpar_name) | flatten }}"
-        parm_lpar_ins_files: "{{ q('list', env.cluster.nodes.control.lpar_ins_file) | flatten }}"
-        parm_lpar_prm_files: "{{ q('list', env.cluster.nodes.control.lpar_prm_file) | flatten }}"
-        parm_lpar_prm_configs: "{{ q('list', env.cluster.nodes.control.lpar_prm_config) | flatten }}"
+        node: "{{ env.cluster.nodes.control }}"
       loop: "{{ q('list', env.cluster.nodes.control.lpar_name) | flatten }}"
       loop_control:
         loop_var: lpar_name
@@ -247,10 +241,7 @@
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
-        parm_lpar_names: "{{ q('list', env.cluster.nodes.compute.lpar_name) | flatten }}"
-        parm_lpar_ins_files: "{{ q('list', env.cluster.nodes.compute.lpar_ins_file) | flatten }}"
-        parm_lpar_prm_files: "{{ q('list', env.cluster.nodes.compute.lpar_prm_file) | flatten }}"
-        parm_lpar_prm_configs: "{{ q('list', env.cluster.nodes.compute.lpar_prm_config) | flatten }}"
+        node: "{{ env.cluster.nodes.compute }}"
       loop: "{{ env.cluster.nodes.compute.lpar_name }}"
       loop_control:
         loop_var: lpar_name

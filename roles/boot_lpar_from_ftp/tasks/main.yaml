@@ -8,7 +8,7 @@
 - name: Include LPAR host variablese
   ansible.builtin.include_vars:
     file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
-    name: _node
+    name: _host
 
 - name: Create and upload prm file
   ansible.builtin.copy:
@@ -20,12 +20,12 @@
 
 - name: Define local variables
   ansible.builtin.set_fact:
-    _hmc_load_from_ftp_file_path: "{{ parm_lpar_ins_files[idx] }}"
+    _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_files[idx] }}"
 
 - name: Lood classic mode task
-  when: (_node.cpc_dpm_enabled is defined and not _node.cpc_dpm_enabled) or _node.cpc_dpm_enabled is not defined
+  when: (_node.cpc_dpm_enabled is defined and not _host.cpc_dpm_enabled) or _host.cpc_dpm_enabled is not defined
   ansible.builtin.include_tasks: "classic_mode.yaml"
 
 - name: Lood dpm mode task
-  when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
+  when: _host.cpc_dpm_enabled is defined and _host.cpc_dpm_enabled
   ansible.builtin.include_tasks: "dpm_mode.yaml"

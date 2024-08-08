@@ -1,22 +1,22 @@
 ---
 
-- name: "Stop and configure the dpm mode partition {{ _node.lpar.name }}"
+- name: "Stop and configure the dpm mode partition {{ _host.lpar.name }}"
   vars:
     _zhmc_auth:
-      userid: "{{ _node.hmc.auth.user }}"
-      password: "{{ _node.hmc.auth.pass }}"
+      userid: "{{ _host.hmc.auth.user }}"
+      password: "{{ _host.hmc.auth.pass }}"
       verify: false
   ibm.ibm_zhmc.zhmc_partition:
-    hmc_host: "{{ _node.hmc.host }}"
+    hmc_host: "{{ _host.hmc.host }}"
     hmc_auth: "{{ _zhmc_auth }}"
-    cpc_name: "{{ _node.cpc_name }}"
-    name: "{{ _node.lpar.name }}"
+    cpc_name: "{{ _host.cpc_name }}"
+    name: "{{ _host.lpar.name }}"
     state: stopped
     properties:
-      description: "{{ _node.lpar.description }}"
-      ifl_processors: "{{ _node.lpar.ifl.count }}"
-      initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
-      maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
+      description: "{{ _host.lpar.description }}"
+      ifl_processors: "{{ _host.lpar.ifl.count }}"
+      initial_memory: "{{ _host.lpar.ifl.initial_memory }}"
+      maximum_memory: "{{ _host.lpar.ifl.max_memory }}"
   register: part1
 
 - name: Show above command output
@@ -29,15 +29,15 @@
     - name: Configure an FTP boot server and start the dpm mode partition - debug
       vars:
         _zhmc_auth:
-          userid: "{{ _node.hmc.auth.user }}"
-          password: "{{ _node.hmc.auth.pass }}"
+          userid: "{{ _host.hmc.auth.user }}"
+          password: "{{ _host.hmc.auth.pass }}"
           verify: false
       ansible.builtin.shell: |
         echo '
-        hmc_host: "{{ _node.hmc.host }}"
+        hmc_host: "{{ _host.hmc.host }}"
         hmc_auth: "{{ _zhmc_auth }}"
-        cpc_name: "{{ _node.cpc_name }}"
-        name: "{{ _node.lpar.name }}"
+        cpc_name: "{{ _host.cpc_name }}"
+        name: "{{ _host.lpar.name }}"
         state: active
         select_properties:
         properties:
@@ -45,7 +45,7 @@
           boot_ftp_host: "{{ env.z.hmc_ftp_server.ip }}"
           boot_ftp_username: "{{ env.z.hmc_ftp_server.user }}"
           boot_ftp_password: "{{ env.z.hmc_ftp_server.pass }}"
-          boot_ftp_insfile: "{{ _hmc_load_from_ftp_file_path }}"
+          boot_ftp_insfile: "{{ _hmc_load_from_ftp_ins_file }}"
         '
       register: part1
 
@@ -53,19 +53,19 @@
       ansible.builtin.debug:
         var: part1
 
-- name: "Configure an FTP boot server and start the dpm mode partition {{ _node.lpar.name }}"
+- name: "Configure an FTP boot server and start the dpm mode partition {{ _host.lpar.name }}"
   block:
-    - name: "Configure an FTP boot server and start the dpm mode partition {{ _node.lpar.name }}"
+    - name: "Configure an FTP boot server and start the dpm mode partition {{ _host.lpar.name }}"
       vars:
         _zhmc_auth:
-          userid: "{{ _node.hmc.auth.user }}"
-          password: "{{ _node.hmc.auth.pass }}"
+          userid: "{{ _host.hmc.auth.user }}"
+          password: "{{ _host.hmc.auth.pass }}"
           verify: false
       ibm.ibm_zhmc.zhmc_partition:
-        hmc_host: "{{ _node.hmc.host }}"
+        hmc_host: "{{ _host.hmc.host }}"
         hmc_auth: "{{ _zhmc_auth }}"
-        cpc_name: "{{ _node.cpc_name }}"
-        name: "{{ _node.lpar.name }}"
+        cpc_name: "{{ _host.cpc_name }}"
+        name: "{{ _host.lpar.name }}"
         state: active
         select_properties:
         properties:
@@ -73,7 +73,7 @@
           boot_ftp_host: "{{ env.z.hmc_ftp_server.ip }}"
           boot_ftp_username: "{{ env.z.hmc_ftp_server.user }}"
           boot_ftp_password: "{{ env.z.hmc_ftp_server.pass }}"
-          boot_ftp_insfile: "{{ _hmc_load_from_ftp_file_path }}"
+          boot_ftp_insfile: "{{ _hmc_load_from_ftp_ins_file }}"
       register: part1
 
     - name: Show above command output

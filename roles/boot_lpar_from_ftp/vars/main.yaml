@@ -1,0 +1,5 @@
+---
+parm_lpar_names: "{{ q('list', node.lpar_name) | flatten }}"
+parm_lpar_ins_files: "{{ q('list', node.lpar_ins_file) | flatten }}"
+parm_lpar_prm_files: "{{ q('list', node.lpar_prm_file) | flatten }}"
+parm_lpar_prm_configs: "{{ q('list', node.lpar_prm_config) | flatten }}"
