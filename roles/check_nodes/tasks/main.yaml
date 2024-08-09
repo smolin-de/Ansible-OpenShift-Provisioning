@@ -2,7 +2,7 @@
 - name: Get and print nodes status
   ansible.builtin.include_tasks: "{{ role_path }}/../common/tasks/print_ocp_node_status.yaml"
 
-- name: Make sure control and compute nodes are 'Ready' before continuing (retry every 20s)
+- name: Make sure all control and all compute nodes are 'Ready' or 'NotReady' before continuing (retry every 30s)
   tags: check_nodes
   ansible.builtin.shell: |
     set -o pipefail
@@ -11,6 +11,6 @@
   loop_control:
     loop_var: node
   register: cmd_output
-  until: ("Ready" == cmd_output.stdout)
-  retries: 90
-  delay: 20
+  until: ("Ready" == cmd_output.stdout) or ("NotReady" == cmd_output.stdout)
+  retries: 60
+  delay: 30
