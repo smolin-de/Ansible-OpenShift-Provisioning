@@ -179,7 +179,7 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
-#    - approve_certs
+    - approve_certs
     - {role: wait_for_bootstrap, when: env.bastion.access.user != "root"}
 
 - name: 6 create nodes - wait for bootstrap to connect to control plane (for root user)
@@ -191,7 +191,7 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
-#    - approve_certs
+    - approve_certs
     - {role: wait_for_bootstrap, when: env.bastion.access.user == "root"}
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
