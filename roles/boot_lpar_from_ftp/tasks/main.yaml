@@ -18,6 +18,22 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
+- name: Create and upload prm file to new directory
+  ansible.builtin.copy:
+    dest: "~/ftp/images/{{ _host.lpar.name }}.prm"
+    content: "{{ (_host.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    mode: '0644'
+  remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+
+- name: Create and upload ins file from template
+  ansible.builtin.template:
+    src: "lpar_ins.j2"
+    dest: "~/ftp/{{ _host.lpar.name }}.ins"
+    mode: "0644"
+  remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+
 - name: Define local variables
   ansible.builtin.set_fact:
     _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_files[idx] }}"

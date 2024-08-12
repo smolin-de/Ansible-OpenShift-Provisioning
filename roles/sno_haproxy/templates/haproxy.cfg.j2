@@ -46,11 +46,9 @@ listen ingress-router-443
   balance source
   #443 section
   server {{ env.cluster.nodes.bootstrap.hostname }} {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:443 check inter 1s
-
 listen ingress-router-80
   bind *:80
   mode tcp
   balance source
   #80 section
   server {{ env.cluster.nodes.bootstrap.hostname }} {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}:80 check inter 1s
-
