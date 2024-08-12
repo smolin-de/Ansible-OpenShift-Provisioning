@@ -25,3 +25,8 @@
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
   async: 300
   poll: 0
+  register: cmd_output
+
+- name: Show above command output
+  ansible.builtin.debug:
+    var: cmd_output
