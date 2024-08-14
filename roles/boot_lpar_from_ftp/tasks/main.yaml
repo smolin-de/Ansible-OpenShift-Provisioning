@@ -34,6 +34,7 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
+# TODO: remove variable lpar_ins_file
 - name: Define local variables
   ansible.builtin.set_fact:
     _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_files[idx] }}"
