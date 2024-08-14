@@ -1,5 +1,5 @@
 * minimal lpar ins file
-images/{{ rhcos_live_kernel }}.img 0x00000000
-images/{{ rhcos_live_initrd }}.img 0x02000000
+images/{{ rhcos_live_kernel }} 0x00000000
+images/{{ rhcos_live_initrd }} 0x02000000
 images/{{ _host.lpar.name }}.prm 0x00010480
 images/initrd.addrsize 0x00010408

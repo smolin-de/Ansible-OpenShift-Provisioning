@@ -10,10 +10,16 @@
     file: "{{ inventory_dir }}/host_vars/{{ parm_lpar_names[idx] }}.yaml"
     name: _host
 
+- name: Update local variable
+  ansible.builtin.set_fact:
+    _hmc_load_from_ftp_ins_file: "ftp/{{ _host.lpar.name }}.ins"
+
+# TODO: For legacy reasons, can be deleted in future
 - name: Create and upload prm file
+  when: parm_lpar_prm_files[idx] is defined
   ansible.builtin.copy:
     dest: "{{ parm_lpar_prm_files[idx] }}"
-    content: "{{ (_host.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    content: "{{ (_host.lpar_prm_config | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
@@ -21,7 +27,7 @@
 - name: Create and upload prm file to new directory
   ansible.builtin.copy:
     dest: "~/ftp/images/{{ _host.lpar.name }}.prm"
-    content: "{{ (_host.lpar_prm_file | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    content: "{{ (_host.lpar_prm_config | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
@@ -34,8 +40,9 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
-# TODO: remove variable lpar_ins_file
+# TODO: For legacy reasons, can be deleted in future
 - name: Define local variables
+  when: parm_lpar_ins_files[idx] is defined
   ansible.builtin.set_fact:
     _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_files[idx] }}"
 

@@ -1,10 +1,5 @@
 ---
 
-# TODO: remove variable lpar_ins_file
-- name: Update local variable
-  ansible.builtin.set_fact:
-    _hmc_load_from_ftp_ins_file: "~/ftp/{{ _host.lpar.name }}.ins"
-
 - name: "Stop and configure the dpm mode partition {{ _host.lpar.name }}"
   ibm.ibm_zhmc.zhmc_partition:
     hmc_host: "{{ _host.hmc.host }}"
