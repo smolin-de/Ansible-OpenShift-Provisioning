@@ -1,5 +1,63 @@
 ---
 
+- name: 6 create nodes - find lpar host files
+  hosts: localhost
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: Loop over node types and include role
+      # Disable function
+      when: 0
+      ansible.builtin.include_role:
+        name: check_for_lpar_nodes
+      loop:
+        - bootstrap
+        - compute
+        - control
+      loop_control:
+        loop_var: node_type
+
+# Prepare and then create the temporary bootstrap node and the control nodes
+- name: 6 create nodes - prepare KVM guests
+  hosts: kvm_host
+  gather_facts: false
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  roles:
+    - prep_kvm_guests
+    # Delete control, compute and infra nodes, if exists
+    - delete_nodes
+
+- name: 6 create nodes - Stop LPARs, if running in dpm mode
+  hosts: bastion
+  gather_facts: false
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  tasks:
+    - name: Stop bootstrap node LPARs, if running in dpm mode
+      when: env.cluster.nodes.bootstrap.lpar_name[0] is defined
+      ansible.builtin.include_role:
+        name: stop_lpar_partition
+      loop: "{{ env.cluster.nodes.bootstrap.lpar_name }}"
+      loop_control:
+        loop_var: lpar_name
+
+    - name: Stop control node LPARs, if running in dpm mode
+      when: env.cluster.nodes.control.lpar_name[0] is defined
+      ansible.builtin.include_role:
+        name: stop_lpar_partition
+      loop: "{{ env.cluster.nodes.control.lpar_name }}"
+      loop_control:
+        loop_var: lpar_name
+
+    - name: Stop compute node LPARs, if running in dpm mode
+      when: env.cluster.nodes.compute.lpar_name[0] is defined
+      ansible.builtin.include_role:
+        name: stop_lpar_partition
+      loop: "{{ env.cluster.nodes.compute.lpar_name }}"
+      loop_control:
+        loop_var: lpar_name
+
 # TODO
 
 # #!/bin/bash
@@ -32,55 +90,16 @@
           ansible.builtin.debug:
             var: cmd_output.stdout_lines
 
-- name: 6 create nodes - find lpar host files
-  hosts: localhost
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-  tasks:
-    - name: Loop over node types and include role
-      # Disabled function
-      when: 0
-      ansible.builtin.include_role:
-        name: check_for_lpar_nodes
-      loop:
-        - bootstrap
-        - compute
-        - control
-      loop_control:
-        loop_var: node_type
-
-# Prepare and then create the temporary bootstrap node and the control nodes
-- name: 6 create nodes - prepare KVM guests
-  hosts: kvm_host
-  gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-  roles:
-    - prep_kvm_guests
-    # Delete control, compute and infra nodes, if exists
-    - delete_nodes
-
-- name: 6 create nodes - Stop LPARs, if running in dpm mode
-  hosts: bastion
-  gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-  tasks:
-    - name: Stop control node LPARs, if running in dpm mode
-      when: env.cluster.nodes.control.lpar_name[0] is defined
-      ansible.builtin.include_role:
-        name: stop_lpar_partition
-      loop: "{{ env.cluster.nodes.control.lpar_name }}"
-      loop_control:
-        loop_var: lpar_name
-
-    - name: Stop compute node LPARs, if running in dpm mode
-      when: env.cluster.nodes.compute.lpar_name[0] is defined
-      ansible.builtin.include_role:
-        name: stop_lpar_partition
-      loop: "{{ env.cluster.nodes.compute.lpar_name }}"
-      loop_control:
-        loop_var: lpar_name
+        - name: If not available, download Red Hat CoreOS files to HMC ftp server
+          ansible.builtin.get_url:
+            url: "{{ item.baseurl }}{{ item.file }}"
+            dest: "~/ftp/images/{{ item.file }}"
+            mode: "0644"
+          loop:
+            - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_initrd }}" }
+            - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
+          ignore_errors: true
+          register: cmd_output
 
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host[0]

@@ -16,9 +16,9 @@
 
 # TODO: For legacy reasons, can be deleted in future
 - name: Create and upload prm file
-  when: parm_lpar_prm_files[idx] is defined
+  when: parm_lpar_prm_filenames[idx] is defined
   ansible.builtin.copy:
-    dest: "{{ parm_lpar_prm_files[idx] }}"
+    dest: "{{ parm_lpar_prm_filenames[idx] }}"
     content: "{{ (_host.lpar_prm_config | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
@@ -42,9 +42,10 @@
 
 # TODO: For legacy reasons, can be deleted in future
 - name: Define local variables
-  when: parm_lpar_ins_files[idx] is defined
+  when: parm_lpar_ins_filenames[idx] is defined
   ansible.builtin.set_fact:
-    _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_files[idx] }}"
+    _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_filenames[idx] }}"
+    _hmc_load_from_ftp_ins_filename: "{{ parm_lpar_ins_filenames[idx] }}"
 
 - name: Lood classic mode task
   when: (_host.cpc_dpm_enabled is defined and not _host.cpc_dpm_enabled) or _host.cpc_dpm_enabled is not defined
