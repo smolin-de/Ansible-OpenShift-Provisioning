@@ -189,29 +189,17 @@
       when: env.cluster.nodes.control.zvm_name[0] is defined
       ansible.builtin.command: sleep 180
 
-- name: 6 create nodes - wait for bootstrap to connect control plane (for non-root user)
+- name: 6 create nodes - wait for bootstrap to connect to control plane
   hosts: bastion
   become: true
   environment:
-    KUBECONFIG: "/home/{{ env.bastion.access.user }}/.kube/config"
+    KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
   gather_facts: true
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - approve_certs
-    - {role: wait_for_bootstrap, when: env.bastion.access.user != "root"}
-
-- name: 6 create nodes - wait for bootstrap to connect to control plane (for root user)
-  hosts: bastion
-  become: true
-  environment:
-    KUBECONFIG: "/{{ env.bastion.access.user }}/.kube/config"
-  gather_facts: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-  roles:
-    - approve_certs
-    - {role: wait_for_bootstrap, when: env.bastion.access.user == "root"}
+    - wait_for_bootstrap
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
   hosts: kvm_host[0]

@@ -113,6 +113,10 @@
       changed_when: false
       register: user_home
 
+    - name: Show user_home variable
+      debug:
+        var: user_home
+
     - name: Check if directory {{ user_home.stdout }}/.config/libvirt exists
       tags: libvirt
       ansible.builtin.stat:
