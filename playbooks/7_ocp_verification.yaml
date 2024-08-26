@@ -10,6 +10,7 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
+    - approve_certs
     - check_nodes
     - role: approve_certs
       approve_certs_cleanup: true
