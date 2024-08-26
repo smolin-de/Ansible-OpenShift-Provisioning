@@ -39,6 +39,22 @@
           ansible.builtin.fail:
             msg: "See above error!"
 
+    - name: Get, show and check OCP payload
+      block:
+        - name: Get OCP payload
+          ansible.builtin.shell: |
+            set -o pipefail
+            oc adm release info -ojson | jq '.metadata.metadata."release.openshift.io/architecture"'
+          register: cmd_output
+
+        - name: Show OCP payload
+          ansible.builtin.debug:
+            var: cmd_output.stdout
+
+        - name: Check for 'multi' payload, fail if not 'multi'
+          when: ("multi" not in cmd_output.stdout)
+          ansible.builtin.fail:
+
     - name: Get RHCOS iso download url from machine-config-operator
       ansible.builtin.shell: |
         set -o pipefail
