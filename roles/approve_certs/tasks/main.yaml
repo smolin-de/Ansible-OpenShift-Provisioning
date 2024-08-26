@@ -19,6 +19,7 @@
         [ ! -z "${LIST}" ] && echo "${LIST}" | xargs oc adm certificate approve || true
         sleep 30
     done
-  # Run for 30 min
-  async: 1800
+  # Run for 45 min
+  async: 2700
   poll: 0
+  register: approve_certs_task
