@@ -29,7 +29,7 @@
     - delete_nodes
 
 - name: 6 create nodes - Stop LPARs, if running in dpm mode
-  hosts: bastion
+  hosts: localhost
   gather_facts: false
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
