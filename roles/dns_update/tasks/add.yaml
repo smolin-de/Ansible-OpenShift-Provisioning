@@ -13,5 +13,5 @@
       ansible.builtin.lineinfile:
         path: /var/named/{{ env.cluster.networking.metadata_name }}.rev
         insertafter: "PTR Record IP address to Hostname"
-        line: "{{ param_dns_ip.split('.').3 }}     IN      PTR     {{ param_dns_hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}."
+        line: "{{ param_dns_ip.split('.').3 }}.{{ param_dns_ip.split('.').2 }}  IN  PTR  {{ param_dns_hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}."
         state: present
