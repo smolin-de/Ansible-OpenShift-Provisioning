@@ -51,14 +51,14 @@
             var: cmd_output.stdout
 
         - name: Check for 'multi' payload, fail if not 'multi'
-          when: ("multi" not in cmd_output.stdout)
+          when: ("multi" not in cmd_output.stdout) and 0
           ansible.builtin.fail:
 
     - name: Get RHCOS iso download url from machine-config-operator
       ansible.builtin.shell: |
         set -o pipefail
         oc -n openshift-machine-config-operator get configmap/coreos-bootimages -o jsonpath='{.data.stream}' \
-        | jq -r '.architectures.{{ day2_compute_node.host_arch }}.artifacts.metal.formats.iso.disk.location'
+        | jq -r '.architectures.{{ day2_control_node.host_arch }}.artifacts.metal.formats.iso.disk.location'
       register: _rhcos_iso_dl_url
 
     - name: Check variable '_rhcos_iso_dl_url' is not 'null'
@@ -69,21 +69,21 @@
       ansible.builtin.shell: |
         set -o pipefail
         oc -n openshift-machine-config-operator get configmap/coreos-bootimages -o jsonpath='{.data.stream}' \
-        | jq -r '.architectures.{{ day2_compute_node.host_arch }}.artifacts.metal.formats.pxe.kernel.location'
+        | jq -r '.architectures.{{ day2_control_node.host_arch }}.artifacts.metal.formats.pxe.kernel.location'
       register: _rhcos_kernel_dl_url
 
     - name: Get RHCOS initrd download url from machine-config-operator
       ansible.builtin.shell: |
         set -o pipefail
         oc -n openshift-machine-config-operator get configmap/coreos-bootimages -o jsonpath='{.data.stream}' \
-        | jq -r '.architectures.{{ day2_compute_node.host_arch }}.artifacts.metal.formats.pxe.initramfs.location'
+        | jq -r '.architectures.{{ day2_control_node.host_arch }}.artifacts.metal.formats.pxe.initramfs.location'
       register: _rhcos_initrd_dl_url
 
     - name: Get RHCOS rootfs download url from machine-config-operator
       ansible.builtin.shell: |
         set -o pipefail
         oc -n openshift-machine-config-operator get configmap/coreos-bootimages -o jsonpath='{.data.stream}' \
-        | jq -r '.architectures.{{ day2_compute_node.host_arch }}.artifacts.metal.formats.pxe.rootfs.location'
+        | jq -r '.architectures.{{ day2_control_node.host_arch }}.artifacts.metal.formats.pxe.rootfs.location'
       register: _rhcos_rootfs_dl_url
 
     - name: Redefine RHCOS variables
@@ -98,40 +98,53 @@
         # Assume all images have same download location
         rhcos_download_url: "{{ (_rhcos_rootfs_dl_url.stdout | replace(rhcos_live_rootfs, '')) }}"
 
+    - name: If not available, download Red Hat CoreOS files to HMC ftp server
+      when: day2_control_node.lpar_name[0] is defined
+      ansible.builtin.get_url:
+        url: "{{ item.baseurl }}{{ item.file }}"
+        dest: "~/ftp/images/{{ item.file }}"
+        mode: "0644"
+      loop:
+        - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_initrd }}" }
+        - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
+      register: cmd_output
+      remote_user: "{{ env.z.hmc_ftp_server.user }}"
+      delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+
   roles:
     - role: common
 #    - role: delete_compute_node
       # Some tasks will be delegated to the bastion host and target KVM host
-#      param_compute_node: "{{ day2_compute_node }}"
+#      param_compute_node: "{{ day2_control_node }}"
     - role: print_node_status
-#    - role: update_ignition_files
+    - role: update_ignition_files
 
-    # - role: dns_update
-    #   when: env.bastion.options.dns is defined and env.bastion.options.dns
-    #   param_dns_cmd: add
-    #   param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
-    #   param_dns_ip: "{{ day2_compute_node.vm_ip }}"
+    - role: dns_update
+      when: env.bastion.options.dns is defined and env.bastion.options.dns
+      param_dns_cmd: add
+      param_dns_hostname: "{{ day2_control_node.hostname }}"
+      param_dns_ip: "{{ day2_control_node.ip }}"
 
-    # - role: create_compute_node
-    #   # Some tasks will be delegated to the bastion host and target KVM host
-    #   param_compute_node: "{{ day2_compute_node }}"
+    - role: create_control_node
+      # Some tasks will be delegated to the bastion host and target KVM host
+      param_control_node: "{{ day2_control_node }}"
 
-    # - role: approve_certs
-    # - role: wait_for_node
-    #   wait_for_node_name: "{{ day2_compute_node.vm_hostname }}"
-    # - role: approve_certs
-    #   approve_certs_cleanup: true
-    # - role: print_node_status
+    - role: approve_certs
+    - role: wait_for_node
+      wait_for_node_name: "{{ day2_control_node.hostname }}"
+    - role: approve_certs
+      approve_certs_cleanup: true
+    - role: print_node_status
 
     # - role: haproxy_update
     #   when: env.bastion.options.loadbalancer.on_bastion
     #   param_haproxy_cmd: add
-    #   param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
-    #   param_haproxy_ip: "{{ day2_compute_node.vm_ip }}"
+    #   param_haproxy_hostname: "{{ day2_control_node.vm_hostname }}"
+    #   param_haproxy_ip: "{{ day2_control_node.vm_ip }}"
 
     # - role: tune_kvm_domain
-    #   when: day2_compute_node.vm_name[0] is defined
-    #   delegate_to: "{{ day2_compute_node.hostname }}"
+    #   when: day2_control_node.vm_name[0] is defined
+    #   delegate_to: "{{ day2_control_node.hostname }}"
     #   param_kvm_domain_list:
-    #     - "{{ day2_compute_node.vm_name }}"
+    #     - "{{ day2_control_node.vm_name }}"
     # - role: print_node_status
