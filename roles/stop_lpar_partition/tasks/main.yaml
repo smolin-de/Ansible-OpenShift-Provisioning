@@ -27,10 +27,9 @@
       ifl_processors: "{{ _node.lpar.ifl.count }}"
       initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
-#  async: 300
-#  poll: 0
+  async: 300
+  poll: 0
   register: cmd_output
-  ignore_errors: true
 
 - name: Show above command output
   ansible.builtin.debug:
