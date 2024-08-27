@@ -8,7 +8,7 @@
         suffix: temp
       register: _config_yaml_tempfile
 
-    - name: Create HMC load from ftp config file from template
+    - name: Create HMC ftp config file from template
       ansible.builtin.template:
         src: "hmc_load_from_ftp.j2"
         dest: "{{ _config_yaml_tempfile.path }}"
