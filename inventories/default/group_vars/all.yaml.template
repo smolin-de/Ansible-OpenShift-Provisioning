@@ -40,6 +40,7 @@ env:
     pass: #X
     protocol: #X
     iso_mount_dir: #X
+    iso_os_variant: #X
     cfgs_dir: #X
 
 # Section 4 - Red Hat
@@ -344,7 +345,7 @@ day2_compute_node:
 
 
 # Section 18 - Agent Based Installer ( Optional )
-abi: 
+abi:
   flag: Flase
   ansible_workdir: 'ansible_workdir'
   ocp_installer_version: '4.15.0-rc.8'

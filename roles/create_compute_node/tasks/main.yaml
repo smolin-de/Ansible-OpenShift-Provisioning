@@ -104,7 +104,7 @@
     parm_lpar_names: "{{ q('list', param_compute_node.lpar_name) | flatten }}"
     parm_lpar_ins_filenamess: "{{ q('list', param_compute_node.lpar_ins_file) | flatten }}"
     parm_lpar_prm_filenamess: "{{ q('list', param_compute_node.lpar_prm_file) | flatten }}"
-    parm_lpar_prm_configs: "{{ q('list', param_compute_node.lpar_prm_config) | flatten }}"
+    parm_lpar_prm_configs2: "{{ q('list', param_compute_node.lpar_prm_config2) | flatten }}"
   loop: "{{ q('list', param_compute_node.lpar_name) | flatten }}"
   loop_control:
     loop_var: lpar_name

@@ -19,7 +19,7 @@
   when: parm_lpar_prm_filenames[idx] is defined
   ansible.builtin.copy:
     dest: "{{ parm_lpar_prm_filenames[idx] }}"
-    content: "{{ (_host.lpar_prm_config | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
@@ -27,7 +27,7 @@
 - name: Create and upload prm file to new directory
   ansible.builtin.copy:
     dest: "~/ftp/images/{{ _host.lpar.name }}.prm"
-    content: "{{ (_host.lpar_prm_config | join(' ') + ' ' + parm_lpar_prm_configs[idx]) + '\n' }}"
+    content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
     mode: '0644'
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
