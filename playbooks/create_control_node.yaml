@@ -98,6 +98,16 @@
         # Assume all images have same download location
         rhcos_download_url: "{{ (_rhcos_rootfs_dl_url.stdout | replace(rhcos_live_rootfs, '')) }}"
 
+
+# TODO: Test hack
+    - name: Redefine RHCOS variables
+      ansible.builtin.set_fact:
+        rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/4.16/4.16.0/"
+        rhcos_live_kernel: "rhcos-4.16.0-s390x-live-kernel-s390x"
+        rhcos_live_initrd: "rhcos-4.16.0-s390x-live-initramfs.s390x.img"
+        rhcos_live_rootfs: "rhcos-4.16.0-s390x-live-rootfs.s390x.img"
+        rhcos_live_iso: "rhcos-4.16.0-s390x-live.s390x.iso"
+
     - name: If not available, download Red Hat CoreOS files to HMC ftp server
       when: day2_control_node.lpar_name[0] is defined
       ansible.builtin.get_url:
@@ -107,6 +117,7 @@
       loop:
         - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_initrd }}" }
         - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
+#       - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_iso }}" }
       register: cmd_output
       remote_user: "{{ env.z.hmc_ftp_server.user }}"
       delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
