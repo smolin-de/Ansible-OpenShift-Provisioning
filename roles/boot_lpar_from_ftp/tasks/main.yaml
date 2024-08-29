@@ -32,6 +32,11 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
+
+#TODO:
+# ~/git/ocp-multiarch-install-with-aop/scripts/build-ins.py -k images/rhcos-417.94.202407010929-0-live-kernel-s390x \"
+# -i images/rhcos-417.94.202407010929-0-live-initramfs.s390x.img -c "created by AOP" -o klaus
+
 - name: Create and upload ins file from template
   ansible.builtin.template:
     src: "lpar_ins.j2"
