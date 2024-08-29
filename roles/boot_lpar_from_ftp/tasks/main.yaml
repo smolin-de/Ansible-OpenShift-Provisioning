@@ -14,8 +14,25 @@
   ansible.builtin.set_fact:
     _hmc_load_from_ftp_ins_file: "ftp/{{ _host.lpar.name }}.ins"
 
+- name: Create required directories on HMC ftp server
+  ansible.builtin.shell: |
+    mkdir -p "~/ftp/iso"
+    mkdir -p "~/ftp/images"
+  remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+
+- name: If not available, download Red Hat CoreOS ISO to HMC ftp server
+  ansible.builtin.get_url:
+    url: "{{ item.baseurl }}{{ item.file }}"
+    dest: "~/ftp/iso/{{ item.file }}"
+    mode: "0644"
+  loop:
+    - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_iso }}" }
+  remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+
 # TODO: For legacy reasons, can be deleted in future
-- name: Create and upload prm file
+- name: Create and upload lagacy prm file
   when: parm_lpar_prm_filenames[idx] is defined
   ansible.builtin.copy:
     dest: "{{ parm_lpar_prm_filenames[idx] }}"
@@ -24,7 +41,7 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
-- name: Create and upload prm file to new directory
+- name: Create and upload prm file
   ansible.builtin.copy:
     dest: "~/ftp/images/{{ _host.lpar.name }}.prm"
     content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
@@ -32,24 +49,38 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
-#- name: Create ins file using build-ins.py script
-  # when: 0
-  # ansible.builtin.shell: |
-  #   cd ~/ftp
-  #   ~/git/ocp-multiarch-install-with-aop/scripts/build-ins.py -k "images/{{ rhcos_live_kernel }}" \
-  #   -i "images/{{ rhcos_live_initrd }}" -c "minimal lpar ins file, created by AOP" -o "{{ _host.lpar.name }}.ins"
-  #   # Add prm file name
-  #   echo "images/{{ _host.lpar.name }}.prm 0x00010480" | sed -i "3r /dev/stdin" "{{ _host.lpar.name }}.ins"
-  # remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  # delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+- name: Extract boot artifacts from ISO, e.g. {{ rhcos_live_kernel }}"
+  ansible.builtin.shell: |
+    cd ~/ftp/images
+    7z e "../iso/{{ rhcos_live_iso }}" -so images/pxeboot/kernel.img > "{{ rhcos_live_kernel }}"
+    7z e "../iso/{{ rhcos_live_iso }}" -so images/pxeboot/initrd.img > "{{ rhcos_live_initrd }}"
+    7z e "../iso/{{ rhcos_live_iso }}" -so images/initrd.addrsize > "{{ rhcos_live_initrd }}.addrsize"
+  remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
-# - name: Copy build-ins.py file
-#   ansible.builtin.copy:
-#     src: "{{ role_path }}/files/build-ins.py"
-#     dest: "­­/home/ocpzbaseboe/"
-#     mode: "0755"
-#   remote_user: "{{ env.z.hmc_ftp_server.user }}"
-#   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+#    Date      Time    Attr         Size   Compressed  Name
+# ------------------- ----- ------------ ------------  ------------------------
+# 2024-05-29 19:44:58 .....         2048         2048  boot.catalog
+# 2024-05-29 19:44:58 D....                            coreos
+# 2024-05-29 19:38:11 .....          684          684  coreos/features.json
+# 2024-05-29 19:44:58 .....           76           76  coreos/igninfo.json
+# 2024-05-29 19:44:58 .....          259          259  coreos/kargs.json
+# 2024-05-29 19:44:58 .....        16384        16384  coreos/miniso.dat
+# 2024-05-29 19:44:58 .....          149          149  generic.ins
+# 2024-05-29 19:44:58 D....                            images
+# 2024-05-29 19:44:58 .....     67210176     67210176  images/cdboot.img
+# 2024-05-29 19:44:58 .....           91           91  images/cdboot.prm
+# 2024-05-29 19:44:58 .....           91           91  images/generic.prm
+# 2024-05-29 19:44:58 .....           91           91  images/genericdvd.prm
+# 2024-05-29 19:44:58 .....           16           16  images/initrd.addrsize
+# 2024-05-29 19:44:58 D....                            images/pxeboot
+# 2024-05-29 19:44:58 .....     57686976     57686976  images/pxeboot/initrd.img
+# 2024-05-29 19:38:11 .....      9257445      9257445  images/pxeboot/kernel.img
+# 2024-05-29 19:44:54 .....    974301696    974301696  images/pxeboot/rootfs.img
+# 2024-05-29 19:44:58 .....          163          163  images/redhat.exec
+#                     .....     33553920     33553920  [BOOT]/Boot-NoEmul.img
+# ------------------- ----- ------------ ------------  ------------------------
+# 2024-05-29 19:44:58         1142030265   1142030265  16 files, 3 folders
 
 - name: Create and upload ins file from template
   ansible.builtin.template:
