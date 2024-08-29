@@ -32,10 +32,24 @@
   remote_user: "{{ env.z.hmc_ftp_server.user }}"
   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
+#- name: Create ins file using build-ins.py script
+  # when: 0
+  # ansible.builtin.shell: |
+  #   cd ~/ftp
+  #   ~/git/ocp-multiarch-install-with-aop/scripts/build-ins.py -k "images/{{ rhcos_live_kernel }}" \
+  #   -i "images/{{ rhcos_live_initrd }}" -c "minimal lpar ins file, created by AOP" -o "{{ _host.lpar.name }}.ins"
+  #   # Add prm file name
+  #   echo "images/{{ _host.lpar.name }}.prm 0x00010480" | sed -i "3r /dev/stdin" "{{ _host.lpar.name }}.ins"
+  # remote_user: "{{ env.z.hmc_ftp_server.user }}"
+  # delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
-#TODO:
-# ~/git/ocp-multiarch-install-with-aop/scripts/build-ins.py -k images/rhcos-417.94.202407010929-0-live-kernel-s390x \"
-# -i images/rhcos-417.94.202407010929-0-live-initramfs.s390x.img -c "created by AOP" -o klaus
+# - name: Copy build-ins.py file
+#   ansible.builtin.copy:
+#     src: "{{ role_path }}/files/build-ins.py"
+#     dest: "­­/home/ocpzbaseboe/"
+#     mode: "0755"
+#   remote_user: "{{ env.z.hmc_ftp_server.user }}"
+#   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
 - name: Create and upload ins file from template
   ansible.builtin.template:
