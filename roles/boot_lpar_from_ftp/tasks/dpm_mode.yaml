@@ -28,7 +28,8 @@
     var: part1
 
 - name: Configure FTP boot server and start the dpm mode partition - debug
-  when: false
+  # Enable this function to debug ftp issues
+  when: 0
   block:
     - name: Configure FTP boot server and start the dpm mode partition - debug
       ansible.builtin.shell: |
@@ -43,10 +44,10 @@
         state: active
         select_properties:
         properties:
-          boot_device: ftp
-          boot_ftp_host: "{{ env.z.hmc_ftp_server.ip }}"
-          boot_ftp_username: "{{ env.z.hmc_ftp_server.user }}"
-          boot_ftp_password: "{{ env.z.hmc_ftp_server.pass }}"
+          boot_device: "{{ env.hmc_ftp_server.protocol }}"
+          boot_ftp_host: "{{ env.hmc_ftp_server.ip }}"
+          boot_ftp_username: "{{ env.hmc_ftp_server.user }}"
+          boot_ftp_password: "{{ env.hmc_ftp_server.pass }}"
           boot_ftp_insfile: "{{ _hmc_load_from_ftp_ins_file }}"
         '
       register: part1
@@ -70,10 +71,10 @@
         state: active
         select_properties:
         properties:
-          boot_device: ftp
-          boot_ftp_host: "{{ env.z.hmc_ftp_server.ip }}"
-          boot_ftp_username: "{{ env.z.hmc_ftp_server.user }}"
-          boot_ftp_password: "{{ env.z.hmc_ftp_server.pass }}"
+          boot_device: "{{ env.hmc_ftp_server.protocol }}"
+          boot_ftp_host: "{{ env.hmc_ftp_server.ip }}"
+          boot_ftp_username: "{{ env.hmc_ftp_server.user }}"
+          boot_ftp_password: "{{ env.hmc_ftp_server.pass }}"
           boot_ftp_insfile: "{{ _hmc_load_from_ftp_ins_file }}"
       register: part1
 # Recover on the following error:

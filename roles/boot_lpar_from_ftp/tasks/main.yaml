@@ -12,51 +12,47 @@
 
 - name: Update local variable
   ansible.builtin.set_fact:
-    _hmc_load_from_ftp_ins_file: "ftp/{{ _host.lpar.name }}.ins"
+    _hmc_load_from_ftp_ins_file: "{{ env.hmc_ftp_server.dir }}{{ _host.lpar.name }}.ins"
 
-- name: Create required directories on HMC ftp server
+- name: Create required directories on HMC ftp server, if not already exists
+  when: idx == 0
   ansible.builtin.shell: |
-    mkdir -p "~/ftp/iso"
-    mkdir -p "~/ftp/images"
-  remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+    mkdir -p "{{ env.file_server.ftp_dir }}iso"
+    mkdir -p "{{ env.file_server.ftp_dir }}images"
+  remote_user: "{{ env.file_server.user }}"
+  delegate_to: "{{ env.file_server.ip }}"
 
 - name: If not available, download Red Hat CoreOS ISO to HMC ftp server
+  when: idx == 0
   ansible.builtin.get_url:
     url: "{{ item.baseurl }}{{ item.file }}"
-    dest: "~/ftp/iso/{{ item.file }}"
+    dest: "{{ env.file_server.ftp_dir }}iso/{{ item.file }}"
     mode: "0644"
   loop:
     - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_iso }}" }
-  remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+  remote_user: "{{ env.file_server.user }}"
+  delegate_to: "{{ env.file_server.ip }}"
 
 # TODO: For legacy reasons, can be deleted in future
-- name: Create and upload lagacy prm file
-  when: parm_lpar_prm_filenames[idx] is defined
-  ansible.builtin.copy:
-    dest: "{{ parm_lpar_prm_filenames[idx] }}"
-    content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
-    mode: '0644'
-  remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
-
-- name: Create and upload prm file
-  ansible.builtin.copy:
-    dest: "~/ftp/images/{{ _host.lpar.name }}.prm"
-    content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
-    mode: '0644'
-  remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+# - name: Create and upload lagacy prm file
+#   when: parm_lpar_prm_filenames[idx] is defined
+#   ansible.builtin.copy:
+#     dest: "{{ parm_lpar_prm_filenames[idx] }}"
+#     content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
+#     mode: '0644'
+#   remote_user: "{{ env.z.hmc_ftp_server.user }}"
+#   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
 - name: Extract boot artifacts from ISO, e.g. {{ rhcos_live_kernel }}"
+  when: idx == 0
   ansible.builtin.shell: |
-    cd ~/ftp/images
+    set -e
+    cd "{{ env.file_server.ftp_dir }}images"
     7z e "../iso/{{ rhcos_live_iso }}" -so images/pxeboot/kernel.img > "{{ rhcos_live_kernel }}"
     7z e "../iso/{{ rhcos_live_iso }}" -so images/pxeboot/initrd.img > "{{ rhcos_live_initrd }}"
     7z e "../iso/{{ rhcos_live_iso }}" -so images/initrd.addrsize > "{{ rhcos_live_initrd }}.addrsize"
-  remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+  remote_user: "{{ env.file_server.user }}"
+  delegate_to: "{{ env.file_server.ip }}"
 
 #    Date      Time    Attr         Size   Compressed  Name
 # ------------------- ----- ------------ ------------  ------------------------
@@ -82,20 +78,31 @@
 # ------------------- ----- ------------ ------------  ------------------------
 # 2024-05-29 19:44:58         1142030265   1142030265  16 files, 3 folders
 
+- name: Create and upload prm file
+  ansible.builtin.copy:
+    dest: "{{ env.file_server.ftp_dir }}images/{{ _host.lpar.name }}.prm"
+    content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
+    mode: '0644'
+  remote_user: "{{ env.file_server.user }}"
+  delegate_to: "{{ env.file_server.ip }}"
+
+- debug:
+    var: _host.lpar_prm_config1
+
 - name: Create and upload ins file from template
   ansible.builtin.template:
     src: "lpar_ins.j2"
-    dest: "~/ftp/{{ _host.lpar.name }}.ins"
+    dest: "{{ env.file_server.ftp_dir }}{{ _host.lpar.name }}.ins"
     mode: "0644"
-  remote_user: "{{ env.z.hmc_ftp_server.user }}"
-  delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+  remote_user: "{{ env.file_server.user }}"
+  delegate_to: "{{ env.file_server.ip }}"
 
 # TODO: For legacy reasons, can be deleted in future
-- name: Define local variables
-  when: parm_lpar_ins_filenames[idx] is defined
-  ansible.builtin.set_fact:
-    _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_filenames[idx] }}"
-    _hmc_load_from_ftp_ins_filename: "{{ parm_lpar_ins_filenames[idx] }}"
+# - name: Define local variables
+#   when: parm_lpar_ins_filenames[idx] is defined
+#   ansible.builtin.set_fact:
+#     _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_filenames[idx] }}"
+#     _hmc_load_from_ftp_ins_filename: "{{ parm_lpar_ins_filenames[idx] }}"
 
 - name: Lood classic mode task
   when: (_host.cpc_dpm_enabled is defined and not _host.cpc_dpm_enabled) or _host.cpc_dpm_enabled is not defined

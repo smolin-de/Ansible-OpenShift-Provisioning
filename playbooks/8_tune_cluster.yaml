@@ -1,7 +1,7 @@
 ---
 
 # Tune OCP cluster
-- name: 8 Tune OCP cluster KVM nodes
+- name: 8 Tune - OCP cluster KVM nodes
   tags: tune_ocp_nodes
   hosts: kvm_host
   gather_facts: false
@@ -16,9 +16,9 @@
       param_kvm_domain_list: "{{ (env.cluster.nodes.control.vm_name | default([])) + \
         (env.cluster.nodes.compute.vm_name | default([])) }}"
 
-- name: 8 Tune OCP cluster
+- name: 8 Tune - HAProxy
   hosts: bastion
-  tags: tune_ocp_cluster
+  tags: tune_ocp_setup
   gather_facts: false
   tasks:
     - name: Configuring HAProxy reload interval

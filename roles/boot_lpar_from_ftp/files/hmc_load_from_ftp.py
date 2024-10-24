@@ -88,6 +88,7 @@ def main(argv):
         # allow_status_exceptions=False)
         lpar.load_from_ftp(host=ftp_config['host'], username=ftp_config['username'],
                            password=ftp_config['password'], load_file=ftp_config['file_path'],
+                           protocol=ftp_config['protocol'],
                            wait_for_completion=True)
     except Exception as e:
         print('Error: %s' % e)

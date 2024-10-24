@@ -28,12 +28,13 @@
     path: /root/ocpinst
     state: directory
 
-- name: Get Red Hat CoreOS rootfs file if it's not there already.
-  tags: get_ocp
-  get_url:
-    url: "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
-    dest: "/var/www/html/bin/{{ rhcos_live_rootfs }}"
-    mode: "0644"
+# TODO: remove ?
+#- name: Get Red Hat CoreOS rootfs file if it's not there already.
+#  tags: get_ocp
+#  get_url:
+#    url: "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
+#    dest: "/var/www/html/bin/{{ rhcos_live_rootfs }}"
+#    mode: "0644"
 
 - name: Unzip OCP client and installer
   tags: get_ocp

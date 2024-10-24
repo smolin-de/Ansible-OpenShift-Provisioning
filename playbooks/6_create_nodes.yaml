@@ -17,6 +17,29 @@
       loop_control:
         loop_var: node_type
 
+    - name: Check ansible delegate function. It is not always working :-(
+      block:
+      - name: Test ansible delegate function. It is not always working :-(
+        ansible.builtin.shell: |
+          hostname
+        remote_user: "{{ env.file_server.user }}"
+        delegate_to: "{{ env.file_server.ip }}"
+        register: check1
+
+      - name: Show above command output
+        ansible.builtin.debug:
+          var: check1.stdout_lines
+
+      - name: Test ansible delegate function. It is not always working :-(
+        ansible.builtin.shell: |
+          hostname
+        delegate_to: localhost
+        register: check2
+
+      - name: Show above command output
+        ansible.builtin.debug:
+          var: check2.stdout_lines
+
 # Prepare and then create the temporary bootstrap node and the control nodes
 - name: 6 create nodes - prepare KVM guests
   hosts: kvm_host
@@ -71,35 +94,35 @@
 # virsh pool-list
 
 # TODO: Hack to update HMC file server git repository
-- name: Update HMC file server git repository
-  hosts: hmc_ftp_server
-  gather_facts: false
-  tasks:
-    - name: Update git repository on HMC ftp server
-      block:
-        - name: Update git repository on HMC ftp server
-          ansible.builtin.shell: |
-            pwd
-            whoami
-            cd ~/ftp/
-            git pull
-          register: cmd_output
-          changed_when: ("Already up to date." not in cmd_output.stdout_lines)
+# - name: Update HMC file server git repository
+#   hosts: hmc_ftp_server
+#   gather_facts: false
+#   tasks:
+#     - name: Update git repository on HMC ftp server
+#       block:
+#         - name: Update git repository on HMC ftp server
+#           ansible.builtin.shell: |
+#             pwd
+#             whoami
+#             cd ~/ftp/
+#             git pull
+#           register: cmd_output
+#           changed_when: ("Already up to date." not in cmd_output.stdout_lines)
 
-        - name: Show above command output
-          ansible.builtin.debug:
-            var: cmd_output.stdout_lines
+#         - name: Show above command output
+#           ansible.builtin.debug:
+#             var: cmd_output.stdout_lines
 
-        - name: If not available, download Red Hat CoreOS files to HMC ftp server
-          ansible.builtin.get_url:
-            url: "{{ item.baseurl }}{{ item.file }}"
-            dest: "~/ftp/images/{{ item.file }}"
-            mode: "0644"
-          loop:
-            - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_initrd }}" }
-            - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
-          ignore_errors: true
-          register: cmd_output
+#         - name: If not available, download Red Hat CoreOS files to HMC ftp server
+#           ansible.builtin.get_url:
+#             url: "{{ item.baseurl }}{{ item.file }}"
+#             dest: "~/ftp/images/{{ item.file }}"
+#             mode: "0644"
+#           loop:
+#             - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_initrd }}" }
+#             - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
+#           ignore_errors: true
+#           register: cmd_output
 
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host[0]
