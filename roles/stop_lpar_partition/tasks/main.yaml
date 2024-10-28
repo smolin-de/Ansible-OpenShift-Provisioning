@@ -5,10 +5,6 @@
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
 
-- name: Show HMC user ID
-  ansible.builtin.debug:
-    var: _node.hmc.auth.user
-
 - name: "Asynchronous stop and configure the dpm mode partition {{ _node.lpar.name }}"
   when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   vars:
