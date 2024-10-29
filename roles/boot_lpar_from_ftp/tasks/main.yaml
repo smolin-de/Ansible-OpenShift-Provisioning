@@ -86,7 +86,8 @@
   remote_user: "{{ env.file_server.user }}"
   delegate_to: "{{ env.file_server.ip }}"
 
-- debug:
+- name: Debug parm config1 file
+  ansible.builtin.debug:
     var: _host.lpar_prm_config1
 
 - name: Create and upload ins file from template
