@@ -1,6 +1,6 @@
 $TTL 1D
 @ IN SOA {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. root (
-                                            2020011800 ;Serial
+                                            {{ now(fmt='%y%m%d%H%M') }} ;Serial
                                             3600 ;Refresh
                                             1800 ;Retry
                                             1W ;Expire
