@@ -84,7 +84,7 @@ Configuration of the bastion to host essential infrastructure services for the c
 * Software packages specified in group_vars/all.yaml have been installed.
 * An OCP-specific SSH key is generated for passing into the install-config (then passed to the nodes).
 * Firewall is configured to permit traffic through the necessary ports.
-* Domain Name Server (DNS) configured to resolve cluster's IP addresses and APIs. Only done if env.bastion.options.dns is true.
+* Domain Nameserver (DNS) configured to resolve cluster's IP addresses and APIs. Only done if env.bastion.options.dns is true.
 * DNS is checked to make sure all the necessary Fully Qualified Domain Names, including APIs resolve properly. Also ensures outside access is working.
 * High Availability Proxy (HAProxy) load balancer is configured. Only done if env.bastion.options.loadbalancer.on_bastion is true.
 * If the the cluster is to be highly available (meaning spread across more than one LPAR), an OpenVPN server is setup on the bastion to allow for the KVM hosts to communicate between eachother. OpenVPN clients are configured on the KVM hosts.
