@@ -39,7 +39,7 @@ networking:
 platform:
   none: {}
 fips: {{ env.install_config.fips }}
-pullSecret: '{{ env.redhat.pull_secret if not disconnected.enabled else disconnected.registry.pull_secret }}'
+pullSecret: '{{ id_redhat.pull_secret if not disconnected.enabled else disconnected.registry.pull_secret }}'
 {% if disconnected.enabled %}
 {{ 'imageContentSources: ' }}
 {{ '- mirrors:'}}
