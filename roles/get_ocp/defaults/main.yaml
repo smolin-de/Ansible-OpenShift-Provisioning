@@ -1,0 +1,3 @@
+# ocp client and installer filenames
+ocp_client_tgz: "openshift-client-linux.tar.gz"
+ocp_install_tgz: "openshift-install-linux.tar.gz"
