@@ -99,7 +99,7 @@ pkg-config
 #!/usr/bin/env bash
 
 # Allow root login, required change for RHEL9
-sed -i -e '/PermitRootLogin/ c\PermitRootLogin yes' /etc/ssh/sshd_config
+echo "PermitRootLogin yes" >> /etc/ssh/sshd_config
 
 # Basic /root/.ssh/config setup
 echo "UserKnownHostsFile=/dev/null" >> /root/.ssh/config
