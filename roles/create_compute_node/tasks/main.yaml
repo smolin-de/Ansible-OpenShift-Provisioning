@@ -55,9 +55,11 @@
 
         - name: "Create compute node VM on {{ param_compute_node.host_arch }}"
           ansible.builtin.shell: |
+            # Define CPU model based on architecture
             CPU_MODEL="--cpu host"
-            # CPU host model is not supported on arm64 yet, we need to disable it
-            {{ ("CPU_MODEL=''") if param_compute_node.host_arch == 'aarch64' }}
+            if [ $(uname -m) == "aarch64" ]; then
+              CPU_MODEL="--cpu host-passthrough"
+            fi
             virt-install \
             --name {{ param_compute_node.vm_name }} \
             --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \

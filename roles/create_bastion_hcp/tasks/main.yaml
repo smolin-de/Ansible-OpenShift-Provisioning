@@ -66,7 +66,7 @@
 - name: Create qemu image for bastion
   command: qemu-img create -f qcow2 {{ hcp.data_plane.kvm.storage.qcow.pool_path }}{{ hcp.control_plane.hosted_cluster_name }}-bastion.qcow2 100G
   when: hcp.data_plane.kvm.storage.type != 'dasd'
-  
+
 - name: Create bastion
   shell: |
     {% if hcp.data_plane.kvm.storage.type != "dasd" %}

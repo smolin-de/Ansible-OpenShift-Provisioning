@@ -12,18 +12,23 @@
     - name: Print virsh list
       ansible.builtin.debug:
         var: cmd_virsh_list
-     
+
 - name: Create CoreOS Control Agent Nodes On The KVM host.
   ansible.builtin.shell: |
     # Delete Agent node VM, if already exists
     virsh destroy {{ env.cluster.nodes.control.vm_name[i] }} || true
     virsh undefine {{ env.cluster.nodes.control.vm_name[i] }} --remove-all-storage --nvram || true
+    # Define CPU model based on architecture
+    CPU_MODEL="--cpu host"
+    if [ $(uname -m) == "aarch64" ]; then
+      CPU_MODEL="--cpu host-passthrough"
+    fi
     virt-install \
     --name {{ env.cluster.nodes.control.vm_name[i] }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.control.disk_size }},cache=none,io=native \
     --ram {{ env.cluster.nodes.control.ram }} \
-    {{ env.cluster.nodes.control.vcpu_model_option }} \
+    ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.control.vcpu }} \
     --network network={{ env.vnet_name }}{{ (',mac=' + env.cluster.nodes.control.mac_address[i]) }} \
     --location "http://{{ env.bastion.networking.ip }}:8080/,kernel=agent.{{ ansible_architecture }}-kernel.img,initrd=agent.{{ ansible_architecture }}-initrd.img" \
@@ -39,7 +44,7 @@
     --graphics none \
     --wait=-1 \
     --extra-args "{{ _vm_console }}" \
-    --noautoconsole 
+    --noautoconsole
   async: 3600
   poll: 0
   with_sequence: start=0 end={{ (env.cluster.nodes.control.hostname | length) - 1 }} stride=1
@@ -52,12 +57,17 @@
     # Delete Agent node VM, if already exists
     virsh destroy {{ env.cluster.nodes.compute.vm_name[i] }} || true
     virsh undefine {{ env.cluster.nodes.compute.vm_name[i] }} --remove-all-storage --nvram || true
+    # Define CPU model based on architecture
+    CPU_MODEL="--cpu host"
+    if [ $(uname -m) == "aarch64" ]; then
+      CPU_MODEL="--cpu host-passthrough"
+    fi
     virt-install \
     --name {{ env.cluster.nodes.compute.vm_name[i] }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }},cache=none,io=native \
     --ram {{ env.cluster.nodes.compute.ram }} \
-    {{ env.cluster.nodes.compute.vcpu_model_option }} \
+    ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.compute.vcpu }} \
     --network network={{ env.vnet_name }}{{ (',mac=' + env.cluster.nodes.compute.mac_address[i]) }} \
     --location "http://{{ env.bastion.networking.ip }}:8080/,kernel=agent.{{ ansible_architecture }}-kernel.img,initrd=agent.{{ ansible_architecture }}-initrd.img" \
@@ -73,7 +83,7 @@
     --graphics none \
     --wait=-1 \
     --extra-args "{{ _vm_console }}" \
-    --noautoconsole 
+    --noautoconsole
   async: 3600
   poll: 0
   with_sequence: start=0 end={{ (env.cluster.nodes.compute.hostname | length) - 1 }} stride=1

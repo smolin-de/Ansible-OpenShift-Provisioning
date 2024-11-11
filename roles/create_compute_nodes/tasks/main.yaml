@@ -5,6 +5,12 @@
   shell: |
     virsh destroy {{ env.cluster.nodes.compute.vm_name[i] }} || true
     virsh undefine {{ env.cluster.nodes.compute.vm_name[i] }} --remove-all-storage --nvram || true
+    # Define CPU model based on architecture
+    CPU_MODEL="--cpu host"
+    if [ $(uname -m) == "aarch64" ]; then
+      # arm64 does not support host as CPU model
+      CPU_MODEL="--cpu host-passthrough"
+    fi
     virt-install \
     --name {{ env.cluster.nodes.compute.vm_name[i] }} \
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
@@ -14,7 +20,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.compute.ram }} \
-    {{ env.cluster.nodes.compute.vcpu_model_option }} \
+    ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.compute.vcpu }} \
     --network network={{ env.vnet_name }}{{ (',mac=' + env.cluster.nodes.compute.mac[i]) if (env.cluster.nodes.compute.mac[i] is defined and env.use_dhcp) }} \
     --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
@@ -44,6 +50,12 @@
 - name: Install CoreOS on infra nodes
   tags: create_compute_nodes
   shell: |
+    # Define CPU model based on architecture
+    CPU_MODEL="--cpu host"
+    if [ $(uname -m) == "aarch64" ]; then
+      # arm64 does not support host as CPU model
+      CPU_MODEL="--cpu host-passthrough"
+    fi
     virt-install \
     --name {{ env.cluster.nodes.infra.vm_name[i] }} \
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
@@ -53,7 +65,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.infra.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.infra.ram }} \
-    {{ env.cluster.nodes.infra.vcpu_model_option }} \
+    ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.infra.vcpu }} \
     --network network={{ env.vnet_name }} \
     --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
@@ -98,6 +110,12 @@
 - name: Create CoreOS compute nodes on KVM hosts, if cluster is to be highly available.
   tags: create_compute_nodes
   shell: |
+    # Define CPU model based on architecture
+    CPU_MODEL="--cpu host"
+    if [ $(uname -m) == "aarch64" ]; then
+      # arm64 does not support host as CPU model
+      CPU_MODEL="--cpu host-passthrough"
+    fi
     virt-install \
     --name {{ compute_name[i] }} \
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
@@ -107,7 +125,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.compute.ram }} \
-    {{ env.cluster.nodes.compute.vcpu_model_option }} \
+    ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.compute.vcpu }} \
     --network network={{ env.vnet_name }}{{ (',mac=' + compute_mac[i] if (compute_mac[i] is defined and env.use_dhcp)) }} \
     --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
@@ -136,6 +154,12 @@
 - name: Create CoreOS infra nodes on KVM hosts, if cluster is to be highly available.
   tags: create_compute_nodes
   shell: |
+    # Define CPU model based on architecture
+    CPU_MODEL="--cpu host"
+    if [ $(uname -m) == "aarch64" ]; then
+      # arm64 does not support host as CPU model
+      CPU_MODEL="--cpu host-passthrough"
+    fi
     virt-install \
     --name {{ infra_name[i] }} \
     --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
@@ -145,7 +169,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.infra.disk2_size }},cache=none,io=native \
     {% endif %}
     --ram {{ env.cluster.nodes.infra.ram }} \
-    {{ env.cluster.nodes.infra.vcpu_model_option }} \
+    ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.infra.vcpu }} \
     --network network={{ env.vnet_name }} \
     --location {{ rhcos_download_url }},kernel={{ rhcos_live_kernel }},initrd={{ rhcos_live_initrd }} \
