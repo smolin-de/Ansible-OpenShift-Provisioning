@@ -221,7 +221,6 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
-    - approve_certs
     - wait_for_bootstrap
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
@@ -258,6 +257,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
+    - approve_certs
     - role: create_compute_nodes
       when: env.cluster.nodes.compute.vm_name is defined
 
