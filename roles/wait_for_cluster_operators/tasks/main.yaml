@@ -16,7 +16,10 @@
   tags: wait_for_cluster_operators
   block:
     - name: Get final cluster operators
-      ansible.builtin.command: oc get co
+      ansible.builtin.shell: |
+        oc get co
+        echo
+        oc get clusterversion
       register: oc_get_co
       changed_when: false
 
