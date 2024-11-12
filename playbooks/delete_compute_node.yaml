@@ -9,6 +9,8 @@
 #   vm_ipv6: <your VM IPv6 address>
 #   vm_mac:  <your VM MAC address, when DHCP is used>
 #   vm_interface: <your VM network interface used for the IP addresses>
+#   vm_ram: <your VM ram size, default value is the compute node ram size
+#   vm_vcpu: <your VM vcpu number, default value is the compute node vcpu number
 #   hostname: <KVM host name where the VM is created>
 #   host_user: <KVM host user which is used to create the VM>
 #   host_arch: <KVM host architecture>

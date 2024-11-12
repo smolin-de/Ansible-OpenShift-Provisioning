@@ -1,6 +1,5 @@
 ---
 - name: Get and print OCP nodes status
-  tags: klaus2
   block:
     - name: Get OCP nodes status
       # Print oc node status in such format:
