@@ -12,11 +12,21 @@
   loop_control:
     loop_var: loop_count
 
+- name: Check cluster version
+  tags: wait_for_cluster_operators
+  ansible.builtin.command: oc get clusterversion
+  register: clusterversion_check
+  until: ("Cluster version is" in clusterversion_check.stdout)
+  retries: 12
+  delay: 30
+
 - name: Get and print final cluster operator status
   tags: wait_for_cluster_operators
   block:
     - name: Get final cluster operators
       ansible.builtin.shell: |
+        # Wait 10 sec to complete pending processes or tasks, if exists
+        sleep 10
         oc get co
         echo
         oc get clusterversion
@@ -26,13 +36,3 @@
     - name: Print final cluster operators
       ansible.builtin.debug:
         var: oc_get_co.stdout_lines
-
-- name: Check cluster version
-  tags: wait_for_cluster_operators
-  ansible.builtin.shell: |
-    oc get clusterversion
-  register: clusterversion_check
-  until: ("Cluster version is" in clusterversion_check.stdout)
-  retries: 12
-  delay: 30
-  ignore_errors: true
