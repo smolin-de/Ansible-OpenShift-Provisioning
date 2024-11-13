@@ -14,6 +14,9 @@
 #   hostname: <KVM host name where the VM is created>
 #   host_user: <KVM host user which is used to create the VM>
 #   host_arch: <KVM host architecture>
+#   # If LPAR mode is used, set the following variables:
+#   lpar_name: <LPAR name as shown in the HMC, case sensitive>
+#   lpar_prm_config2: <parm file with dynamic parameters>
 #
 # Execute the playbook with '--extra-vars' option.
 # E.g.:
