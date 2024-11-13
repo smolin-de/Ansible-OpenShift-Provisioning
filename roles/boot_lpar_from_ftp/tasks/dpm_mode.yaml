@@ -59,7 +59,6 @@
 - name: "Configure FTP boot server and start the dpm mode partition {{ _host.lpar.name }}"
   block:
     - name: "Configure FTP boot server and start the dpm mode partition {{ _host.lpar.name }}"
-      vars:
       ibm.ibm_zhmc.zhmc_partition:
         hmc_host: "{{ _host.hmc.host }}"
         hmc_auth:

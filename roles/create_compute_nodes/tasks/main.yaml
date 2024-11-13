@@ -2,7 +2,7 @@
 
 - name: Install CoreOS on compute nodes
   tags: create_compute_nodes
-  shell: |
+  ansible.builtin.shell: |
     virsh destroy {{ env.cluster.nodes.compute.vm_name[i] }} || true
     virsh undefine {{ env.cluster.nodes.compute.vm_name[i] }} --remove-all-storage --nvram || true
     # Define CPU model based on architecture
@@ -49,7 +49,7 @@
 
 - name: Install CoreOS on infra nodes
   tags: create_compute_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then
@@ -81,17 +81,17 @@
     --graphics none \
     --wait=-1 \
     --noautoconsole
-  with_sequence: start=0 end={{ ( env.cluster.nodes.infra.hostname | length ) - 1}} stride=1
+  with_sequence: start=0 end={{ ( env.cluster.nodes.infra.hostname | length ) - 1 }} stride=1
   loop_control:
     extended: yes
     index_var: i
   when: env.cluster.nodes.infra.hostname is defined and env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname
 
-#If cluster is to be highly available, split control and infra nodes into lists corresponding to their future KVM hosts.
+# If cluster is to be highly available, split control and infra nodes into lists corresponding to their future KVM hosts.
 
 - name: Split information from compute nodes into groups. The number of groups being equal to the number of KVM hosts there are.
   tags: create_compute_nodes
-  set_fact:
+  ansible.builtin.set_fact:
     compute_name: "{{ env.cluster.nodes.compute.vm_name[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     compute_hostname: "{{ env.cluster.nodes.compute.hostname[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     compute_ip: "{{ env.cluster.nodes.compute.ip[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
@@ -100,7 +100,7 @@
 
 - name: Split information for infra nodes into groups. The number of groups being equal to the number of KVM hosts there are.
   tags: create_compute_nodes
-  set_fact:
+  ansible.builtin.set_fact:
     infra_name: "{{ env.cluster.nodes.infra.vm_name[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     infra_hostname: "{{ env.cluster.nodes.infra.hostname[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     infra_ip: "{{ env.cluster.nodes.infra.ip[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
@@ -109,7 +109,7 @@
 
 - name: Create CoreOS compute nodes on KVM hosts, if cluster is to be highly available.
   tags: create_compute_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then
@@ -153,7 +153,7 @@
 
 - name: Create CoreOS infra nodes on KVM hosts, if cluster is to be highly available.
   tags: create_compute_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then
