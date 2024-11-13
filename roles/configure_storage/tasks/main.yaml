@@ -56,13 +56,13 @@
 
 - name: Ensure qemu has execute permissions for all parent directories of the directory that will be used as a storage pool for this cluster.
   tags: configure_storage, pool
-  file:
+  ansible.builtin.file:
     path: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
     state: directory
     group: qemu
     mode: g+x
     recurse: false
-  loop: "{{ range( 0, storage.pool_path.split('/') | length + 1 ) }}"
+  loop: "{{ range(0, storage.pool_path.split('/') | length + 1) }}"
   loop_control:
     extended: yes
     index_var: i
@@ -75,7 +75,7 @@
   community.libvirt.virt_pool:
     command: define
     name: "{{ env.cluster.networking.metadata_name }}-vdisk"
-    xml: '{{ lookup ( "template", "vdisk.xml.j2" ) }}'
+    xml: '{{ lookup("template", "vdisk.xml.j2") }}'
 
 - name: Set storage pool to active.
   tags: configure_storage, pool
