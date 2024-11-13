@@ -25,7 +25,9 @@
     dest: "{{ find_project.stdout }}{{ find_inventory.stdout }}/hosts"
     force: yes
 
-- meta: refresh_inventory
+- name: Refresh inventory
+  tags: set_inventory
+  meta: refresh_inventory
 
 - name: Add path to Ansible private key in ansible.cfg
   tags: set_inventory
