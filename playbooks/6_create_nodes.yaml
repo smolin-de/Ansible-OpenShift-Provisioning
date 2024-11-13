@@ -7,7 +7,7 @@
   tasks:
     - name: Loop over node types and include role
       # Disable function
-      when: 0
+      when: false
       ansible.builtin.include_role:
         name: check_for_lpar_nodes
       loop:
@@ -92,37 +92,6 @@
 # virsh pool-start ${NAME}-vdisk
 # virsh pool-autostart ${NAME}-vdisk
 # virsh pool-list
-
-# TODO: Hack to update HMC file server git repository
-# - name: Update HMC file server git repository
-#   hosts: hmc_ftp_server
-#   gather_facts: false
-#   tasks:
-#     - name: Update git repository on HMC ftp server
-#       block:
-#         - name: Update git repository on HMC ftp server
-#           ansible.builtin.shell: |
-#             pwd
-#             whoami
-#             cd ~/ftp/
-#             git pull
-#           register: cmd_output
-#           changed_when: ("Already up to date." not in cmd_output.stdout_lines)
-
-#         - name: Show above command output
-#           ansible.builtin.debug:
-#             var: cmd_output.stdout_lines
-
-#         - name: If not available, download Red Hat CoreOS files to HMC ftp server
-#           ansible.builtin.get_url:
-#             url: "{{ item.baseurl }}{{ item.file }}"
-#             dest: "~/ftp/images/{{ item.file }}"
-#             mode: "0644"
-#           loop:
-#             - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_initrd }}" }
-#             - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
-#           ignore_errors: true
-#           register: cmd_output
 
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host[0]
