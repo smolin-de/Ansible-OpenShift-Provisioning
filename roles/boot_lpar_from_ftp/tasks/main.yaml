@@ -33,16 +33,6 @@
   remote_user: "{{ env.file_server.user }}"
   delegate_to: "{{ env.file_server.ip }}"
 
-# TODO: For legacy reasons, can be deleted in future
-# - name: Create and upload lagacy prm file
-#   when: parm_lpar_prm_filenames[idx] is defined
-#   ansible.builtin.copy:
-#     dest: "{{ parm_lpar_prm_filenames[idx] }}"
-#     content: "{{ (_host.lpar_prm_config1 | join(' ') + ' ' + parm_lpar_prm_configs2[idx]) + '\n' }}"
-#     mode: '0644'
-#   remote_user: "{{ env.z.hmc_ftp_server.user }}"
-#   delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
-
 - name: Extract boot artifacts from ISO, e.g. {{ rhcos_live_kernel }}"
   when: idx == 0
   ansible.builtin.shell: |
@@ -86,9 +76,9 @@
   remote_user: "{{ env.file_server.user }}"
   delegate_to: "{{ env.file_server.ip }}"
 
-- name: Debug parm config1 file
+- name: Debug parm config1 and config2 file
   ansible.builtin.debug:
-    var: _host.lpar_prm_config1
+    var: _host.lpar_prm_config1, parm_lpar_prm_configs2[idx]
 
 - name: Create and upload ins file from template
   ansible.builtin.template:
@@ -97,13 +87,6 @@
     mode: "0644"
   remote_user: "{{ env.file_server.user }}"
   delegate_to: "{{ env.file_server.ip }}"
-
-# TODO: For legacy reasons, can be deleted in future
-# - name: Define local variables
-#   when: parm_lpar_ins_filenames[idx] is defined
-#   ansible.builtin.set_fact:
-#     _hmc_load_from_ftp_ins_file: "{{ parm_lpar_ins_filenames[idx] }}"
-#     _hmc_load_from_ftp_ins_filename: "{{ parm_lpar_ins_filenames[idx] }}"
 
 - name: Lood classic mode task
   when: (_host.cpc_dpm_enabled is defined and not _host.cpc_dpm_enabled) or _host.cpc_dpm_enabled is not defined
