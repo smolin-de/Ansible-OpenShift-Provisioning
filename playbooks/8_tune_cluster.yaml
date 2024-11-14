@@ -1,0 +1,33 @@
+---
+
+# Tune OCP cluster
+- name: 8 Tune - OCP cluster KVM nodes
+  tags: tune_ocp_nodes
+  hosts: kvm_host
+  gather_facts: false
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+  roles:
+    - role: tune_kvm_domain
+      param_kvm_domain_list: "{{ (env.bastion.vm_name | split) }}"
+      when: env.bastion.create == True and env.bastion.vm_name is defined
+
+    - role: tune_kvm_domain
+      param_kvm_domain_list: "{{ (env.cluster.nodes.control.vm_name | default([])) + \
+        (env.cluster.nodes.compute.vm_name | default([])) }}"
+
+- name: 8 Tune - HAProxy
+  hosts: bastion
+  tags: tune_ocp_setup
+  gather_facts: false
+  tasks:
+    - name: Configuring HAProxy reload interval
+      block:
+        - name: Configuring HAProxy reload interval
+          ansible.builtin.command: |
+            oc -n openshift-ingress-operator patch ingresscontrollers/default --type=merge --patch='{"spec":{"tuningOptions":{"reloadInterval":"15s"}}}'
+          register: cmd_output
+
+        - name: Show above command output
+          ansible.builtin.debug:
+            var: cmd_output.stdout_lines
