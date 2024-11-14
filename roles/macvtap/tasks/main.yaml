@@ -5,7 +5,7 @@
   community.libvirt.virt_net:
     command: define
     name: "{{ env.vnet_name }}"
-    xml: "{{ lookup ('template', 'macvtap.xml.j2') }}"
+    xml: "{{ lookup('template', 'macvtap.xml.j2') }}"
 
 - name: Start macvtap bridge
   tags: macvtap
