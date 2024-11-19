@@ -53,10 +53,6 @@
           ansible.builtin.debug:
             var: cmd_output.stdout
 
-        # - name: Check for 'multi' payload, fail if not 'multi'
-        #   when: ("multi" not in cmd_output.stdout)
-        #   ansible.builtin.fail:
-
     - name: Get RHCOS iso download url from machine-config-operator
       ansible.builtin.shell: |
         set -o pipefail
