@@ -81,18 +81,6 @@
       loop_control:
         loop_var: lpar_name
 
-# TODO
-
-# #!/bin/bash
-
-# NAME={{ env.cluster.networking.metadata_name }}
-
-# virsh pool-define-as ${NAME}-vdisk dir - - - - "/var/lib/libvirt/images/${NAME}"
-# virsh pool-build ${NAME}-vdisk
-# virsh pool-start ${NAME}-vdisk
-# virsh pool-autostart ${NAME}-vdisk
-# virsh pool-list
-
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host[0]
   gather_facts: false

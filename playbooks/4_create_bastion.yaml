@@ -1,3 +1,29 @@
+---
+
+- name: 4 Create storage pool play
+  hosts: kvm_host
+  gather_facts: false
+  tasks:
+    - name: Create storage pool, if not exists
+      block:
+        - name: Create storage pool, if not exists
+          ansible.builtin.shell: |
+            set -o pipefail
+            NAME="{{ env.cluster.networking.metadata_name }}"
+            if ! virsh pool-list | grep -q "^ ${NAME}-vdisk." ; then
+              virsh pool-define-as ${NAME}-vdisk dir - - - - "/var/lib/libvirt/images/${NAME}"
+              virsh pool-build ${NAME}-vdisk
+              virsh pool-start ${NAME}-vdisk
+              virsh pool-autostart ${NAME}-vdisk
+              virsh pool-list
+            fi
+          register: cmd_output
+
+        - name: Print above cmd output
+          when: ("vdisk" in cmd_output.stdout_lines)
+          ansible.builtin.debug:
+            var: cmd_output.stdout_lines
+
 # Assume we have an existing ftp/http server already
 - name: 4 create bastion
   hosts: kvm_host[0]
