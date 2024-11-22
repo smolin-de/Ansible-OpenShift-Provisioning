@@ -5,6 +5,11 @@
   become: true
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
+  pre_tasks:
+    - name: Update resolv.yaml
+      ansible.builtin.import_role:
+        name: dns
+        tasks_from: update-resolv.yaml
   roles:
     - common
     - customize_bastion
