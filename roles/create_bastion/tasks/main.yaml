@@ -63,7 +63,7 @@
   ansible.builtin.command: pwd
   register: kvm_host_home
 
-- name: Boot and kickstart bastion. To monitor, login to your KVM host and run 'virsh console <bastion VM name>'
+- name: "Boot and kickstart bastion. To monitor, login to KVM host and run: virsh cosole {{ env.bastion.vm_name }}"
   tags: create_bastion, virt-install
   ansible.builtin.shell: |
     virsh destroy {{ env.bastion.vm_name }} || true
