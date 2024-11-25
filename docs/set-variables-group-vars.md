@@ -74,12 +74,12 @@
 **env.bastion.networking.ipv6_prefix** | IPv6 prefix. | 64
 **env.bastion.networking.nameserver1** | IPv4 address of the server that resolves the bastion's hostname. | 192.168.10.200
 **env.bastion.networking.nameserver2** | <b>(Optional)</b> A second IPv4 address that resolves the bastion's hostname. | 192.168.10.201
-**env.bastion.networking.forwarder** | What IPv4 address will be used to make external DNS calls for the bastion? Can use 1.1.1.1 or 8.8.8.8 as defaults. | 8.8.8.8
 **env.bastion.networking.interface** | Name of the networking interface on the bastion from Linux's perspective. Most likely enc1. | enc1
 **env.bastion.access.user** | What would you like the admin's username to be on the bastion? If root, make pass and root_pass vars the same. | admin
 **env.bastion.access.pass** | The password to the bastion's admin user. If using root, make pass and root_pass vars the same. | cH4ngeM3!
 **env.bastion.access.root_pass** | The root password for the bastion. If using root, make pass and root_pass vars the same. | R0OtPa$s!
 **env.bastion.options.dns** | Would you like the bastion to host the DNS information for the cluster? True or False. If false, resolution must come from elsewhere in your environment. Make sure to add IP addresses for KVM hosts, bastion, bootstrap, control, compute nodes, AND api, api-int and *.apps as described [here](https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal/installing-bare-metal-network-customizations.html) in section "User-provisioned DNS Requirements" Table 5. If True this will be done for you in the dns and check_dns roles. | True
+**env.bastion.options.dns_forwarder** | What IPv4 address will be used to make external DNS calls for the bastion? Can use 1.1.1.1 or 8.8.8.8 as defaults. | 8.8.8.8
 **env.bastion.options.loadbalancer.on_bastion** | Would you like the bastion to host the load balancer (HAProxy) for the cluster? True or False (boolean). If false, this service must be provided elsewhere in your environment, and public and private IP of the load balancer must be provided in the following two variables. | True
 **env.bastion.options.loadbalancer.public_ip** | (Only required if env.bastion.options.loadbalancer.on_bastion is True). The public IPv4 address for your environment's loadbalancer. api, apps, *.apps must use this. | 192.168.10.50
 **env.bastion.options.loadbalancer.private_ip** | (Only required if env.bastion.options.loadbalancer.on_bastion is True). The private IPv4 address for your environment's loadbalancer. api-int must use this. | 10.24.17.12
@@ -93,7 +93,6 @@
 **env.bastion.networking.ipv6_prefix** | IPv6 prefix. | 64
 **env.cluster.networking.nameserver1** | IPv4 address that the cluster get its hostname resolution from. If env.bastion.options.dns is True, this should be the IP address of the bastion. | 192.168.10.200
 **env.cluster.networking.nameserver2** | <b>(Optional)</b> A second IPv4 address will the cluster get its hostname resolution from? If env.bastion.options.dns is True, this should be left commented out. | 192.168.10.201
-**env.cluster.networking.forwarder** | What IPv4 address will be used to make external DNS calls for the cluster? Can use 1.1.1.1 or 8.8.8.8 as defaults. | 8.8.8.8
 **env.cluster.networking.interface** | Name of the networking interface on the bastion from Linux's perspective. Most likely enc1. | enc1
 
 ## 7 - Bootstrap Node

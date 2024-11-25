@@ -80,7 +80,6 @@
       ansible.builtin.import_role:
         name: dns
         tasks_from: initial-resolv.yaml
-      when: env.bastion.options.dns is defined and env.bastion.options.dns
   roles:
     - { role: attach_subscription, when: env.redhat.manage_subscription }
     - install_packages
