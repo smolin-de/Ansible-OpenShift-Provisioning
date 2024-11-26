@@ -83,6 +83,11 @@
   become: true
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
+  pre_tasks:
+    - name: Import initial-resolv.yaml
+      ansible.builtin.import_role:
+        name: dns
+        tasks_from: initial-resolv.yaml
   roles:
     - common
     - get_ocp
