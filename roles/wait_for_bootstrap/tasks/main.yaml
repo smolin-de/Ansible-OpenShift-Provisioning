@@ -16,13 +16,6 @@ SSH to root@bastion, SSH to core@bootstrap-ip and run 'journalctl -b -f -u relea
   ansible.builtin.debug:
     var: csr_check.stdout_lines
 
-- name: Cancel async 'wait-for bootstrap-complete', if exists
-  tags: wait_for_bootstrap
-  ansible.builtin.async_status:
-    jid: "{{ watch_bootstrap.ansible_job_id }}"
-    mode: cleanup
-  failed_when: false
-
 - name: Start openshift-installer with 'wait-for bootstrap-complete' (async task)
   tags: wait_for_bootstrap
   ansible.builtin.command: openshift-install wait-for bootstrap-complete --dir=/root/ocpinst
