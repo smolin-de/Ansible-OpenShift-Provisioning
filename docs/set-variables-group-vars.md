@@ -198,7 +198,7 @@
 **ocp_client_tgz** | OpenShift client filename (tar.gz). | openshift-client-linux.tar.gz
 **ocp_install_tgz** | OpenShift installer filename (tar.gz). | openshift-install-linux.tar.gz
 **rhcos_download_url** | Link to the CoreOS files to be used for the bootstrap, control and compute nodes. Feel free to change to a different version. | https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/4.12/4.12.3/
-**rhcos_os_variant** | CoreOS base OS. Use the OS string as defined in 'osinfo-query os -f short-id' | rhel8.6
+**rhcos_os_variant** | CoreOS base OS. Use the OS string as defined in 'osinfo-query os -f short-id' | rhel9-unknown
 **rhcos_live_kernel** | CoreOS kernel filename to be used for the bootstrap, control and compute nodes. | rhcos-4.12.3-s390x-live-kernel-s390x
 **rhcos_live_initrd** | CoreOS initramfs to be used for the bootstrap, control and compute nodes. | rhcos-4.12.3-s390x-live-initramfs.s390x.img
 **rhcos_live_rootfs** | CoreOS rootfs to be used for the bootstrap, control and compute nodes. | rhcos-4.12.3-s390x-live-rootfs.s390x.img

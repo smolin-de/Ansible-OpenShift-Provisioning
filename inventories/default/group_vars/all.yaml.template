@@ -250,7 +250,7 @@ ocp_install_tgz: "openshift-install-linux.tar.gz"
 rhcos_download_url: "https://mirror.openshift.com/pub/openshift-v4/s390x/dependencies/rhcos/4.12/4.12.3/"
 
 # For rhcos_os_variant use the OS string as defined in 'osinfo-query os -f short-id'
-rhcos_os_variant: rhel8.6
+rhcos_os_variant: rhel9-unknown
 
 # RHCOS live image filenames
 rhcos_live_kernel: "rhcos-4.12.3-s390x-live-kernel-s390x"

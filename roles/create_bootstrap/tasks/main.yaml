@@ -14,7 +14,7 @@
     fi
     virt-install \
     --name {{ env.cluster.nodes.bootstrap.vm_name }} \
-    --osinfo detect=on,name={{ ('rhel8.6') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
+    --osinfo detect=on,name={{ ('rhel9-unknown') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.bootstrap.disk_size }},cache=none,io=native \
     --ram {{ env.cluster.nodes.bootstrap.ram }} \
