@@ -56,4 +56,6 @@
       param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
       param_dns_ip: "{{ day2_compute_node.vm_ip }}"
 
+    - role: wait_for_cluster_version
+
     - role: print_node_status

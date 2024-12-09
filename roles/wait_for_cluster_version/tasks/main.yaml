@@ -1,0 +1,8 @@
+---
+
+- name: Check cluster version operators
+  ansible.builtin.command: oc get clusterversion
+  register: clusterversion_check
+  until: ("Cluster version is" in clusterversion_check.stdout)
+  retries: 20
+  delay: 30
