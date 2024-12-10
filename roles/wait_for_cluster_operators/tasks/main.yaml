@@ -12,6 +12,22 @@
   loop_control:
     loop_var: loop_count
 
+# Issue: Sometimes authentication is not available, but it is no in processing state
+# NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE   MESSAGE
+# authentication                             4.17.6    False       False         False      59s     OAuthServerDeploymentAvailable: no oauth-openshift.openshift-authentication pods available on any node.
+- name: Verify that all cluster operators are available
+  tags: wait_for_cluster_operators
+  ansible.builtin.shell: |
+    set -o pipefail
+    # Check for 'AVAILABLE' state
+    oc get co 2> /dev/null | awk '{print $3}'
+  register: co_check
+  # Check for "True" and "False", in case output was empty for any reason
+  until: (" True " in co_check.stdout) and (" False " not in co_check.stdout)
+  retries: 10
+  delay: 30
+  ignore_errors: true
+
 - name: Check cluster version operators
   tags: wait_for_cluster_operators
   ansible.builtin.import_role:
