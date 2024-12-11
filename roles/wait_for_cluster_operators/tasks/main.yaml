@@ -23,7 +23,7 @@
     oc get co 2> /dev/null | awk '{print $3}'
   register: co_check
   # Check for "True" and "False", in case output was empty for any reason
-  until: (" True " in co_check.stdout) and (" False " not in co_check.stdout)
+  until: ("True" in co_check.stdout) and ("False" not in co_check.stdout)
   retries: 20
   delay: 15
   ignore_errors: true
