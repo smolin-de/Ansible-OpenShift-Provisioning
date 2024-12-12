@@ -4,6 +4,13 @@
   tags: ssh_copy_id, ssh
   include_vars: "{{ inventory_dir }}/group_vars/all.yaml"
 
+- name: Ensure users home '.ssh' directory has correct access rights
+  tags: ssh_copy_id, ssh
+  ansible.builtin.file:
+    path: ~/.ssh
+    state: directory
+    mode: "0700"
+
 - name: Delete SSH key from known hosts if it already exists for idempotency
   tags: ssh_copy_id, ssh
   lineinfile:
