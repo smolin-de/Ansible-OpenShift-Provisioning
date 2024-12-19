@@ -47,7 +47,6 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
-    - prep_kvm_guests
     # Delete control, compute and infra nodes, if exists
     - delete_nodes
 
