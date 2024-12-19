@@ -48,7 +48,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     # Delete control, compute and infra nodes, if exists
-    - delete_nodes
+    - delete_kvm_nodes
 
 - name: 6 create nodes - Stop LPARs, if running in dpm mode
   hosts: localhost
