@@ -8,6 +8,10 @@
     mode: cleanup
   failed_when: false
 
+# TODO: Use this documented command to approve all pending csr's
+# https://docs.openshift.com/container-platform/4.15/nodes/nodes/nodes-sno-worker-nodes.html#installation-approve-csrs_add-workers
+# oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' | xargs --no-run-if-empty oc adm certificate approve
+
 - name: Approve all pending CSRs in the next 45 min (async task)
   tags: approve_certs
   when: not approve_certs_cleanup
