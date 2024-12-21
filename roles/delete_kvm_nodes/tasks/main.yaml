@@ -1,9 +1,6 @@
 ---
 
-# TO DO : delete bootstrap nodes
-# env.cluster.nodes.bootstrap.vm_name2
-
-- name: Delete control, compute and infra nodes, if exists
+- name: Delete bootstrap, control, compute and infra nodes, if exists
   tags: delete_nodes
   ansible.builtin.shell: |
     virsh destroy {{ item }} || true
@@ -11,9 +8,10 @@
     META="{{ env.cluster.networking.metadata_name }}"
     virsh vol-delete --pool "${META}-vdisk" "{{ item }}.qcow2" || true
     virsh vol-delete --pool "${META}-vdisk" "{{ item }}-1.qcow2" || true
-  loop: "{{ (env.cluster.nodes.control.vm_name | default([]))+ \
-        (env.cluster.nodes.compute.vm_name | default([])) + \
-        (env.cluster.nodes.infra.vm_name | default([])) }}"
+  loop: "{{ ([ env.cluster.nodes.bootstrap.vm_name | default()] + \
+          (env.cluster.nodes.control.vm_name | default([]))+ \
+          (env.cluster.nodes.compute.vm_name | default([])) + \
+          (env.cluster.nodes.infra.vm_name | default([]))) | select() }}"
   register: delete_nodes
   changed_when: "('destroyed' in delete_nodes.stdout) or ('undefined' in delete_nodes.stdout)"
 
