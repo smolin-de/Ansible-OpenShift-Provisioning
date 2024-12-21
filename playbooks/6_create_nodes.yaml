@@ -5,18 +5,6 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
-    - name: Loop over node types and include role
-      # Disable function
-      when: false
-      ansible.builtin.include_role:
-        name: check_for_lpar_nodes
-      loop:
-        - bootstrap
-        - compute
-        - control
-      loop_control:
-        loop_var: node_type
-
     - name: Check ansible delegate function. It is not always working :-(
       block:
       - name: Test ansible delegate function. It is not always working :-(
