@@ -33,7 +33,7 @@
       ansible.builtin.shell: |
         META="{{ env.cluster.networking.metadata_name }}"
         virsh vol-list "${META}-vdisk"
-      register: cmd_virsh_imgage_list
+      register: cmd_virsh_image_list
 
     - name: Print virsh image list
       ansible.builtin.debug:
