@@ -15,7 +15,7 @@
     --name {{ env.cluster.nodes.compute.vm_name[i] }} \
     --osinfo detect=on,name={{ ('rhel9-unknown') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }},cache=none,io=native,,serial={{ env.cluster.nodes.compute.vm_name[i] }}-boot \
+    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }},cache=none,io=native,serial={{ env.cluster.nodes.compute.vm_name[i] }}-boot \
     {% if env.cluster.nodes.compute.disk2_size is defined %}
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native,serial={{ env.cluster.nodes.compute.vm_name[i] }}-data1 \
     --iothreads 4 \
