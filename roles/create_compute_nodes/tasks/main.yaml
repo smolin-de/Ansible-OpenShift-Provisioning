@@ -18,6 +18,7 @@
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }},cache=none,io=native \
     {% if env.cluster.nodes.compute.disk2_size is defined %}
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native,format=raw \
+    --iothreads 4
     {% endif %}
     --ram {{ env.cluster.nodes.compute.ram }} \
     ${CPU_MODEL} \
