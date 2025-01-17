@@ -16,10 +16,7 @@
     --osinfo detect=on,name={{ ('rhel9-unknown') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }},cache=none,io=native,serial={{ env.cluster.nodes.compute.vm_name[i] }}-boot \
-    {% if env.cluster.nodes.compute.disk2_size is defined %}
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native,serial={{ env.cluster.nodes.compute.vm_name[i] }}-data1 \
-    --iothreads 4 \
-    {% endif %}
+    --iothreads 2 \
     --ram {{ env.cluster.nodes.compute.ram }} \
     ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.compute.vcpu }} \
@@ -41,7 +38,17 @@
     --graphics none \
     --wait=-1 \
     --noautoconsole
-  timeout: 360
+    {% if env.cluster.nodes.compute.disk2_size is defined %}
+    sleep 10
+    qemu-img create -o preallocation=full -f raw /var/lib/libvirt/images/{{ env.cluster.nodes.compute.vm_name[i] }}-2.img 5G
+    qemu-img create -o preallocation=full -f raw /var/lib/libvirt/images/{{ env.cluster.nodes.compute.vm_name[i] }}-3.img 5G
+    virsh attach-disk {{ env.cluster.nodes.compute.vm_name[i] }} /var/lib/libvirt/images/{{ env.cluster.nodes.compute.vm_name[i] }}-2.img --target vdb --config --live --cache none --io native
+    virsh attach-disk {{ env.cluster.nodes.compute.vm_name[i] }} /var/lib/libvirt/images/{{ env.cluster.nodes.compute.vm_name[i] }}-3.img --target vdc --config --live --cache none --io native
+    {% endif %}
+#    {% if env.cluster.nodes.compute.disk2_size is defined %}
+#    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native,serial={{ env.cluster.nodes.compute.vm_name[i] }}-data1 \
+#    {% endif %}
+  timeout: 450
   with_sequence: start=0 end={{ (env.cluster.nodes.compute.hostname | length) - 1 }} stride=1
   loop_control:
     extended: yes
