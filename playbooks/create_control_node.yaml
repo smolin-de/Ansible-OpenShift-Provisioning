@@ -113,10 +113,16 @@
       delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
 
   roles:
-    - role: common
-#    - role: delete_compute_node
-      # Some tasks will be delegated to the bastion host and target KVM host
-#      param_compute_node: "{{ day2_control_node }}"
+    # # Delete control node, if it already exists
+    # - role: haproxy_update
+    #   when: env.bastion.options.loadbalancer.on_bastion
+    #   param_haproxy_cmd: delete
+    #   param_haproxy_hostname: "{{ day2_control_node.vm_hostname }}"
+    #   param_haproxy_ip: "{{ day2_control_node.ip }}"
+    # - role: delete_control_node
+    #   # Some tasks will be delegated to the bastion host and target KVM host
+    #   param_control_node: "{{ day2_control_node }}"
+
     - role: print_node_status
     - role: update_ignition_files
 
@@ -132,20 +138,21 @@
 
     - role: approve_certs
     - role: wait_for_node
-      wait_for_node_name: "{{ day2_control_node.hostname }}"
+      wait_for_node_name: "{{ day2_control_node.vm_hostname }}"
     - role: approve_certs
       approve_certs_cleanup: true
     - role: print_node_status
 
-    # - role: haproxy_update
-    #   when: env.bastion.options.loadbalancer.on_bastion
-    #   param_haproxy_cmd: add
-    #   param_haproxy_hostname: "{{ day2_control_node.vm_hostname }}"
-    #   param_haproxy_ip: "{{ day2_control_node.vm_ip }}"
+    - role: haproxy_update
+      when: env.bastion.options.loadbalancer.on_bastion
+      param_haproxy_cmd: add_ctrl
+      param_haproxy_hostname: "{{ day2_control_node.vm_hostname }}"
+      param_haproxy_ip: "{{ day2_control_node.ip }}"
 
-    # - role: tune_kvm_domain
-    #   when: day2_control_node.vm_name[0] is defined
-    #   delegate_to: "{{ day2_control_node.hostname }}"
-    #   param_kvm_domain_list:
-    #     - "{{ day2_control_node.vm_name }}"
-    # - role: print_node_status
+    - role: tune_kvm_domain
+      when: day2_control_node.vm_name[0] is defined
+      delegate_to: "{{ day2_control_node.hostname }}"
+      param_kvm_domain_list:
+        - "{{ day2_control_node.vm_name }}"
+
+    - role: print_node_status
