@@ -1,8 +1,8 @@
 [localhost]
 127.0.0.1 ansible_connection=local ansible_become_password={{ env.controller.sudo_pass }}
 
-#[localhost:vars]
-#ansible_python_interpreter=auto
+[localhost:vars]
+ansible_python_interpreter=auto
 
 [file_server]
 {{ env.file_server.ip }} ansible_connection=ssh ansible_user={{ env.file_server.user }} ansible_become_password={{ env.file_server.pass }}
