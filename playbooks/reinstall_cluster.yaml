@@ -1,6 +1,5 @@
 # Use this if you want to re-install nodes with a new OCP version
 ---
-
 - import_playbook: 0_setup.yaml
 
 - name: Re-Install cluster - Copy SSH key from localhost to access bastion
@@ -10,7 +9,13 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
-    ssh_target: ["{{ env.bastion.networking.ip }}", "{{ env.bastion.access.user }}", "{{ env.bastion.access.pass }}","{{ path_to_key_pair }}"]
+    ssh_target:
+      [
+        "{{ env.bastion.networking.ip }}",
+        "{{ env.bastion.access.user }}",
+        "{{ env.bastion.access.pass }}",
+        "{{ path_to_key_pair }}",
+      ]
   roles:
     - ssh_copy_id
 
@@ -23,7 +28,13 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
-    ssh_target: ["{{ env.z.lpar1.ip }}","{{ env.z.lpar1.user }}","{{ env.z.lpar1.pass }}","{{ path_to_key_pair }}"]
+    ssh_target:
+      [
+        "{{ env.z.lpar1.ip }}",
+        "{{ env.z.lpar1.user }}",
+        "{{ env.z.lpar1.pass }}",
+        "{{ path_to_key_pair }}",
+      ]
   tasks:
     - name: Include vars for the KVM host
       ansible.builtin.include_vars:
@@ -42,7 +53,13 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
-    ssh_target: ["{{ env.z.lpar2.ip }}","{{ env.z.lpar2.user }}","{{ env.z.lpar2.pass }}","{{ path_to_key_pair }}"]
+    ssh_target:
+      [
+        "{{ env.z.lpar2.ip }}",
+        "{{ env.z.lpar2.user }}",
+        "{{ env.z.lpar2.pass }}",
+        "{{ path_to_key_pair }}",
+      ]
   tasks:
     - name: Include vars for second KVM host
       ansible.builtin.include_vars:
@@ -63,7 +80,13 @@
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
-    ssh_target: [" {{ env.z.lpar3.ip }}","{{ env.z.lpar3.user }}","{{ env.z.lpar3.pass }}","{{ path_to_key_pair }}" ]
+    ssh_target:
+      [
+        " {{ env.z.lpar3.ip }}",
+        "{{ env.z.lpar3.user }}",
+        "{{ env.z.lpar3.pass }}",
+        "{{ path_to_key_pair }}",
+      ]
   tasks:
     - name: Include vars for third KVM host
       ansible.builtin.include_vars:
@@ -88,6 +111,16 @@
       ansible.builtin.import_role:
         name: dns
         tasks_from: initial-resolv.yaml
+
+    - name: Check if OCP architecture matches Bastion host architecture
+      ansible.builtin.shell: |
+        set -o pipefail
+        ARCH=$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')
+        if [[ "${ARCH}" -ne "{{ env.install_config.control.architecture }}" ]]; then
+           echo "ERROR: Install Bastion host with '{{ env.install_config.control.architecture }}' architecture !"
+           exit 1
+        fi
+
   roles:
     - common
     - get_ocp
