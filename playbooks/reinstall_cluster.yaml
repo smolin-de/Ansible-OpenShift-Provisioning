@@ -120,6 +120,7 @@
            echo "ERROR: Install Bastion host with '{{ env.install_config.control.architecture }}' architecture !"
            exit 1
         fi
+      changed_when: false
 
   roles:
     - common

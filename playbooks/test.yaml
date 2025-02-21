@@ -1,10 +1,22 @@
 ---
 - hosts: localhost
   gather_facts: False
-  vars: 
+  hosts: bastion
+  vars:
     test_var: test
   tasks:
-  - name: Test variables or anything here
-    debug:
-      msg: "{{ test_var }}"
-      
+    - name: Check if OCP architecture matches Bastion host architecture
+      ansible.builtin.shell: |
+        set -o pipefail
+        ARCH=$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')
+        if [[ "${ARCH}" -ne "{{ env.install_config.control.architecture }}" ]]; then
+           echo "ERROR: Install Bastion host with '{{ env.install_config.control.architecture }}' architecture !"
+           exit 1
+        fi
+        echo "{{ env.install_config.control.architecture }}"
+        echo $ARCH
+      register: cmd_output
+
+    - name: Show above command output
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines
