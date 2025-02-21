@@ -1,5 +1,4 @@
 ---
-
 - name: 4 Create storage pool play
   hosts: kvm_host
   gather_facts: false
@@ -23,6 +22,9 @@
           when: ("vdisk" in cmd_output.stdout_lines)
           ansible.builtin.debug:
             var: cmd_output.stdout_lines
+
+  roles:
+    - destroy_bastion
 
 # Assume we have an existing ftp/http server already
 - name: 4 create bastion
