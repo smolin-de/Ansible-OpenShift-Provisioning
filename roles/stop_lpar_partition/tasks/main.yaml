@@ -1,11 +1,10 @@
 ---
-
 - name: Include LPAR host variablese
   ansible.builtin.include_vars:
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
 
-- name: "Asynchronous stop and configure the dpm mode partition {{ _node.lpar.name }}"
+- name: "Stop and configure the dpm mode partition {{ _node.lpar.name }}"
   when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   vars:
     _zhmc_auth:
@@ -23,8 +22,6 @@
       ifl_processors: "{{ _node.lpar.ifl.count }}"
       initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
       maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
-  async: 300
-  poll: 0
   register: cmd_output
 
 - name: Show above command output
