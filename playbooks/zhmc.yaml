@@ -1,0 +1,28 @@
+
+---
+- name: zHMC test
+  hosts: localhost
+  connection: local
+  become: false
+  vars_files:
+    - "{{ inventory_dir }}/group_vars/all.yaml"
+
+  pre_tasks:
+    - name: Include LPAR host variables
+      ansible.builtin.include_vars:
+        file: "{{ inventory_dir }}/host_vars/a3elp71.yaml"
+        name: _host
+
+    - name: Gather facts about the HMC
+      ibm.ibm_zhmc.zhmc_console:
+        hmc_host: "{{ _host.hmc.host }}"
+        hmc_auth:
+          userid: "{{ _host.hmc.auth.user }}"
+          password: "{{ _host.hmc.auth.pass }}"
+          verify: false
+        state: facts
+      register: hmc1
+
+    - name: Print cmd output
+      ansible.builtin.debug:
+        var: hmc1.hmc
