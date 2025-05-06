@@ -14,7 +14,7 @@
     var: oc_get_co.stdout_lines
   when: not cluster_operators_ok
 
-- name: "{{ loop_count }} round of waiting for cluster operators. Trying 10 times before printing status again"
+- name: "{{ loop_count }} round of waiting for cluster operators. Trying 5 times before printing status again"
   tags: wait_for_cluster_operators
   ansible.builtin.shell: |
     set -o pipefail
@@ -23,8 +23,8 @@
   register: co_check
   # Check for "True" and "False", in case output was empty for any reason
   until: ("True" not in co_check.stdout) and ("False" in co_check.stdout)
-  retries: 10
-  delay: 30
+  retries: 5
+  delay: 60
   ignore_errors: true
   when: not cluster_operators_ok
 
