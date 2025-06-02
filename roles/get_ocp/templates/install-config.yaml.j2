@@ -36,6 +36,8 @@ networking:
   networkType: {{ env.install_config.cluster_network.type }}
   serviceNetwork:
   - {{ env.install_config.service_network }}
+  machineNetwork:
+  - cidr: 172.23.0.0/16
 platform:
   none: {}
 fips: {{ env.install_config.fips }}

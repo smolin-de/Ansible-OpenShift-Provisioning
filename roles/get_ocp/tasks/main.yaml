@@ -95,7 +95,7 @@
     /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
   become: true
 
-- name: Set masters schedulable parameter to false
+- name: Set masters schedulable parameter to false when not SNO
   tags: get_ocp
   become: true
   replace:
