@@ -37,7 +37,7 @@ networking:
   serviceNetwork:
   - {{ env.install_config.service_network }}
   machineNetwork:
-  - cidr: {{ env.install_config.machine_network.cidr }}
+  - cidr: {{ env.install_config.machine_network_cidr }}
 platform:
   none: {}
 fips: {{ env.install_config.fips }}
