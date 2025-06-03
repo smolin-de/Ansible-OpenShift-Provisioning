@@ -1,5 +1,7 @@
 apiVersion: {{ env.install_config.api_version }}
 baseDomain: {{ env.cluster.networking.base_domain }}
+metadata:
+  name: {{ env.cluster.networking.metadata_name }}
 {% if use_proxy == true %}
 {{ 'proxy: ' }}
 {{ '  httpProxy: ' + env.proxy.http }}
@@ -27,8 +29,6 @@ controlPlane:
   name: master
   replicas: {{(env.cluster.nodes.control.hostname | length)}}
   architecture: {{ env.install_config.control.architecture }}
-metadata:
-  name: {{ env.cluster.networking.metadata_name }}
 networking:
   clusterNetwork:
   - cidr: {{ env.install_config.cluster_network.cidr }}
