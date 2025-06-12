@@ -19,7 +19,7 @@
   ansible.builtin.shell: |
     set -o pipefail
     # Check for 'PROGRESSING' state
-    oc get co 2> /dev/null | awk '{print $4}'
+    oc get co 2> /dev/null | grep -v "^node-tuning" | awk '{print $4}'
   register: co_check
   # Check for "True" and "False", in case output was empty for any reason
   until: ("True" not in co_check.stdout) and ("False" in co_check.stdout)
