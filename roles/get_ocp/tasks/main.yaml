@@ -94,18 +94,8 @@
     {{ 'export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=quay.io/openshift-release-dev/ocp-release:' if disconnected.enabled }}{{ disconnected.mirroring.oc_mirror.release_image_tag if disconnected.enabled and not disconnected.mirroring.legacy.platform }}{{ disconnected.mirroring.legacy.ocp_quay_release_image_tag if disconnected.enabled and disconnected.mirroring.legacy.platform }}
     /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
   become: true
-  when: (env.cluster.nodes.control.hostname | default('') | length) != 1
 
-- name: Create manifests for a SNO cluster
-  tags: get_ocp
-  ansible.builtin.shell: |
-    set -o pipefail
-    {{ 'export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=quay.io/openshift-release-dev/ocp-release:' if disconnected.enabled }}{{ disconnected.mirroring.oc_mirror.release_image_tag if disconnected.enabled and not disconnected.mirroring.legacy.platform }}{{ disconnected.mirroring.legacy.ocp_quay_release_image_tag if disconnected.enabled and disconnected.mirroring.legacy.platform }}
-    /root/ocpinst/openshift-install create single-node-ignition-config --dir=/root/ocpinst/
-  become: true
-  when: (env.cluster.nodes.control.hostname | default('') | length) == 1
-
-- name: Set masters schedulable parameter to false when not SNO or not 3 node cluster
+- name: Set masters schedulable parameter to false when not SNO
   tags: get_ocp
   become: true
   replace:
