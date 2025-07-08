@@ -22,7 +22,7 @@ ansible_python_interpreter=auto
 
 {% if (env.ov_bastion.networking.ip is defined) %}
 [ov_bastion]
-{{ env.ov_bastion.networking.hostname }} ansible_host={{ env.ov_bastion.networking.ip }} ansible_user={{ env.ov_bastion.access.user }} ansible_become_password={{ env.ov_bastion.access.pass }}
+{{ env.ov_bastion.networking.hostname }} ansible_host={{ env.ov_bastion.networking.ip }} ansible_user=root ansible_become_password={{ env.ov_bastion.access.root_pass }}
 {% endif %}
 
 {% if ( env.network_mode | upper == 'NAT' ) and ( env.jumphost.name is not none ) and ( env.jumphost.ip is not none ) and ( env.jumphost.user is not none ) and ( env.jumphost.pass is not none ) -%}
