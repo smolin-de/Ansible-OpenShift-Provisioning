@@ -40,6 +40,10 @@ networking:
   - cidr: {{ env.install_config.machine_network_cidr }}
 platform:
   none: {}
+{% if env.sno_install_disk is defined %}
+bootstrapInPlace:
+  installationDisk: {{ env.sno_install_disk }}
+{% endif %}
 fips: {{ env.install_config.fips }}
 pullSecret: '{{ id_redhat.pull_secret if not disconnected.enabled else disconnected.registry.pull_secret }}'
 {% if disconnected.enabled %}
