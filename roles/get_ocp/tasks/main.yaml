@@ -36,6 +36,13 @@
     dest: "/var/www/html/bin/{{ rhcos_live_rootfs }}"
     mode: "0644"
 
+- name: Copy Red Hat CoreOS qemu image file to bastion, if it's not there already.
+  tags: get_ocp
+  get_url:
+    url: "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
+    dest: "/var/www/html/bin/{{ rhcos_live_qemu }}"
+    mode: "0644"
+
 - name: Unzip OCP client and installer
   tags: get_ocp
   ansible.builtin.unarchive:
