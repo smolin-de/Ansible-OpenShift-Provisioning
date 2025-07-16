@@ -238,5 +238,4 @@
     - bootstrap
     - master
     - worker
-    - bootstrap-in-place-for-live-iso
   ignore_errors: true
