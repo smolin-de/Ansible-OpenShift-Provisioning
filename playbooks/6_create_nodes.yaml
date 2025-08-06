@@ -166,18 +166,19 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - wait_for_bootstrap
-  # tasks:
-  #   - name: Delete haproxy bootstrap entries
-  #     ansible.builtin.command: |
-  #       sed -i "/server {{ env.cluster.nodes.bootstrap.hostname }}/d" /etc/haproxy/haproxy.cfg
-  #     ignore_errors: true
-
-  #   - name: Restart haproxy
-  #     ansible.builtin.service:
-  #       name: haproxy.service
-  #       state: restarted
-  #       enabled: true
-  #     ignore_errors: true
+  tasks:
+    - name: Delete haproxy bootstrap entries
+      when: env.bastion.options.loadbalancer.on_bastion
+      block:
+        - name: Delete haproxy bootstrap entries
+          ansible.builtin.command: |
+            sed -i "/server {{ env.cluster.nodes.bootstrap.hostname }}/d" /etc/haproxy/haproxy.cfg
+        - name: Restart haproxy
+          ansible.builtin.service:
+            name: haproxy.service
+            state: restarted
+            enabled: true
+      ignore_errors: true
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
   hosts: kvm_host[0]
