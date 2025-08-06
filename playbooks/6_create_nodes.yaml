@@ -166,6 +166,16 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - wait_for_bootstrap
+  tasks:
+    - name: Delete haproxy bootstrap entries
+      ansible.builtin.command: |
+        sed -i '/server bootstrap/d' /etc/haproxy/haproxy.cfg
+
+    - name: Restart haproxy
+      service:
+        name: haproxy.service
+        state: restarted
+        enabled: true
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
   hosts: kvm_host[0]
@@ -194,9 +204,6 @@
           tags: create_nodes, teardown_bootstrap
           ansible.builtin.debug:
             var: cmd_output.stdout_lines
-
-# TODO
-# Remove bootstrap from haproxy
 
 - name: 6 create nodes - once bootstrapping is complete, create compute nodes.
   hosts: kvm_host
