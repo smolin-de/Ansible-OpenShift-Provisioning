@@ -22,14 +22,6 @@
 # E.g.:
 # ansible-playbook playbooks/add_compute_node.yaml --extra-vars "@extra-cnode1.yml"
 
-- name: "Prep: Delete KVM compute node, if exists on all KVM hosts"
-  hosts: kvm_host
-  gather_facts: false
-  pre_tasks:
-    - name: Delete KVM compute node, if exists
-      ansible.builtin.shell: |
-        virsh destroy {{ day2_compute_node.vm_name }} || true
-        virsh undefine {{ day2_compute_node.vm_name }} --remove-all-storage --nvram || true
 
 - name: Add an additional compute node
   # Select bastion host
@@ -111,6 +103,7 @@
     - role: delete_compute_node
       # Some tasks will be delegated to the bastion host and target KVM host
       param_compute_node: "{{ day2_compute_node }}"
+
     - role: print_node_status
     - role: update_ignition_files
 
