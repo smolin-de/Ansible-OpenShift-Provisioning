@@ -102,7 +102,7 @@
     /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
   become: true
   # when: (env.cluster.nodes.control.hostname | default('') | length) != 1
-  when: (env.cluster.nodes.control.hostname | default('')
+  when: (env.cluster.nodes.control.hostname | default(''))
 
 #- name: Create SNO manifests
 #  tags: get_ocp
@@ -132,7 +132,7 @@
     - openshift
     - .openshift_install.log
     - .openshift_install_state.json
-  when: (env.cluster.nodes.control.hostname | default('')
+  when: (env.cluster.nodes.control.hostname | default(''))
 
 - name: Set ownership of ocpinst directory contents to root
   tags: get_ocp
@@ -143,7 +143,7 @@
     - openshift
     - .openshift_install.log
     - .openshift_install_state.json
-  when: (env.cluster.nodes.control.hostname | default('')
+  when: (env.cluster.nodes.control.hostname | default(''))
 
 - name: Create ignition files
   tags: get_ocp
@@ -156,7 +156,7 @@
     CORE_PWD=$(mkpasswd -m yescrypt "{{ env.bastion.access.root_pass }}")
     mv /root/ocpinst/bootstrap.ign /root/ocpinst/bootstrap.ign.orig
     cat /root/ocpinst/bootstrap.ign.orig | jq '.passwd.users[0] += {"passwordHash":"'$CORE_PWD'"}' > /root/ocpinst/bootstrap.ign
-  when: (env.cluster.nodes.control.hostname | default('')
+  when: (env.cluster.nodes.control.hostname | default(''))
 
 - name: Set ownership to root and permissions of ignitions and related files.
   tags: get_ocp
