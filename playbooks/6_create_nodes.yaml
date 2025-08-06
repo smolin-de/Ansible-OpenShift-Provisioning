@@ -169,7 +169,7 @@
   tasks:
     - name: Delete haproxy bootstrap entries
       ansible.builtin.command: |
-        sed -i '/server bootstrap/d' /etc/haproxy/haproxy.cfg
+        sed -i "'/server {{ env.cluster.nodes.bootstrap.hostname }}/d" /etc/haproxy/haproxy.cfg
 
     - name: Restart haproxy
       service:
