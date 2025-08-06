@@ -173,7 +173,7 @@
       ignore_errors: true
 
     - name: Restart haproxy
-      service:
+      ansible.builtin.service:
         name: haproxy.service
         state: restarted
         enabled: true
