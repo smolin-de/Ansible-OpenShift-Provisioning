@@ -20,9 +20,12 @@ ansible_python_interpreter=auto
 [bastion]
 {{ env.bastion.networking.hostname }} ansible_host={{ env.bastion.networking.ip }} ansible_user={{ env.bastion.access.user }} ansible_become_password={{ env.bastion.access.pass }}
 
-{% if (env.ov_bastion.networking.ip is defined) %}
-[ov_bastion]
-{{ env.ov_bastion.networking.hostname }} ansible_host={{ env.ov_bastion.networking.ip }} ansible_user=root ansible_become_password={{ env.ov_bastion.access.root_pass }}
+{% if (env.ocp_bastion.networking.ip is defined) %}
+[ocp_host]
+{{ env.ocp_bastion.networking.hostname }} ansible_host={{ env.ocp_bastion.networking.ip }} ansible_user=root ansible_become_password={{ env.ocp_bastion.access.root_pass }}
+
+[ocp_host:vars]
+ansible_python_interpreter=auto
 {% endif %}
 
 {% if ( env.network_mode | upper == 'NAT' ) and ( env.jumphost.name is not none ) and ( env.jumphost.ip is not none ) and ( env.jumphost.user is not none ) and ( env.jumphost.pass is not none ) -%}

@@ -101,17 +101,18 @@
     {{ 'export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=quay.io/openshift-release-dev/ocp-release:' if disconnected.enabled }}{{ disconnected.mirroring.oc_mirror.release_image_tag if disconnected.enabled and not disconnected.mirroring.legacy.platform }}{{ disconnected.mirroring.legacy.ocp_quay_release_image_tag if disconnected.enabled and disconnected.mirroring.legacy.platform }}
     /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
   become: true
-  when: (env.cluster.nodes.control.hostname | default('') | length) != 1
+  # when: (env.cluster.nodes.control.hostname | default('') | length) != 1
+  when: (env.cluster.nodes.control.hostname | default('')
 
-- name: Create SNO manifests
-  tags: get_ocp
-  ansible.builtin.shell: |
-    set -o pipefail
-    {{ 'export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=quay.io/openshift-release-dev/ocp-release:' if disconnected.enabled }}{{ disconnected.mirroring.oc_mirror.release_image_tag if disconnected.enabled and not disconnected.mirroring.legacy.platform }}{{ disconnected.mirroring.legacy.ocp_quay_release_image_tag if disconnected.enabled and disconnected.mirroring.legacy.platform }}
-    /root/ocpinst/openshift-install create single-node-ignition-config --dir=/root/ocpinst/
-    cp /root/ocpinst/bootstrap-in-place-for-live-iso.ign /root/ocpinst/master.ign
-  become: true
-  when: (env.cluster.nodes.control.hostname | default('') | length) == 1
+#- name: Create SNO manifests
+#  tags: get_ocp
+#  ansible.builtin.shell: |
+#    set -o pipefail
+#    {{ 'export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=quay.io/openshift-release-dev/ocp-release:' if disconnected.enabled }}{{ disconnected.mirroring.oc_mirror.release_image_tag if disconnected.enabled and not disconnected.mirroring.legacy.platform }}{{ disconnected.mirroring.legacy.ocp_quay_release_image_tag if disconnected.enabled and disconnected.mirroring.legacy.platform }}
+#    /root/ocpinst/openshift-install create single-node-ignition-config --dir=/root/ocpinst/
+#    cp /root/ocpinst/bootstrap-in-place-for-live-iso.ign /root/ocpinst/master.ign
+#  become: true
+#  when: (env.cluster.nodes.control.hostname | default('') | length) == 1
 
 - name: Set masters schedulable parameter to false when not SNO
   tags: get_ocp
@@ -131,7 +132,7 @@
     - openshift
     - .openshift_install.log
     - .openshift_install_state.json
-  when: (env.cluster.nodes.control.hostname | default('') | length) != 1
+  when: (env.cluster.nodes.control.hostname | default('')
 
 - name: Set ownership of ocpinst directory contents to root
   tags: get_ocp
@@ -142,7 +143,7 @@
     - openshift
     - .openshift_install.log
     - .openshift_install_state.json
-  when: (env.cluster.nodes.control.hostname | default('') | length) != 1
+  when: (env.cluster.nodes.control.hostname | default('')
 
 - name: Create ignition files
   tags: get_ocp
@@ -155,7 +156,7 @@
     CORE_PWD=$(mkpasswd -m yescrypt "{{ env.bastion.access.root_pass }}")
     mv /root/ocpinst/bootstrap.ign /root/ocpinst/bootstrap.ign.orig
     cat /root/ocpinst/bootstrap.ign.orig | jq '.passwd.users[0] += {"passwordHash":"'$CORE_PWD'"}' > /root/ocpinst/bootstrap.ign
-  when: (env.cluster.nodes.control.hostname | default('') | length) != 1
+  when: (env.cluster.nodes.control.hostname | default('')
 
 - name: Set ownership to root and permissions of ignitions and related files.
   tags: get_ocp
@@ -166,10 +167,10 @@
     group: root
     mode: "{{ item.mode }}"
   loop:
-#    - { state: file, path: bootstrap.ign, mode: "755" }
-#    - { state: file, path: master.ign, mode: "755" }
-#    - { state: file, path: worker.ign, mode: "755" }
-#    - { state: file, path: metadata.json, mode: "755" }
+    - { state: file, path: bootstrap.ign, mode: "755" }
+    - { state: file, path: master.ign, mode: "755" }
+    - { state: file, path: worker.ign, mode: "755" }
+    - { state: file, path: metadata.json, mode: "755" }
     - { state: directory, path: auth, mode: "755" }
     - { state: file, path: auth/kubeconfig, mode: "644" }
     - { state: file, path: auth/kubeadmin-password, mode: "644" }
