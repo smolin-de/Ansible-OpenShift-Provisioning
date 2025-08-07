@@ -44,6 +44,7 @@
       when: env.z.lpar1.hostname is defined
       register: lpar_host_vars
       failed_when: lpar_host_vars.stat.exists == False
+      ignore_errors: true
 
     - name: Check to make sure the second KVM hosts have a corresponding inventory host_vars file named with matching hostname and .yaml extension, if defined.
       tags: lpar_check
