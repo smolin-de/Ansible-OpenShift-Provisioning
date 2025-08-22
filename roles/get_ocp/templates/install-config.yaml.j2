@@ -36,10 +36,8 @@ networking:
   networkType: {{ env.install_config.cluster_network.type }}
   serviceNetwork:
   - {{ env.install_config.service_network }}
-{% if 0 %}
   machineNetwork:
   - cidr: {{ env.install_config.machine_network_cidr }}
-{% endif %}
 platform:
   none: {}
 {% if env.sno_install_disk is defined %}

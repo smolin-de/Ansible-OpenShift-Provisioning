@@ -1,0 +1,23 @@
+apiVersion: v1alpha1
+kind: AgentConfig
+metadata:
+  name: {{ env.cluster.networking.metadata_name }}
+rendezvousIP: {{ env.cluster.nodes.control.ip[0] }}
+
+hosts:
+{% for item in range( env.cluster.nodes.control.ip | length ) %}
+  - hostname: "{{ env.cluster.nodes.control.hostname[item] }}"
+    role: master
+    interfaces:
+      - name: eth0
+        macAddress: "{{ env.cluster.nodes.control.mac[item] }}"
+    networkConfig:
+      interfaces:
+        - name: eth0
+          type: ethernet
+          state: up
+          mac-address: "{{ env.cluster.nodes.control.mac[item] }}"
+          ipv4:
+            enabled: true
+            dhcp: true
+{% endfor %}
