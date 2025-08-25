@@ -105,6 +105,7 @@
   loop:
     - /root/ocpinst/agent-config.yaml
     - /root/ocpinst/agent-config-backup.yaml
+  ignore_errors: true
 
 - name: Create manifests
   tags: get_ocp
