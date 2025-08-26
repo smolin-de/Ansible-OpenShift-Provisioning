@@ -189,31 +189,31 @@
     index_var: i
   when: env.cluster.nodes.infra.hostname is defined and infra_hostname[i] is defined and env.z.high_availability == True
 
-- name: Attach compute node disks
-  when: env.cluster.nodes.compute.vm_name[0] is defined and env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname
-  tags: attach_compute_node_disks
-  block:
-    - name: Attach compute node disks
-      ansible.builtin.shell: |
-        VM_NAME="{{ env.cluster.nodes.compute.vm_name[i] }}"
-        echo "VM=${VM_NAME}"
-        {% if env.cluster.nodes.compute.disk2_size is defined %}
-        # Detach old disks, if exists
-        virsh detach-disk "${VM_NAME}" --target vdb --live --persistent || true
-        # Create new disks
-        virsh vol-create-as "{{ env.cluster.networking.metadata_name }}-vdisk" "${VM_NAME}-2.img" {{ env.cluster.nodes.compute.disk_size }}G --format raw
-        # Attach new disks
-        virsh attach-disk "${VM_NAME}" "/var/lib/libvirt/images/${VM_NAME}-2.img" --target vdb --config --live \
-        --cache none --io native --iothread 2 --serial=${VM_NAME}-data1
-        {% endif %}
-        virsh domblklist "${VM_NAME}"
-      timeout: 120
-      with_sequence: start=0 end={{ (env.cluster.nodes.compute.hostname | length) - 1 }} stride=1
-      loop_control:
-        extended: yes
-        index_var: i
-      register: cmd_output
+# - name: Attach compute node disks
+#   when: env.cluster.nodes.compute.vm_name[0] is defined and env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname
+#   tags: attach_compute_node_disks
+#   block:
+#     - name: Attach compute node disks
+#       ansible.builtin.shell: |
+#         VM_NAME="{{ env.cluster.nodes.compute.vm_name[i] }}"
+#         echo "VM=${VM_NAME}"
+#         {% if env.cluster.nodes.compute.disk2_size is defined %}
+#         # Detach old disks, if exists
+#         virsh detach-disk "${VM_NAME}" --target vdb --live --persistent || true
+#         # Create new disks
+#         virsh vol-create-as "{{ env.cluster.networking.metadata_name }}-vdisk" "${VM_NAME}-2.img" {{ env.cluster.nodes.compute.disk2_size }}G --format raw
+#         # Attach new disks
+#         virsh attach-disk "${VM_NAME}" "/var/lib/libvirt/images/${VM_NAME}-2.img" --target vdb --config --live \
+#         --cache none --io native --iothread 2 --serial=${VM_NAME}-data1
+#         {% endif %}
+#         virsh domblklist "${VM_NAME}"
+#       timeout: 120
+#       with_sequence: start=0 end={{ (env.cluster.nodes.compute.hostname | length) - 1 }} stride=1
+#       loop_control:
+#         extended: yes
+#         index_var: i
+#       register: cmd_output
 
-    - name: Debug, print above command output
-      ansible.builtin.debug:
-        var: cmd_output
+#     - name: Debug, print above command output
+#       ansible.builtin.debug:
+#         var: cmd_output
