@@ -122,9 +122,6 @@
     --osinfo detect=on,name={{ ('rhel9-unknown') if rhcos_os_variant is not defined else (rhcos_os_variant) }} \
     --autostart \
     --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk_size }},cache=none,io=native \
-    {% if env.cluster.nodes.compute.disk2_size is defined %}
-    --disk pool={{ env.cluster.networking.metadata_name }}-vdisk,size={{ env.cluster.nodes.compute.disk2_size }},cache=none,io=native \
-    {% endif %}
     --ram {{ env.cluster.nodes.compute.ram }} \
     ${CPU_MODEL} \
     --vcpus {{ env.cluster.nodes.compute.vcpu }} \
@@ -220,5 +217,3 @@
     - name: Debug, print above command output
       ansible.builtin.debug:
         var: cmd_output
-# TODO
-# {{ env.cluster.nodes.infra.disk2_size }}
