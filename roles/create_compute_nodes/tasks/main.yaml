@@ -199,18 +199,15 @@
     - name: Attach compute node disks
       ansible.builtin.shell: |
         VM_NAME="{{ env.cluster.nodes.compute.vm_name[i] }}"
+        echo "VM=${VM_NAME}"
         {% if env.cluster.nodes.compute.disk2_size is defined %}
         # Detach old disks, if exists
         virsh detach-disk "${VM_NAME}" --target vdb --live --persistent || true
-        virsh detach-disk "${VM_NAME}" --target vdc --live --persistent || true
         # Create new disks
-        virsh vol-create-as "{{ env.cluster.networking.metadata_name }}-vdisk" "${VM_NAME}-2.img" 5G --format raw
-        virsh vol-create-as "{{ env.cluster.networking.metadata_name }}-vdisk" "${VM_NAME}-3.qcow2" 10G --format qcow2
+        virsh vol-create-as "{{ env.cluster.networking.metadata_name }}-vdisk" "${VM_NAME}-2.img" {{ env.cluster.nodes.compute.disk_size }}G --format raw
         # Attach new disks
         virsh attach-disk "${VM_NAME}" "/var/lib/libvirt/images/${VM_NAME}-2.img" --target vdb --config --live \
         --cache none --io native --iothread 2 --serial=${VM_NAME}-data1
-        virsh attach-disk "${VM_NAME}" "/var/lib/libvirt/images/${VM_NAME}-3.qcow2" --target vdc --config --live \
-        --cache none --io native --iothread 2 --serial=${VM_NAME}-data2
         {% endif %}
         virsh domblklist "${VM_NAME}"
       timeout: 120
