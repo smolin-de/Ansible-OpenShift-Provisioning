@@ -28,20 +28,31 @@
     path: /root/ocpinst
     state: directory
 
-# Required rootfs image, when use KVM bootstrap or other kVM node
-- name: Copy Red Hat CoreOS rootfs file to bastion, if it's not there already.
-  tags: get_ocp
-  get_url:
-    url: "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
-    dest: "/var/www/html/bin/{{ rhcos_live_rootfs }}"
-    mode: "0644"
+# Replaced with lagacy curl cmd, because it is not supported anymore on our Jenkins server
+# # Required rootfs image, when use KVM bootstrap or other kVM node
+# - name: Copy Red Hat CoreOS rootfs file to bastion, if it's not there already.
+#   tags: get_ocp
+#   get_url:
+#     url: "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
+#     dest: "/var/www/html/bin/{{ rhcos_live_rootfs }}"
+#     mode: "0644"
 
-- name: Copy Red Hat CoreOS qemu image file to bastion, if it's not there already.
-  tags: get_ocp
-  get_url:
-    url: "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
-    dest: "/var/www/html/bin/{{ rhcos_live_qemu }}"
-    mode: "0644"
+# - name: Copy Red Hat CoreOS qemu image file to bastion, if it's not there already.
+#   tags: get_ocp
+#   get_url:
+#     url: "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
+#     dest: "/var/www/html/bin/{{ rhcos_live_qemu }}"
+#     mode: "0644"
+
+- name: Copy Red Hat CoreOS images
+  ansible.builtin.shell:
+    curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_rootfs }}" "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
+    curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_qemu }}" "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
+  register: cmd_output
+
+- name: Print above cmd output
+  ansible.builtin.debug:
+    var: cmd_output.stdout_lines
 
 - name: Unzip OCP client and installer
   tags: get_ocp
