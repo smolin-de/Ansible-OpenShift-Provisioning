@@ -62,12 +62,34 @@
   ansible.builtin.debug:
     var: cmd_output.stdout_lines
 
-- name: Unzip OCP client and installer
+# - name: Unzip OCP client and installer
+#   tags: get_ocp
+#   ansible.builtin.unarchive:
+#     src: "{{ item }}"
+#     dest: /root/ocpinst/
+#     remote_src: yes
+#   loop:
+#     - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
+#     - "{{ ocp_download_url }}{{ ocp_install_tgz }}"
+
+- name: Unzip OCP client and installer using shell alternative
   tags: get_ocp
-  ansible.builtin.unarchive:
-    src: "{{ item }}"
-    dest: /root/ocpinst/
-    remote_src: yes
+  ansible.builtin.shell: |
+    # Create the destination directory if it doesn't exist
+    mkdir -p /root/ocpinst/
+
+    # Use curl to download the file and pipe it to tar for extraction.
+    # -L: Follow redirects
+    # -s: Silent (no progress bar)
+    # -S: Show error if silent fails
+    # tar xzf - : Extract (-x), use gzip (-z), from stdin (-f -)
+    curl -sSL "{{ item }}" | tar xzf - -C /root/ocpinst/
+  args:
+    # Set to 'no' to ensure Ansible doesn't try to run this command locally
+    # which is the default for most shell/command tasks but good practice.
+    # You might also use 'creates' to make the task idempotent, e.g., creates: /root/ocpinst/oc
+    # if you know one of the executables inside is named 'oc'.
+    warn: false
   loop:
     - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
     - "{{ ocp_download_url }}{{ ocp_install_tgz }}"
