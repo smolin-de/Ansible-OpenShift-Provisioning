@@ -45,7 +45,7 @@
 #     mode: "0644"
 
 - name: Copy Red Hat CoreOS images
-  ansible.builtin.shell:
+  ansible.builtin.shell: |
     curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_rootfs }}" "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
     curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_qemu }}" "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
   register: cmd_output
