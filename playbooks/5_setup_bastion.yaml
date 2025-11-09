@@ -90,7 +90,6 @@
     - { role: haproxy, when: env.bastion.options.loadbalancer.on_bastion }
 #    - { role: sno_haproxy, when: env.bastion.options.loadbalancer.on_bastion and control_node_count | int == 1 }
     - httpd
-    - { role: install_tessia_baselib, when: env.installation_type|lower == "lpar" }
 
 - hosts: bastion
   tags: get_ocp, section_3
