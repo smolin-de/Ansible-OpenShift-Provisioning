@@ -69,7 +69,7 @@
         loop_var: lpar_name
 
 - name: 6 create nodes - create bootstrap KVM node
-  hosts: kvm_host[0]
+  hosts: kvm_host_bootstrap
   gather_facts: false
   vars_files:
     - "{{ inventory_dir }}/group_vars/all.yaml"
@@ -181,7 +181,7 @@
       ignore_errors: true
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
-  hosts: kvm_host[0]
+  hosts: kvm_host_bootstrap
   tags: create_nodes, teardown_bootstrap
   gather_facts: false
   vars_files:
