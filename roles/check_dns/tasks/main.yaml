@@ -54,17 +54,6 @@
     index_var: i
   when: env.cluster.nodes.compute.hostname is defined and env.cluster.nodes.compute.hostname[0] is defined and env.cluster.nodes.compute.hostname[0] != None
 
-- name: Check infrastructure nodes DNS resolution
-  tags: check_dns, dns
-  ansible.builtin.shell: "dig +short {{ env.cluster.nodes.infra.hostname[i] }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}  | tail -n1"
-  register: infra_lookup
-  failed_when: env.cluster.nodes.infra.ip[i] != infra_lookup.stdout
-  with_sequence: start=0 end={{(env.cluster.nodes.infra.hostname | length) - 1}} stride=1
-  loop_control:
-    extended: yes
-    index_var: i
-  when: env.cluster.nodes.infra.hostname is defined
-
 - name: Check external DNS resolution from forwarder
   tags: check_dns, dns
   register: external_dns_check
