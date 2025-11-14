@@ -1,6 +1,6 @@
 ---
 
-- name: Delete bootstrap, control, compute and infra nodes, if exists
+- name: Delete bootstrap, control and compute nodes, if exists
   tags: delete_nodes
   ansible.builtin.shell: |
     virsh destroy {{ item }} || true
