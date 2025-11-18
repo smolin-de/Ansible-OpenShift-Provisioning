@@ -80,6 +80,9 @@
       ansible.builtin.import_role:
         name: dns
         tasks_from: initial-resolv.yaml
+    - name: Delete motd message
+      ansible.builtin.shell: |
+        rm -f /etc/motd.d/insights-client
   roles:
     - { role: attach_subscription, when: env.redhat.manage_subscription }
     - install_packages
