@@ -24,12 +24,14 @@
 
 - name: Check internal cluster DNS resolution for bootstrap
   tags: check_dns, dns
+  when: env.cluster.nodes.bootstrap.hostname is defined
   ansible.builtin.shell: "dig +short {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }} | tail -n1"
   register: bootstrap_lookup
   failed_when: env.cluster.nodes.bootstrap.ip != bootstrap_lookup.stdout
 
 - name: Print results from bootstrap lookup
   tags: check_dns, dns
+  when: env.cluster.nodes.bootstrap.hostname is defined
   ansible.builtin.debug:
     var: bootstrap_lookup.stdout
 
