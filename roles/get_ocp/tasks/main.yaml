@@ -85,6 +85,14 @@
     - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
     - "{{ ocp_download_url }}{{ ocp_install_tgz }}"
 
+- name: Get latest coreos_installer
+  tags: get_ocp
+  ansible.builtin.shell: |
+    curl -sSL -o "/root/ocpinst/coreos-installer" \
+    "https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer_{{ env.install_config.control.architecture }}"
+    chmod +x /root/ocpinst/
+  ignore_errors: true
+
 - name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
   tags: get_ocp
   become: true
