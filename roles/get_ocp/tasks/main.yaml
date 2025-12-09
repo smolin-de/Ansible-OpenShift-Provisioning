@@ -66,6 +66,17 @@
   ansible.builtin.debug:
     var: cmd_output.stdout_lines
 
+- name: Copy Red Hat CoreOS ISO image
+  tags: get_ocp
+  ansible.builtin.shell: |
+    curl -sSL -o "/root/ocpinst/rhcos.iso "{{ rhcos_download_url }}{{ rhcos_live_iso }}"
+  register: cmd_output
+
+- name: Print above cmd output
+  tags: get_ocp
+  ansible.builtin.debug:
+    var: cmd_output.stdout_lines
+
 # - name: Unzip OCP client and installer
 #   tags: get_ocp
 #   ansible.builtin.unarchive:
