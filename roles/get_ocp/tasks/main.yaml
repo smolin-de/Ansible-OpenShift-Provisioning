@@ -101,7 +101,7 @@
   ansible.builtin.shell: |
     curl -sSL -o "/root/ocpinst/coreos-installer" \
     "https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer_{{ env.install_config.control.architecture }}"
-    chmod +x /root/ocpinst/
+    chmod +x /root/ocpinst/coreos-installer
   ignore_errors: true
 
 - name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
