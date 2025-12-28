@@ -27,7 +27,7 @@
       ansible.builtin.shell: |
         # TODO: Set pipefail is failing on ubuntu
         # set -o pipefail
-        ansible-galaxy collection list ibm.ibm_zhmc | grep -i ansible | cut -c 3-
+        ansible-galaxy collection list ibm.ibm_zhmc | awk '/ansible/{print $2}'
       register: zhmc_path
 
     - name: Ensure zhmcclient requirements are installed.
