@@ -1,5 +1,5 @@
 ---
-- name: Include LPAR host variablese
+- name: Include LPAR host variables
   ansible.builtin.include_vars:
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
@@ -25,5 +25,6 @@
   register: cmd_output
 
 - name: Show above command output
+  when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   ansible.builtin.debug:
     var: cmd_output
