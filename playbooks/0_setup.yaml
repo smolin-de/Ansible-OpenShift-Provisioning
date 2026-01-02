@@ -68,8 +68,6 @@
   connection: local
   become: false
   gather_facts: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
     ssh_target: ["{{ env.file_server.ip }}", "{{ env.file_server.user }}", "{{ env.file_server.pass }}", "{{ path_to_key_pair }}"]
   roles:
