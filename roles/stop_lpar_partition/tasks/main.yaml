@@ -4,27 +4,34 @@
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
 
-- name: "Stop and configure the dpm mode partition {{ _node.lpar.name }}"
+- name: Stop and configure dpm mode partition
   when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   vars:
     _zhmc_auth:
       userid: "{{ _node.hmc.auth.user }}"
       password: "{{ _node.hmc.auth.pass }}"
       verify: false
-  ibm.ibm_zhmc.zhmc_partition:
-    hmc_host: "{{ _node.hmc.host }}"
-    hmc_auth: "{{ _zhmc_auth }}"
-    cpc_name: "{{ _node.cpc_name }}"
-    name: "{{ _node.lpar.name }}"
-    state: stopped
-    properties:
-      description: "{{ _node.lpar.description }}"
-      ifl_processors: "{{ _node.lpar.ifl.count }}"
-      initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
-      maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
-  register: cmd_output
+  block:
+    - name: "Stop and configure dpm mode partition {{ _node.lpar.name }}"
+      ibm.ibm_zhmc.zhmc_partition:
+        hmc_host: "{{ _node.hmc.host }}"
+        hmc_auth: "{{ _zhmc_auth }}"
+        cpc_name: "{{ _node.cpc_name }}"
+        name: "{{ _node.lpar.name }}"
+        state: stopped
+        properties:
+          description: "{{ _node.lpar.description }}"
+          ifl_processors: "{{ _node.lpar.ifl.count }}"
+          initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
+          maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
+      register: task_result
+      until: >
+        task_results.partition is defined or
+        "busy with another operation" not in (task_result.msg | default(''))
+      retries: 6
+      delay: 30
 
-- name: Show above command output
-  when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
-  ansible.builtin.debug:
-    var: cmd_output
+    - name: Show above command output
+      when: task_result.msg is defined
+      ansible.builtin.debug:
+        var: task_result
