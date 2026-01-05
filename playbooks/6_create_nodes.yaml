@@ -68,6 +68,19 @@
       loop_control:
         loop_var: lpar_name
 
+    # - name: Stop all cluster node LPARs
+    #   include_role:
+    #     name: stop_lpar_partition
+    #   loop: >-
+    #     {{
+    #       (env.cluster.nodes.bootstrap.lpar_name | default([])) +
+    #       (env.cluster.nodes.control.lpar_name | default([])) +
+    #       (env.cluster.nodes.compute.lpar_name | default([]))
+    #     }}
+    #   loop_control:
+    #     loop_var: lpar_name
+    #   when: lpar_name is defined
+
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host_bootstrap
   gather_facts: false

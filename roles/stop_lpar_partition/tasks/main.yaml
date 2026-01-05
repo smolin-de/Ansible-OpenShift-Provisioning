@@ -25,9 +25,12 @@
           initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
           maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
       register: task_result
-      until: >
-        task_results.partition is defined or
-        "busy with another operation" not in (task_result.msg | default(''))
+      until:
+        - task_result.partition is defined
+        - '"busy with another operation" not in (task_result.msg | default(""))'
+      # Retry on busy msg:
+      # "msg": "HTTPError: 409,2: The operation could not be completed because the object is busy with another operation.
+      # Wait for that operation to complete, and then try this operation again.
       retries: 6
       delay: 30
 
