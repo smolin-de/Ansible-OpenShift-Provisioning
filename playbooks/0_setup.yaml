@@ -38,7 +38,7 @@
         extra_args: --upgrade
       when: zhmc_path.rc != 0
 
-    - name: Check to make sure that the KVM host has a corresponding inventory host_vars file named with matching hostname and .yaml extension.
+    - name: Check KVM host 1 inventory host_vars with matching hostname and .yaml extension
       tags: lpar_check
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
@@ -47,7 +47,7 @@
       failed_when: lpar_host_vars.stat.exists == False
       ignore_errors: true
 
-    - name: Check to make sure the second KVM hosts have a corresponding inventory host_vars file named with matching hostname and .yaml extension, if defined.
+    - name: Check KVM host 2 inventory host_vars with matching hostname and .yaml extension
       tags: lpar_check
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar2.hostname }}.yaml"
@@ -55,7 +55,7 @@
       register: lpar_host_vars
       failed_when: lpar_host_vars.stat.exists == False
 
-    - name: Check to make sure the third KVM hosts have a corresponding inventory host_vars file named with matching hostname and .yaml extension, if defined.
+    - name: Check KVM host 3 inventory host_vars with matching hostname and .yaml extension
       tags: lpar_check
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar3.hostname }}.yaml"
