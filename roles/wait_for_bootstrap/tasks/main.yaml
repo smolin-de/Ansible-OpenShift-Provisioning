@@ -1,6 +1,6 @@
 ---
 
-- name: "Wait for first node-bootstrapper request. Takes < 10 min with good network connection (retry every 30s)...To watch progress, \
+- name: "Wait for first node-bootstrapper request. Takes < 10 min with good network connection (retry every 60s)...To watch progress, \
 SSH to root@bastion, SSH to core@bootstrap-ip and run 'journalctl -b -f -u release-image.service -u bootkube.service'"
   tags: wait_for_bootstrap
   ansible.builtin.shell: |
@@ -8,8 +8,8 @@ SSH to root@bastion, SSH to core@bootstrap-ip and run 'journalctl -b -f -u relea
     oc get csr | grep ":node-bootstrapper"
   register: csr_check
   until: (":node-bootstrapper" in csr_check.stdout)
-  retries: 60
-  delay: 30
+  retries: 30
+  delay: 60
 
 - name: Print first node-bootstrapper requests
   tags: wait_for_bootstrap
@@ -32,8 +32,8 @@ SSH to bastion, switch to root, from there, SSH to core@bootstrap-ip and run 'jo
   register: bootstrapping
   until: bootstrapping.finished
   # Set wait time to 60 min, because it depends highly on system performance and network speed
-  retries: 120
-  delay: 30
+  retries: 60
+  delay: 60
 
 - name: Make sure kubeconfig works properly
   tags: wait_for_bootstrap
