@@ -98,9 +98,6 @@
         name: ssh_copy_id
       when: env.z.lpar3.hostname is defined
 
-- import_playbook: disconnected_mirror_artifacts.yaml
-  when: disconnected.enabled
-
 - name: Re-Install cluster - Update ignitions and other install files
   hosts: bastion
   become: true
@@ -133,5 +130,3 @@
 - import_playbook: 7_ocp_verification.yaml
 - import_playbook: 8_tune_cluster.yaml
   when: tune_cluster is defined and tune_cluster
-- import_playbook: disconnected_apply_operator_manifests.yaml
-  when: disconnected.enabled
