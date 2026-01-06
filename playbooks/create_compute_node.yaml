@@ -135,8 +135,11 @@
         param_haproxy_ip: "{{ day2_compute_node.vm_ip }}"
 
     - role: tune_kvm_domain
-      when: (day2_compute_node.vm_name[0] is defined) and (tune_cluster | default(false))
-      delegate_to: "{{ day2_compute_node.hostname }}"
+      # when: (day2_compute_node.vm_name[0] is defined) and (tune_cluster | default(false))
+      when:
+        - day2_compute_node.vm_name | default([]) | length > 0
+        - tune_cluster | default(false) | bool
+      delegate_to: "{{ day2_compute_node.hostname | default('foo') }}"
       vars:
         param_kvm_domain_list:
           - "{{ day2_compute_node.vm_name }}"
