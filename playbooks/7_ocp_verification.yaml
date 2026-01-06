@@ -7,8 +7,6 @@
   environment:
     KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
   gather_facts: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - approve_certs
     - check_nodes
