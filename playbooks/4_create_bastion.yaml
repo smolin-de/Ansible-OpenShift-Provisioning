@@ -2,7 +2,7 @@
 - name: 4 Create storage pool play
   hosts: kvm_host
   gather_facts: false
-  tasks:
+  pre_tasks:
     - name: Create storage pool, if not exists
       block:
         - name: Create storage pool, if not exists
@@ -26,13 +26,9 @@
   roles:
     - destroy_bastion
 
-# Assume we have an existing ftp/http server already
 - name: 4 create bastion
   hosts: kvm_host_bastion
   become: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-    - "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
   roles:
     - common
     - { role: create_bastion, when: env.bastion.create == True }
