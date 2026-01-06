@@ -52,10 +52,10 @@
       loop_control:
         loop_var: lpar_name
 
-    - name: Stop control node LPARs, if running in dpm mode (async)
+    - name: Stop control node LPARs, if running in dpm mode
       when: env.cluster.nodes.control.lpar_name[0] is defined
       ansible.builtin.include_role:
-        name: stop_lpar_partition_async
+        name: stop_lpar_partition
       loop: "{{ env.cluster.nodes.control.lpar_name }}"
       loop_control:
         loop_var: lpar_name
