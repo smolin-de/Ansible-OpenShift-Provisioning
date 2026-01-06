@@ -25,8 +25,6 @@
 - name: Delete compute node
   hosts: bastion
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   pre_tasks:
     - name: Check required variables
       when: (day2_compute_node is not defined)
@@ -41,20 +39,24 @@
             msg: "See above error!"
   roles:
     - role: delete_compute_node
-      # Some tasks will be delegated to the bastion host and target KVM host
-      param_compute_node: "{{ day2_compute_node }}"
+      when: param_compute_node.hostname is defined
+      vars:
+        # Some tasks will be delegated to the bastion host and target KVM host
+        param_compute_node: "{{ day2_compute_node }}"
 
     - role: haproxy_update
       when: env.bastion.options.loadbalancer.on_bastion
-      param_haproxy_cmd: delete
-      param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
-      param_haproxy_ip: "{{ day2_compute_node.vm_ip }}"
+      vars:
+        param_haproxy_cmd: delete
+        param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
+        param_haproxy_ip: "{{ day2_compute_node.vm_ip }}"
 
     - role: dns_update
       when: env.bastion.options.dns is defined and env.bastion.options.dns
-      param_dns_cmd: delete
-      param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
-      param_dns_ip: "{{ day2_compute_node.vm_ip }}"
+      vars:
+        param_dns_cmd: delete
+        param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
+        param_dns_ip: "{{ day2_compute_node.vm_ip }}"
 
     - role: wait_for_cluster_version
     - role: print_node_status

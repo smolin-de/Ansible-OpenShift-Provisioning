@@ -27,8 +27,6 @@
   # Select bastion host
   hosts: bastion
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   pre_tasks:
     - name: Check required variables
       when: (day2_compute_node is not defined)
@@ -101,39 +99,47 @@
   roles:
     - role: common
     - role: delete_compute_node
-      # Some tasks will be delegated to the bastion host and target KVM host
-      param_compute_node: "{{ day2_compute_node }}"
+      when: param_compute_node.hostname is defined
+      vars:
+        # Some tasks will be delegated to the bastion host and target KVM host
+        param_compute_node: "{{ day2_compute_node }}"
 
     - role: print_node_status
     - role: update_ignition_files
 
     - role: dns_update
       when: env.bastion.options.dns is defined and env.bastion.options.dns
-      param_dns_cmd: add
-      param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
-      param_dns_ip: "{{ day2_compute_node.vm_ip }}"
+      vars:
+        param_dns_cmd: add
+        param_dns_hostname: "{{ day2_compute_node.vm_hostname }}"
+        param_dns_ip: "{{ day2_compute_node.vm_ip }}"
 
     - role: create_compute_node
-      # Some tasks will be delegated to the bastion host and target KVM host
-      param_compute_node: "{{ day2_compute_node }}"
+      vars:
+        # Some tasks will be delegated to the bastion host and target KVM host
+        param_compute_node: "{{ day2_compute_node }}"
 
     - role: approve_certs
     - role: wait_for_node
-      wait_for_node_name: "{{ day2_compute_node.vm_hostname }}"
+      vars:
+        wait_for_node_name: "{{ day2_compute_node.vm_hostname }}"
     - role: approve_certs
-      approve_certs_cleanup: true
+      vars:
+        approve_certs_cleanup: true
     - role: print_node_status
 
     - role: haproxy_update
       when: env.bastion.options.loadbalancer.on_bastion
-      param_haproxy_cmd: add
-      param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
-      param_haproxy_ip: "{{ day2_compute_node.vm_ip }}"
+      vars:
+        param_haproxy_cmd: add
+        param_haproxy_hostname: "{{ day2_compute_node.vm_hostname }}"
+        param_haproxy_ip: "{{ day2_compute_node.vm_ip }}"
 
     - role: tune_kvm_domain
       when: (day2_compute_node.vm_name[0] is defined) and (tune_cluster | default(false))
       delegate_to: "{{ day2_compute_node.hostname }}"
-      param_kvm_domain_list:
-        - "{{ day2_compute_node.vm_name }}"
+      vars:
+        param_kvm_domain_list:
+          - "{{ day2_compute_node.vm_name }}"
 
     - role: print_node_status
