@@ -13,6 +13,7 @@
     - approve_certs
     - check_nodes
     - role: approve_certs
-      approve_certs_cleanup: true
+      vars:
+        approve_certs_cleanup: true
     - wait_for_cluster_operators
     - wait_for_install_complete

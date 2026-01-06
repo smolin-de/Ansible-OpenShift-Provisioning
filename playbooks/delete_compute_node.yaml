@@ -39,7 +39,6 @@
             msg: "See above error!"
   roles:
     - role: delete_compute_node
-      when: param_compute_node.hostname is defined
       vars:
         # Some tasks will be delegated to the bastion host and target KVM host
         param_compute_node: "{{ day2_compute_node }}"
