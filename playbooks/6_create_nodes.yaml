@@ -1,5 +1,4 @@
 ---
-
 - name: 6 create nodes - find lpar host files
   hosts: localhost
   vars_files:
@@ -45,7 +44,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Stop bootstrap node LPARs, if running in dpm mode
-      when: env.cluster.nodes.bootstrap.lpar_name[0] is defined
+      when: (env.cluster.nodes.bootstrap.lpar_name | default([])) length > 0
       ansible.builtin.include_role:
         name: stop_lpar_partition
       loop: "{{ env.cluster.nodes.bootstrap.lpar_name }}"
@@ -53,7 +52,7 @@
         loop_var: lpar_name
 
     - name: Stop control node LPARs, if running in dpm mode
-      when: env.cluster.nodes.control.lpar_name[0] is defined
+      when: (env.cluster.nodes.control.lpar_name | default([])) | length > 0
       ansible.builtin.include_role:
         name: stop_lpar_partition
       loop: "{{ env.cluster.nodes.control.lpar_name }}"
@@ -61,7 +60,7 @@
         loop_var: lpar_name
 
     - name: Stop compute node LPARs, if running in dpm mode
-      when: env.cluster.nodes.compute.lpar_name[0] is defined
+      when: (env.cluster.nodes.compute.lpar_name | default([])) | length > 0
       ansible.builtin.include_role:
         name: stop_lpar_partition
       loop: "{{ env.cluster.nodes.compute.lpar_name }}"
@@ -133,7 +132,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot bootstrap LPAR from ftp
-      when: env.cluster.nodes.bootstrap.lpar_name[0] is defined
+      when: (env.cluster.nodes.bootstrap.lpar_name | default([])) length > 0
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
@@ -150,7 +149,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot control LPAR from ftp
-      when: env.cluster.nodes.control.lpar_name[0] is defined
+      when: (env.cluster.nodes.control.lpar_name | default([])) | length > 0
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
@@ -159,15 +158,6 @@
       loop_control:
         loop_var: lpar_name
         index_var: idx
-
-- name: 6 create nodes - create control using zVM via tessia manually
-  hosts: localhost
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
-  tasks:
-    - name: Boot control zVM via tessia manually in the next 3 min
-      when: env.cluster.nodes.control.zvm_name[0] is defined
-      ansible.builtin.command: sleep 180
 
 - name: 6 create nodes - wait for bootstrap to connect to control plane
   hosts: bastion
@@ -241,7 +231,7 @@
     - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot LPAR from ftp
-      when: env.cluster.nodes.compute.lpar_name[0] is defined
+      when: (env.cluster.nodes.compute.lpar_name | default([])) | length > 0
       ansible.builtin.include_role:
         name: boot_lpar_from_ftp
       vars:
