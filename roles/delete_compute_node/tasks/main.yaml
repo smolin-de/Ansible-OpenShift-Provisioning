@@ -21,9 +21,9 @@
 
 - name: Delete compute node VM on KVM host (if exists) and print command output
   tags: delete_compute_node
-  when: param_compute_node.vm_name[0] is defined
-  remote_user: "{{ param_compute_node.host_user }}"
-  delegate_to: "{{ param_compute_node.hostname }}"
+  when:
+    - param_compute_node.vm_name is defined
+    - param_compute_node.vm_name | length > 0
   block:
     - name: Delete compute node VM on KVM host
       ansible.builtin.shell: |
@@ -31,6 +31,8 @@
         virsh destroy {{ param_compute_node.vm_name }} || true
         virsh undefine {{ param_compute_node.vm_name }} --remove-all-storage --nvram || true
       register: cmd_output
+      remote_user: "{{ param_compute_node.host_user }}"
+      delegate_to: "{{ param_compute_node.hostname | default('foo') }}"
 
     - name: Print cmd output
       ansible.builtin.debug:
