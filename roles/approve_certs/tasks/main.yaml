@@ -1,5 +1,9 @@
 ---
 
+- name: Debug issue with cancel
+  ansible.builtin.debug:
+    var: approve_certs_task
+
 - name: Cancel async 'approve_certs_task', if exists
   tags: approve_certs
   when: approve_certs_task is defined and approve_certs_cleanup
@@ -7,6 +11,7 @@
     jid: "{{ approve_certs_task.ansible_job_id }}"
     mode: cleanup
   failed_when: false
+  ignore_errors: true
 
 # TODO: Use this documented command to approve all pending csr's
 # https://docs.openshift.com/container-platform/4.15/nodes/nodes/nodes-sno-worker-nodes.html#installation-approve-csrs_add-workers
