@@ -126,9 +126,10 @@
 
     - role: dns_update
       when: env.bastion.options.dns is defined and env.bastion.options.dns
-      param_dns_cmd: add
-      param_dns_hostname: "{{ day2_control_node.hostname }}"
-      param_dns_ip: "{{ day2_control_node.ip }}"
+      vars:
+        param_dns_cmd: add
+        param_dns_hostname: "{{ day2_control_node.hostname }}"
+        param_dns_ip: "{{ day2_control_node.ip }}"
 
     - role: create_control_node
       # Some tasks will be delegated to the bastion host and target KVM host
@@ -138,19 +139,22 @@
     - role: wait_for_node
       wait_for_node_name: "{{ day2_control_node.vm_hostname }}"
     - role: approve_certs
-      approve_certs_cleanup: true
+      vars:
+        approve_certs_cleanup: true
     - role: print_node_status
 
     - role: haproxy_update
       when: env.bastion.options.loadbalancer.on_bastion
-      param_haproxy_cmd: add_ctrl
-      param_haproxy_hostname: "{{ day2_control_node.vm_hostname }}"
-      param_haproxy_ip: "{{ day2_control_node.ip }}"
+      vars:
+        param_haproxy_cmd: add_ctrl
+        param_haproxy_hostname: "{{ day2_control_node.vm_hostname }}"
+        param_haproxy_ip: "{{ day2_control_node.ip }}"
 
     - role: tune_kvm_domain
       when: day2_control_node.vm_name[0] is defined
       delegate_to: "{{ day2_control_node.hostname }}"
-      param_kvm_domain_list:
-        - "{{ day2_control_node.vm_name }}"
+      vars:
+        param_kvm_domain_list:
+          - "{{ day2_control_node.vm_name }}"
 
     - role: print_node_status
