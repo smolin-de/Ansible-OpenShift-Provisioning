@@ -3,8 +3,6 @@
 # - hosts: localhost
 #   tags: create_lpar, create, kvm_host_1
 #   connection: local
-#   vars_files:
-#     - "{{ inventory_dir }}/group_vars/all.yaml"
 #   tasks:
 #     - name: Install required python packages.
 #       ansible.builtin.pip:

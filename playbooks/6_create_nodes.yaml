@@ -1,8 +1,6 @@
 ---
 - name: 6 create nodes - find lpar host files
   hosts: localhost
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Check ansible delegate function. It is not always working :-(
       block:
@@ -31,8 +29,6 @@
 - name: 6 create nodes - prepare KVM guests
   hosts: kvm_host
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     # Delete control, compute and infra nodes, if exists
     - delete_kvm_nodes
@@ -40,8 +36,6 @@
 - name: 6 create nodes - Stop LPARs, if running in dpm mode
   hosts: localhost
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Stop bootstrap node LPARs, if running in dpm mode
       when: (env.cluster.nodes.bootstrap.lpar_name | default([])) length > 0
@@ -83,8 +77,6 @@
 - name: 6 create nodes - create bootstrap KVM node
   hosts: kvm_host_bootstrap
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
     - role: create_bootstrap
@@ -119,8 +111,6 @@
 - name: 6 create nodes - create control nodes using KVM
   hosts: kvm_host
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
     - role: create_control_nodes
@@ -128,8 +118,6 @@
 
 - name: 6 create nodes - create bootstrap using LPAR boot from ftp
   hosts: localhost
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot bootstrap LPAR from ftp
       when: (env.cluster.nodes.bootstrap.lpar_name | default([])) length > 0
@@ -145,8 +133,6 @@
 
 - name: 6 create nodes - create control using LPAR boot from ftp
   hosts: localhost
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot control LPAR from ftp
       when: (env.cluster.nodes.control.lpar_name | default([])) | length > 0
@@ -165,8 +151,6 @@
   environment:
     KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
   gather_facts: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - wait_for_bootstrap
   tasks:
@@ -187,8 +171,6 @@
   hosts: kvm_host_bootstrap
   tags: create_nodes, teardown_bootstrap
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Delete bootstrap volumes and list cluster images
       tags: create_nodes, teardown_bootstrap
@@ -215,8 +197,6 @@
   hosts: kvm_host
   tags: create_compute_nodes
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - common
     - approve_certs
@@ -227,8 +207,6 @@
 
 - name: 6 create nodes - create compute nodes using LPAR boot from ftp
   hosts: localhost
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   tasks:
     - name: Boot LPAR from ftp
       when: (env.cluster.nodes.compute.lpar_name | default([])) | length > 0

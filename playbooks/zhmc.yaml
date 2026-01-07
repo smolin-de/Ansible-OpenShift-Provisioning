@@ -4,8 +4,6 @@
   hosts: localhost
   connection: local
   become: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
 
   pre_tasks:
     - name: Include LPAR host variables

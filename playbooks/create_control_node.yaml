@@ -23,8 +23,6 @@
   # Select bastion host
   hosts: bastion
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   pre_tasks:
     - name: Check required variables
       when: (day2_control_node is not defined)

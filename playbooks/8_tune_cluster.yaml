@@ -5,8 +5,6 @@
   tags: tune_ocp_nodes
   hosts: kvm_host
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   roles:
     - role: tune_kvm_domain
       when: env.bastion.create == True and env.bastion.vm_name is defined

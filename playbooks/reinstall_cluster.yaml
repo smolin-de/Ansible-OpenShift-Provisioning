@@ -6,8 +6,6 @@
   hosts: localhost
   tags: ssh, ssh_copy_id, section_1
   gather_facts: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
     ssh_target:
       [
@@ -25,8 +23,6 @@
   connection: local
   become: false
   gather_facts: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
     ssh_target:
       [
@@ -50,8 +46,6 @@
   connection: local
   become: false
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
     ssh_target:
       [
@@ -77,8 +71,6 @@
   connection: local
   become: false
   gather_facts: false
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   vars:
     ssh_target:
       [
@@ -101,8 +93,6 @@
 - name: Re-Install cluster - Update ignitions and other install files
   hosts: bastion
   become: true
-  vars_files:
-    - "{{ inventory_dir }}/group_vars/all.yaml"
   pre_tasks:
     - name: Import initial-resolv.yaml
       ansible.builtin.import_role:
