@@ -82,32 +82,6 @@
     - role: create_bootstrap
       when: env.cluster.nodes.bootstrap.vm_name[0] is defined
 
-- name: 6 create nodes - bootstrap and control ( if in lpar )
-  hosts: bastion
-  become: true
-  tasks:
-    - name: boot bootstrap
-      vars:
-        node_type: "bootstrap"
-        node_name: "{{ item }}"
-        ignition: "bootstrap"
-      ansible.builtin.include_tasks:
-        file: ../roles/boot_LPAR/tasks/main.yaml
-      loop: "{{ q('list', env.cluster.nodes[node_type].vm_name) | flatten }}"
-      # Disabled function
-      when: 0
-
-    - name: boot control nodes
-      vars:
-        node_type: "control"
-        node_name: "{{ item }}"
-        ignition: "master"
-      ansible.builtin.include_tasks:
-        file: ../roles/boot_LPAR/tasks/main.yaml
-      loop: "{{ q('list', env.cluster.nodes[node_type].vm_name) | flatten }}"
-      # Disabled function
-      when: 0
-
 - name: 6 create nodes - create control nodes using KVM
   hosts: kvm_host
   gather_facts: false
