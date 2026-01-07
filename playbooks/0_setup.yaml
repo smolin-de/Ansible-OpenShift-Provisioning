@@ -9,13 +9,6 @@
   roles:
     - set_inventory
 
-  pre_tasks:
-    - name: Check disconnected variables if disconnected cluster will be installed.
-      tags: disconnected
-      ansible.builtin.include_role:
-        name: disconnected_check_vars
-      when: disconnected.enabled
-
   post_tasks:
     - name: Ensure Ansible Galaxy collections have been installed with latest version.
       tags: galaxy
@@ -44,6 +37,8 @@
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
       when: env.z.lpar1.hostname is defined
       register: lpar_host_vars
+      # TODO:
+      # use: failed_when: not lpar_host_vars.stat.exists
       failed_when: lpar_host_vars.stat.exists == False
       ignore_errors: true
 

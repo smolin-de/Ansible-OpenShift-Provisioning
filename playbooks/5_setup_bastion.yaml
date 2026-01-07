@@ -85,7 +85,8 @@
     - { role: haproxy, when: env.bastion.options.loadbalancer.on_bastion }
     - httpd
 
-- hosts: bastion
+- name: 5 setup bastion - get OCP images
+  hosts: bastion
   tags: get_ocp, section_3
   become: true
   roles:
