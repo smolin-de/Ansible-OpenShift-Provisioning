@@ -23,7 +23,7 @@
 
 - name: Wait for creation to finish
   tags: create_kvm_host
-  async_status:
+  ansible.builtin.async_status:
     jid: "{{ _create_instances.ansible_job_id }}"
   register: _jobs
   until: _jobs.finished
@@ -32,13 +32,13 @@
 
 #- name: Template hmccreds.yaml for use with os_messages.py
 #  tags: create_kvm_host, test2
-#  template:
+#  ansible.builtin.template:
 #    src: hmccreds.yaml.j2
 #    dest: "{{ role_path }}/files/hmccreds.yaml"
 
 #- name: Execute os_messages.py
 #  tags: create_kvm_host, test2
-#  command: "{{ role_path }}/files/os_messages.py {{ role_path }}/files/hmcclient.yaml"
+#  ansible.builtin.command: "{{ role_path }}/files/os_messages.py {{ role_path }}/files/hmcclient.yaml"
 #  register: os_messages_output
 
 #- name: Show LPAR OS messages from HMC.

@@ -2,7 +2,7 @@
 
 - name: Create CoreOS control nodes on the the KVM host.
   tags: create_control_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then
@@ -49,7 +49,7 @@
 
 - name: Create the first CoreOS control node on the first KVM host, if cluster is to be highly available.
   tags: create_control_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then
@@ -89,7 +89,7 @@
 
 - name: Create the second CoreOS control node on the second KVM host, if cluster is to be highly available.
   tags: create_control_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then
@@ -129,7 +129,7 @@
 
 - name: Create the third CoreOS control node on the third KVM host, if cluster is to be highly available.
   tags: create_control_nodes
-  shell: |
+  ansible.builtin.shell: |
     # Define CPU model based on architecture
     CPU_MODEL="--cpu host"
     if [ $(uname -m) == "aarch64" ]; then

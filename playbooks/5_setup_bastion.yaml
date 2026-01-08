@@ -32,7 +32,7 @@
           when: (env.network_mode | upper == "NAT") and (env.jumphost.ip is not none)
 
         - name: Check if 'expect' is installed on jumphost, for use in ssh-copy-id role for NAT.
-          set_fact:
+          ansible.builtin.set_fact:
             expect_installed: "{{ 'expect' in ansible_facts.packages }}"
           when: (env.network_mode | upper == "NAT") and (env.jumphost.ip is not none)
 

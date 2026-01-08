@@ -8,7 +8,7 @@
 
 - name: Create SSH local directory if it doesn't already exist
   tags: ssh_key_gen, ssh
-  file:
+  ansible.builtin.file:
     path: "~/.ssh"
     state: directory
     mode: '700'
@@ -31,7 +31,7 @@
 
 - name: Save path to key pair for use in ssh-copy-id role
   tags: ssh_key_gen, ssh
-  lineinfile:
+  ansible.builtin.lineinfile:
     search_string: "path_to_key_pair:"
     line: "path_to_key_pair: {{ ssh_key_creation.filename }}.pub"
     path: "{{ inventory_dir }}/group_vars/all.yaml"

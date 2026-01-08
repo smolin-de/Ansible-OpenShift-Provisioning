@@ -20,12 +20,12 @@
 
 - name: Get OCP URL
   tags: wait_for_install_complete
-  set_fact:
+  ansible.builtin.set_fact:
     ocp_url: https://console-openshift-console.apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}
 
 - name: Get OCP temporary password
   tags: wait_for_install_complete
-  command: "cat /root/ocpinst/auth/kubeadmin-password"
+  ansible.builtin.command: "cat /root/ocpinst/auth/kubeadmin-password"
   register: ocp_passwd
   changed_when: false
 
@@ -38,7 +38,7 @@
 
 - name: Congratulations! OpenShift installation complete. Use the information below for first-time login via web browser.
   tags: wait_for_install_complete
-  command: "echo {{ item }}"
+  ansible.builtin.command: "echo {{ item }}"
   loop:
     - " URL      : {{ ocp_url }} "
     - " Username : kubeadmin "

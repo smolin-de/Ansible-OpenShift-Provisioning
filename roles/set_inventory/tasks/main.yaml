@@ -2,12 +2,12 @@
 
 - name: Find inventory directory from ansible.cfg
   tags: set_inventory
-  shell: cat {{ ansible_config_file }} | grep 'inventory=' | cut -f2 -d"="
+  ansible.builtin.shell: cat {{ ansible_config_file }} | grep 'inventory=' | cut -f2 -d"="
   register: find_inventory
 
 - name: Find absolute path to project.
   tags: set_inventory
-  shell: |
+  ansible.builtin.shell: |
     ansible_config="{{ ansible_config_file }}"
     echo "${ansible_config%/*}/"
   register: find_project
@@ -20,7 +20,7 @@
 
 - name: Create inventory with localhost, file server, KVM host, jumphost(optional) and bastion
   tags: set_inventory
-  template:
+  ansible.builtin.template:
     src: hosts.j2
     dest: "{{ find_project.stdout }}{{ find_inventory.stdout }}/hosts"
     force: yes
@@ -31,7 +31,7 @@
 
 - name: Add path to Ansible private key in ansible.cfg
   tags: set_inventory
-  lineinfile:
+  ansible.builtin.lineinfile:
     line: "private_key_file=~/.ssh/{{ env.ansible_key_name }}"
     path: "{{ ansible_config_file }}"
     regexp: "private_key_file"
@@ -39,7 +39,7 @@
 
 - name: check inventory setup
   tags: set_inventory
-  command: ansible-inventory --list
+  ansible.builtin.command: ansible-inventory --list
   register: inv_check
   failed_when: inv_check.rc != 0
 

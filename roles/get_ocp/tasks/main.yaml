@@ -1,14 +1,14 @@
 ---
 - name: Delete ignition folder for idempotency
   tags: get_ocp
-  file:
+  ansible.builtin.file:
     path: /var/www/html/ignition
     state: absent
 
 - name: Create directory bin for mirrors
   tags: get_ocp
   become: true
-  file:
+  ansible.builtin.file:
     path: /var/www/html/bin
     state: directory
     mode: "0755"
@@ -18,13 +18,13 @@
 - name: Delete OCP download directory for idempotency, because ignition files deprecate after 24 hours.
   tags: get_ocp
   become: true
-  file:
+  ansible.builtin.file:
     path: /root/ocpinst
     state: absent
 
 - name: Create OCP download directory
   tags: get_ocp
-  file:
+  ansible.builtin.file:
     path: /root/ocpinst
     state: directory
 
@@ -121,14 +121,14 @@
 
 - name: Capture OCP public key
   tags: get_ocp
-  command: cat /root/.ssh/id_rsa.pub
+  ansible.builtin.command: cat /root/.ssh/id_rsa.pub
   register: ocp_pub_key
 
 - name: Use template file to create install-config and backup.
   tags: get_ocp
   vars:
     use_proxy: "{{ 'True' if (proxy_env.http_proxy is defined or proxy_env.https_proxy is defined or proxy_env.no_proxy is defined) else 'False' }}"
-  template:
+  ansible.builtin.template:
     src: install-config.yaml.j2
     dest: "{{ item }}"
     force: yes
@@ -138,7 +138,7 @@
 
 - name: Place SSH key in install-config
   tags: get_ocp
-  lineinfile:
+  ansible.builtin.lineinfile:
     line: "sshKey: '{{ ocp_pub_key.stdout }}'"
     path: "{{ item }}"
   loop:
@@ -149,7 +149,7 @@
   tags: get_ocp
   vars:
     use_proxy: "{{ 'True' if (proxy_env.http_proxy is defined or proxy_env.https_proxy is defined or proxy_env.no_proxy is defined) else 'False' }}"
-  template:
+  ansible.builtin.template:
     src: agent-config.yaml.j2
     dest: "{{ item }}"
     force: yes
@@ -189,7 +189,7 @@
 - name: Set permissions for ocpinst directory contents to root
   tags: get_ocp
   become: true
-  command: chmod 0755 /root/ocpinst/{{item}}
+  ansible.builtin.command: chmod 0755 /root/ocpinst/{{item}}
   loop:
     - manifests
     - openshift
@@ -199,7 +199,7 @@
 - name: Set ownership of ocpinst directory contents to root
   tags: get_ocp
   become: true
-  command: chown root:root /root/ocpinst/{{item}}
+  ansible.builtin.command: chown root:root /root/ocpinst/{{item}}
   loop:
     - manifests
     - openshift
@@ -220,7 +220,7 @@
 
 - name: Set ownership to root and permissions of ignitions and related files.
   tags: get_ocp
-  file:
+  ansible.builtin.file:
     state: "{{ item.state }}"
     path: /root/ocpinst/{{ item.path }}
     owner: root
@@ -238,14 +238,14 @@
 - name: Create directory in admin user's home for default kubeconfig.
   tags: get_ocp, config
   become: false
-  file:
+  ansible.builtin.file:
     state: directory
     path: ~/.kube
 
 - name: Create directory in root's home for default kubeconfig.
   tags: get_ocp, config
   become: true
-  file:
+  ansible.builtin.file:
     state: directory
     path: ~/.kube
 
@@ -281,7 +281,7 @@
 - name: Create ignition directory in HTTP-accessible directory.
   tags: get_ocp
   become: true
-  file:
+  ansible.builtin.file:
     path: /var/www/html/ignition
     state: directory
 
