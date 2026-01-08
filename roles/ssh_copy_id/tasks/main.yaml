@@ -28,7 +28,7 @@
 
 - name: Copy expect file to jumphost first, if not running on localhost.
   tags: ssh_copy_id, ssh
-  copy:
+  ansible.builtin.copy:
     src: "{{ role_path }}/files/ssh-copy-id-expect-pass.exp"
     dest: "~/.ssh/ssh-copy-id-expect-pass.exp"
   when: "inventory_hostname != '127.0.0.1'"

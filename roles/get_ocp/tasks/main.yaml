@@ -180,7 +180,7 @@
 - name: Set masters schedulable parameter to false when not SNO
   tags: get_ocp
   become: true
-  replace:
+  ansible.builtin.replace:
     path: /root/ocpinst/manifests/cluster-scheduler-02-config.yml
     regexp: ": true"
     replace: ": false"
@@ -251,7 +251,7 @@
 
 - name: Make kubeconfig admin user's default (for non-root user).
   tags: get_ocp, config
-  copy:
+  ansible.builtin.copy:
     src: /root/ocpinst/auth/kubeconfig
     dest: /home/{{ env.bastion.access.user }}/.kube/config
     owner: "{{ env.bastion.access.user }}"
@@ -261,7 +261,7 @@
 
 - name: Make kubeconfig admin user's default (for root user).
   tags: get_ocp, config
-  copy:
+  ansible.builtin.copy:
     src: /root/ocpinst/auth/kubeconfig
     dest: /{{ env.bastion.access.user }}/.kube/config
     owner: "{{ env.bastion.access.user }}"
@@ -271,7 +271,7 @@
 
 - name: Make kubeconfig root user's default.
   tags: get_ocp, config
-  copy:
+  ansible.builtin.copy:
     src: /root/ocpinst/auth/kubeconfig
     dest: /root/.kube/config
     owner: root
@@ -288,7 +288,7 @@
 - name: Copy ignition files to HTTP-accessible directory.
   tags: get_ocp
   become: true
-  copy:
+  ansible.builtin.copy:
     src: /root/ocpinst/{{ item }}.ign
     dest: /var/www/html/ignition
     remote_src: yes
