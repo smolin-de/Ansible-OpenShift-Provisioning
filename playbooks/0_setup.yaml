@@ -10,7 +10,7 @@
     - set_inventory
 
   post_tasks:
-    - name: Ensure Ansible Galaxy collections have been installed with latest version.
+    - name: Ensure Ansible Galaxy collections have been installed (latest version)
       tags: galaxy
       ansible.builtin.command: ansible-galaxy collection install {{ item }} --upgrade
       loop: "{{ env.pkgs.galaxy }}"
@@ -31,7 +31,7 @@
         extra_args: --upgrade
       when: zhmc_path.rc != 0
 
-    - name: Check KVM host 1 inventory host_vars with matching hostname and .yaml extension
+    - name: Check KVM host 1 inventory host_vars with matching hostname
       tags: lpar_check
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
@@ -42,7 +42,7 @@
       failed_when: lpar_host_vars.stat.exists == False
       ignore_errors: true
 
-    - name: Check KVM host 2 inventory host_vars with matching hostname and .yaml extension
+    - name: Check KVM host 2 inventory host_vars with matching hostname
       tags: lpar_check
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar2.hostname }}.yaml"
@@ -50,7 +50,7 @@
       register: lpar_host_vars
       failed_when: lpar_host_vars.stat.exists == False
 
-    - name: Check KVM host 3 inventory host_vars with matching hostname and .yaml extension
+    - name: Check KVM host 3 inventory host_vars with matching hostname
       tags: lpar_check
       ansible.builtin.stat:
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar3.hostname }}.yaml"
