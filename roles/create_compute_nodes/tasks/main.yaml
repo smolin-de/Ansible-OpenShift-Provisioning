@@ -1,5 +1,4 @@
 ---
-
 - name: Install CoreOS on compute nodes
   tags: create_compute_nodes
   ansible.builtin.shell: |
@@ -57,7 +56,7 @@
     compute_hostname: "{{ env.cluster.nodes.compute.hostname[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     compute_ip: "{{ env.cluster.nodes.compute.ip[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
     compute_ipv6: "{{ env.cluster.nodes.compute.ipv6[groups['kvm_host'].index(inventory_hostname)::groups['kvm_host'] | length] }}"
-  when: env.z.high_availability == True
+  when: env.z.high_availability
 
 - name: Create CoreOS compute nodes on KVM hosts, if cluster is to be highly available.
   tags: create_compute_nodes
@@ -98,7 +97,7 @@
   loop_control:
     extended: yes
     index_var: i
-  when: env.z.high_availability == True and compute_hostname[i] is defined
+  when: env.z.high_availability and compute_hostname[i] is defined
 
 # - name: Attach compute node disks
 #   when: env.cluster.nodes.compute.vm_name[0] is defined and env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname

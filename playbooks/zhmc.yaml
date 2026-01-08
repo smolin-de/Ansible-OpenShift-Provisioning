@@ -1,4 +1,3 @@
-
 ---
 - name: zHMC test
   hosts: localhost

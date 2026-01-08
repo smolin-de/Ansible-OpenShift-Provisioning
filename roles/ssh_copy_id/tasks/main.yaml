@@ -35,7 +35,7 @@
 
 - name: Print results of copying ssh id to remote host
   tags: ssh_copy_id, ssh
-  debug:
+  ansible.builtin.debug:
     var: ssh_copy
   when: "inventory_hostname != '127.0.0.1'"
 
@@ -47,7 +47,7 @@
 
 - name: Print results of copying ssh id to remote host
   tags: ssh_copy_id, ssh
-  debug:
+  ansible.builtin.debug:
     var: ssh_copy
   when: "inventory_hostname == '127.0.0.1'"
 
@@ -59,7 +59,7 @@
 
 - name: Print results of copying ssh id to remote host
   tags: ssh_copy_id, ssh
-  debug:
+  ansible.builtin.debug:
     var: ssh_copy
   when: "inventory_hostname != '127.0.0.1'"
 

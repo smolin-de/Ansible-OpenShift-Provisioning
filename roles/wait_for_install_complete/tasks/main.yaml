@@ -31,7 +31,7 @@
 
 - name: "Additional step, if using NAT"
   tags: wait_for_install_complete
-  debug:
+  ansible.builtin.debug:
     msg: "NAT USERS ONLY: Create SSH tunnel to cluster, i.e run command in terminal window from controller: 'sshuttle -r {{ env.bastion.access.user }}@{{ env.bastion.networking.ip }} 192.168.122.0/15 --dns'"
   when: ( env.network_mode | upper == "NAT" )
   changed_when: false

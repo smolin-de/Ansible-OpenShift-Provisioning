@@ -43,7 +43,7 @@ SSH to bastion, switch to root, from there, SSH to core@bootstrap-ip and run 'jo
   retries: 30
   delay: 10
 
-- name: Print output of oc whoami, should be "system:admin" if previous task worked
+- name: Print output of oc whoami, should be 'system:admin', if previous task worked
   tags: wait_for_bootstrap
   ansible.builtin.debug:
     var: oc_whoami.stdout

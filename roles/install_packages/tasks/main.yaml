@@ -1,7 +1,7 @@
 ---
 - name: Print the list of packages to be installed and updated.
   tags: install_packages
-  debug:
+  ansible.builtin.debug:
     var: packages
 
 - name: Installing required packages for Linux machines.

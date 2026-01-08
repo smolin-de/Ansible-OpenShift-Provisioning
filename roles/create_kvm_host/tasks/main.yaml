@@ -43,7 +43,7 @@
 
 #- name: Show LPAR OS messages from HMC.
 #  tags: create_kvm_host, test2
-#  debug:
+#  ansible.builtin.debug:
 #    msg: "{{ os_messages_output }}"
 #  until: "'login:' in os_messages_output"
 
