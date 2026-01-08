@@ -14,7 +14,7 @@
 
 - name: Fail if network_mode is NAT and jumphost vars are undefined.
   tags: set_inventory
-  fail:
+  ansible.builtin.fail:
     msg: "Error jumphost vars undefined: when env.network_mode is NAT, you must set all env.jumphost variables."
   when: ( env.network_mode | upper == 'NAT' ) and (env.jumphost.name is none or env.jumphost.ip is none or env.jumphost.user is none or env.jumphost.pass is none or env.jumphost.path_to_keypair is none)
 
@@ -27,7 +27,7 @@
 
 - name: Refresh inventory
   tags: set_inventory
-  meta: refresh_inventory
+  ansible.builtin.meta: refresh_inventory
 
 - name: Add path to Ansible private key in ansible.cfg
   tags: set_inventory
@@ -49,4 +49,4 @@
 
 - name: Refresh inventory
   tags: set_inventory
-  meta: refresh_inventory
+  ansible.builtin.meta: refresh_inventory
