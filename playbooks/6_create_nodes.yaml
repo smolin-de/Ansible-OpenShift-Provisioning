@@ -173,7 +173,6 @@
   gather_facts: false
   roles:
     - common
-    - approve_certs
     - role: create_compute_nodes
       when: env.cluster.nodes.compute.vm_name[0] is defined
 #    - role: attach_compute_nodes_disk
