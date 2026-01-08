@@ -130,6 +130,7 @@
   tasks:
     - name: Delete haproxy bootstrap entries
       when: env.bastion.options.loadbalancer.on_bastion
+      ignore_errors: true
       block:
         - name: Delete haproxy bootstrap entries
           ansible.builtin.command: |
@@ -139,7 +140,6 @@
             name: haproxy.service
             state: restarted
             enabled: true
-      ignore_errors: true
 
 - name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
   hosts: kvm_host_bootstrap

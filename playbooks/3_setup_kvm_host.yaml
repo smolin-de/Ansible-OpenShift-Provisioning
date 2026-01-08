@@ -122,7 +122,7 @@
       file:
         path: "{{ user_home.stdout }}/.config/libvirt"
         state: directory
-      when: home_config_libvirt.stat.exists == false
+      when: not home_config_libvirt.stat.exists
 
     - name: Hack for bug 'https://github.com/IBM/Ansible-OpenShift-Provisioning/issues/188'
       tags: libvirt

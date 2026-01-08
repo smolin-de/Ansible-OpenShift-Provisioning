@@ -1,4 +1,9 @@
 ---
+- name: 1 Create LPAR
+  hosts: localhost
+  tags: create_lpar, create, kvm_host_1
+  connection: local
+
 # #Create logical partition
 # - hosts: localhost
 #   tags: create_lpar, create, kvm_host_1
