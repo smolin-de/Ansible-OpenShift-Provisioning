@@ -3,7 +3,6 @@
 - name: Almost there! Add host info to /etc/hosts so you can login to the cluster via web browser. Ansible Controller sudo password required
   tags: wait_for_install_complete
   become: true
-  #delegate_to: 127.0.0.1
   delegate_to: localhost
   connection: local
   ansible.builtin.lineinfile:

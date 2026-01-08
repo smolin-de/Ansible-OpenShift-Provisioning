@@ -1,7 +1,4 @@
 ---
-
-### Setup
-
 - name: Create directory for KVM host's RHEL configuration files for installation.
   tags: update_cfgs
   ansible.builtin.file:
@@ -17,7 +14,7 @@
 - name: Split iso_mount_dir variable on / for use in template
   tags: update_cfgs
   ansible.builtin.set_fact:
-    ins_dir:  "{{ env.file_server.iso_mount_dir.split('/') }}"
+    ins_dir: "{{ env.file_server.iso_mount_dir.split('/') }}"
 
 - name: Template RHEL configuration files out to FTP server.
   tags: update_cfgs
@@ -51,9 +48,9 @@
 
 - name: Add network device information to KVM host's RHEL prm file for boot
   ansible.builtin.lineinfile:
-    path: "{{env.file_server.cfgs_dir}}/{{ networking.hostname }}/kvm_host.prm"
+    path: "{{ env.file_server.cfgs_dir }}/{{ networking.hostname }}/kvm_host.prm"
     insertafter: "ro ramdisk_size"
-    line: "rd.znet=qeth,0.0.{{nic_child_list[0]}},0.0.{{nic_child_list[1]}},0.0.{{nic_child_list[2]}},layer2=1,portno={{ lpar.networking.nic.card1.port }}"
+    line: "rd.znet=qeth,0.0.{{ nic_child_list[0] }},0.0.{{ nic_child_list[1] }},0.0.{{ nic_child_list[2] }},layer2=1,portno={{ lpar.networking.nic.card1.port }}"
 
 - name: Create hash from KVM host root password to input in kickstart file
   tags: update_cfgs

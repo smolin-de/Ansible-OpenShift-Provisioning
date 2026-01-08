@@ -13,7 +13,7 @@
     state: directory
     mode: '700'
   register: ssh_directory_creation
-  when: ssh_directory_exists_check.stat.exists == false
+  when: not ssh_directory_exists_check.stat.exists
 
 - name: Generate an OpenSSH keypair with the default values (4096 bits, RSA)
   tags: ssh_key_gen, ssh

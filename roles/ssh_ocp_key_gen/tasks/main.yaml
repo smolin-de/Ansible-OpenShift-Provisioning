@@ -28,9 +28,9 @@
 
 - name: Print results of SSH key generation
   tags: ssh_ocp_key_gen
+  when: ssh_ocp.changed
   ansible.builtin.debug:
     var: ssh_ocp.public_key
-  when: ssh_ocp.changed
 
 - name: Set SSH key permissions
   tags: ssh_ocp_key_gen

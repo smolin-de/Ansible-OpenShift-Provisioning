@@ -27,6 +27,7 @@
   ansible.builtin.file:
     path: /root/ocpinst
     state: directory
+    mode: '0755'
 
 # Replaced with lagacy curl cmd, because it is not supported anymore on our Jenkins server
 # # Required rootfs image, when use KVM bootstrap or other kVM node
@@ -189,7 +190,7 @@
 - name: Set permissions for ocpinst directory contents to root
   tags: get_ocp
   become: true
-  ansible.builtin.command: chmod 0755 /root/ocpinst/{{item}}
+  ansible.builtin.command: chmod 0755 /root/ocpinst/{{ item }}
   loop:
     - manifests
     - openshift
@@ -199,7 +200,7 @@
 - name: Set ownership of ocpinst directory contents to root
   tags: get_ocp
   become: true
-  ansible.builtin.command: chown root:root /root/ocpinst/{{item}}
+  ansible.builtin.command: chown root:root /root/ocpinst/{{ item }}
   loop:
     - manifests
     - openshift
