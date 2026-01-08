@@ -2,7 +2,7 @@
 
 - name: Check to see if local SSH directory exists
   tags: ssh_key_gen, ssh
-  stat:
+  ansible.builtin.stat:
     path: "~/.ssh"
   register: ssh_directory_exists_check
 

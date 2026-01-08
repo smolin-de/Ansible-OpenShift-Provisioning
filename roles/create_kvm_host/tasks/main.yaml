@@ -49,7 +49,7 @@
 
 - name: Wait 7 minutes for automated RHEL installation and configuration to complete.
   tags: create_kvm_host
-  pause:
+  ansible.builtin.pause:
     minutes: 7
 
 #- name: Change LPAR's boot source to storage adapter instead of FTP for future booting

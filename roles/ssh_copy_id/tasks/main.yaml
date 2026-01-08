@@ -2,7 +2,7 @@
 
 - name: Load in variables
   tags: ssh_copy_id, ssh
-  include_vars: "{{ inventory_dir }}/group_vars/all.yaml"
+  ansible.builtin.include_vars: "{{ inventory_dir }}/group_vars/all.yaml"
 
 - name: Ensure users home '.ssh' directory has correct access rights
   tags: ssh_copy_id, ssh
