@@ -41,7 +41,7 @@
             msg: "'expect' package is not installed on jumphost"
           when: (env.network_mode | upper == "NAT") and (env.jumphost.ip is not none) and (not expect_installed)
       rescue:
-        - name: Package 'expect' must be installed on the jumphost, attempting to install it. #Using 'block' and 'rescue' to avoid running the 'package' module (which requires 'sudo') unless necessary.
+        - name: Package 'expect' must be installed on the jumphost, attempting to install it
           become: true
           ansible.builtin.package:
             name: expect
@@ -57,7 +57,7 @@
   tags: ssh, ssh_copy_id, section_1
   gather_facts: true
   vars:
-    ssh_target: ["{{ env.bastion.networking.ip }}", "{{ env.bastion.access.user }}", "{{ env.bastion.access.pass }}","{{ path_to_key_pair }}"]
+    ssh_target: ["{{ env.bastion.networking.ip }}", "{{ env.bastion.access.user }}", "{{ env.bastion.access.pass }}", "{{ path_to_key_pair }}"]
   roles:
     - ssh_copy_id
 

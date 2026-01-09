@@ -4,26 +4,26 @@
   tasks:
     - name: Check ansible delegate function. It is not always working :-(
       block:
-      - name: Test ansible delegate function. It is not always working :-(
-        ansible.builtin.shell: |
-          hostname
-        remote_user: "{{ env.file_server.user }}"
-        delegate_to: "{{ env.file_server.ip }}"
-        register: check1
+        - name: Test ansible delegate function. It is not always working :-(
+          ansible.builtin.shell: |
+            hostname
+          remote_user: "{{ env.file_server.user }}"
+          delegate_to: "{{ env.file_server.ip }}"
+          register: check1
 
-      - name: Show above command output
-        ansible.builtin.debug:
-          var: check1.stdout_lines
+        - name: Show above command output
+          ansible.builtin.debug:
+            var: check1.stdout_lines
 
-      - name: Test ansible delegate function. It is not always working :-(
-        ansible.builtin.shell: |
-          hostname
-        delegate_to: localhost
-        register: check2
+        - name: Test ansible delegate function. It is not always working :-(
+          ansible.builtin.shell: |
+            hostname
+          delegate_to: localhost
+          register: check2
 
-      - name: Show above command output
-        ansible.builtin.debug:
-          var: check2.stdout_lines
+        - name: Show above command output
+          ansible.builtin.debug:
+            var: check2.stdout_lines
 
 # Prepare and then create the temporary bootstrap node and the control nodes
 - name: 6 create nodes - prepare KVM guests

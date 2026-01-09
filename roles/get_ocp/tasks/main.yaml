@@ -168,7 +168,7 @@
   become: true
   when: env.cluster.nodes.control.hostname | default('') | length != 1
 
-#- name: Create SNO manifests
+# - name: Create SNO manifests
 #  tags: get_ocp
 #  ansible.builtin.shell: |
 #    set -o pipefail

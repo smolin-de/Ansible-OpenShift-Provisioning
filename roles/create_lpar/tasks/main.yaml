@@ -1,5 +1,5 @@
 ---
-#Create LPAR Profile
+# Create LPAR Profile
 - name: Create logical partition.
   tags: create_lpar, lpar
   ibm.ibm_zhmc.zhmc_partition:
@@ -26,7 +26,7 @@
   ansible.builtin.debug:
     var: create_lpar
 
-# Attach storge group
+# Attach storage group
 - name: Ensure storage group is attached to partition.
   tags: create_lpar, storage_group, storage_group_1
   ibm.ibm_zhmc.zhmc_storage_group_attachment:
@@ -46,7 +46,7 @@
   ansible.builtin.debug:
     var: sglparattach
 
-# Attach second storge group, if defined
+# Attach second storage group, if defined
 - name: Ensure second storage group is attached to partition, if defined.
   tags: create_lpar, storage_group, storage_group_2
   ibm.ibm_zhmc.zhmc_storage_group_attachment:
@@ -68,7 +68,7 @@
     var: sglparattach
   when: lpar.storage_group_2.name is defined
 
-#Attach Network Adapter
+# Attach Network Adapter
 - name: Ensure NIC1 exists in the partition.
   tags: create_lpar, nic, nic1
   ibm.ibm_zhmc.zhmc_nic:
@@ -85,7 +85,7 @@
       adapter_name: "{{ lpar.networking.nic.card1.adapter }}"
       adapter_port: "{{ lpar.networking.nic.card1.port }}"
       description: "NIC1"
-      device_number: "{{ '%04x' % lpar.networking.nic.card1.dev_num | int }}"
+      device_number: "{{ '%04x' % (lpar.networking.nic.card1.dev_num | default(0) | int) }}"
   register: nic1
 
 - name: Print the result.
@@ -109,7 +109,7 @@
       adapter_name: "{{ lpar.networking.nic.card2.adapter }}"
       adapter_port: "{{ lpar.networking.nic.card2.port }}"
       description: "NIC2"
-      device_number: "{{ '%04x' % ( lpar.networking.nic.card2.dev_num | int ) }}"
+      device_number: "{{ '%04x' % (lpar.networking.nic.card2.dev_num | default(0) | int) }}"
   register: nic2
   when: lpar.networking.nic.card2 is defined
 

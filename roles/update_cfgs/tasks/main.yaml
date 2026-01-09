@@ -34,7 +34,7 @@
     path: '{{ env.file_server.cfgs_dir }}/{{ networking.hostname }}/kvm_host.prm'
     insertafter: 'inst.repo'
     line: rd.zfcp=0.0.{{ lpar.storage_group_1.dev_num }},0x{{ lpar.storage_group_1.storage_wwpn[i] }},0x0000000000000000
-  with_sequence: start=0 end={{(lpar.storage_group_1.storage_wwpn | length) - 1}} stride=1
+  with_sequence: start=0 end={{ (lpar.storage_group_1.storage_wwpn | length) - 1 }} stride=1
   loop_control:
     extended: yes
     index_var: i
@@ -42,9 +42,9 @@
 - name: Create list from nic1 device number, incremented twice for input in KVM host prm file for boot
   ansible.builtin.set_fact:
     nic_child_list:
-      - "{{ '%04x' % ( lpar.networking.nic.card1.dev_num | int ) }}"
-      - "{{ '%04x' % ( lpar.networking.nic.card1.dev_num | int + 1 ) }}"
-      - "{{ '%04x' % ( lpar.networking.nic.card1.dev_num | int + 2 ) }}"
+      - "{{ '%04x' % (lpar.networking.nic.card1.dev_num | int) }}"
+      - "{{ '%04x' % (lpar.networking.nic.card1.dev_num | int + 1) }}"
+      - "{{ '%04x' % (lpar.networking.nic.card1.dev_num | int + 2) }}"
 
 - name: Add network device information to KVM host's RHEL prm file for boot
   ansible.builtin.lineinfile:

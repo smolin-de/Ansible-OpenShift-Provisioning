@@ -7,7 +7,7 @@
   become: false
   gather_facts: true
   vars:
-    ssh_target: ["{{ env.z.lpar1.ip }}","{{ env.z.lpar1.user }}","{{ env.z.lpar1.pass }}","{{ path_to_key_pair }}"]
+    ssh_target: ["{{ env.z.lpar1.ip }}", "{{ env.z.lpar1.user }}", "{{ env.z.lpar1.pass }}", "{{ path_to_key_pair }}"]
   tasks:
     - name: Include vars for the KVM host.
       ansible.builtin.include_vars:
@@ -24,7 +24,7 @@
   become: false
   gather_facts: false
   vars:
-    ssh_target: ["{{ env.z.lpar2.ip }}","{{ env.z.lpar2.user }}","{{ env.z.lpar2.pass }}","{{ path_to_key_pair }}"]
+    ssh_target: ["{{ env.z.lpar2.ip }}", "{{ env.z.lpar2.user }}", "{{ env.z.lpar2.pass }}", "{{ path_to_key_pair }}"]
   tasks:
     - name: Include vars for second KVM host.
       ansible.builtin.include_vars:
@@ -44,7 +44,7 @@
   become: false
   gather_facts: false
   vars:
-    ssh_target: ["{{ env.z.lpar3.ip }}","{{ env.z.lpar3.user }}","{{ env.z.lpar3.pass }}","{{ path_to_key_pair }}"]
+    ssh_target: ["{{ env.z.lpar3.ip }}", "{{ env.z.lpar3.user }}", "{{ env.z.lpar3.pass }}", "{{ path_to_key_pair }}"]
   tasks:
     - name: Include vars for third KVM host.
       ansible.builtin.include_vars:
@@ -65,7 +65,7 @@
   vars:
     packages: "{{ env.pkgs.kvm }}"
   roles:
-    - { role: attach_subscription, when:  env.redhat.manage_subscription }
+    - { role: attach_subscription, when: env.redhat.manage_subscription }
     - install_packages
     - httpd
   post_tasks:
@@ -164,9 +164,12 @@
         enabled: yes
         state: restarted
 
-    - name: Enable cockpit console
+    - name: Ensure Cockpit console is enabled and started
       tags: cockpit
-      ansible.builtin.command: systemctl enable --now cockpit.socket
+      ansible.builtin.systemd:
+        name: cockpit.socket
+        enabled: true
+        state: started
 
 - name: Configure ip_forward in case of NAT
   hosts: kvm_host
@@ -184,7 +187,8 @@
         reload: true
       when: env.network_mode | upper == 'NAT'
 
-- hosts: kvm_host
+- name: Configure storage
+  hosts: kvm_host
   tags: setup, section_3
   become: true
   roles:
