@@ -37,7 +37,7 @@
       verify: false
     cpc_name: "{{ cpc_name }}"
     storage_group_name: "{{ lpar.storage_group_1.name }}"
-    partition_name: "{{ lpar.name  }}"
+    partition_name: "{{ lpar.name }}"
     state: attached
   register: sglparattach
 
@@ -57,7 +57,7 @@
       verify: false
     cpc_name: "{{ cpc_name }}"
     storage_group_name: "{{ lpar.storage_group_2.name }}"
-    partition_name: "{{ lpar.name  }}"
+    partition_name: "{{ lpar.name }}"
     state: attached
   register: sglparattach
   when: lpar.storage_group_2.name is defined
