@@ -1,7 +1,7 @@
 ---
-- hosts: localhost
-  gather_facts: False
+- name: test
   hosts: bastion
+  gather_facts: False
   vars:
     test_var: test
   tasks:
