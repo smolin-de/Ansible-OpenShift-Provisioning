@@ -6,12 +6,12 @@
   gather_facts: false
   tasks:
     - name: Include vars for the KVM host.
-      include_vars:
+      ansible.builtin.include_vars:
         file: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
       when: env.z.lpar1.create is true
 
     - name: Update configuration files for the KVM host.
-      import_role:
+      ansible.builtin.import_role:
         name: update_cfgs
       when: env.z.lpar1.create is true
 
@@ -22,12 +22,12 @@
   gather_facts: false
   tasks:
     - name: Include vars for a second KVM host if it is to be created.
-      include_vars:
+      ansible.builtin.include_vars:
         file: "{{ inventory_dir }}/host_vars/{{ env.z.lpar2.hostname }}.yaml"
       when: env.z.lpar2.create is true
 
     - name: Update configuration files for a second KVM host, if cluster is to be highly available
-      import_role:
+      ansible.builtin.import_role:
         name: update_cfgs
       when: env.z.lpar2.create is true
 
@@ -38,12 +38,12 @@
   gather_facts: false
   tasks:
     - name: Include vars for third KVM host if it is to be created.
-      include_vars:
+      ansible.builtin.include_vars:
         file: "{{ inventory_dir }}/host_vars/{{ env.z.lpar3.hostname }}.yaml"
       when: env.z.lpar3.create is true
 
     - name: Update configuration files for a third KVM host, if cluster is to be highly available
-      import_role:
+      ansible.builtin.import_role:
         name: update_cfgs
       when: env.z.lpar3.create is true
 
@@ -53,12 +53,12 @@
   connection: local
   tasks:
     - name: Include vars for first LPAR if it is to be created.
-      include_vars:
+      ansible.builtin.include_vars:
         file: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
       when: env.z.lpar1.create is true
 
     - name: Boot and install RHEL for KVM host
-      import_role:
+      ansible.builtin.import_role:
         name: create_kvm_host
       when: env.z.lpar1.create is true
 
@@ -68,12 +68,12 @@
   connection: local
   tasks:
     - name: Include vars for second KVM host.
-      include_vars:
+      ansible.builtin.include_vars:
         file: "{{ inventory_dir }}/host_vars/{{ env.z.lpar2.hostname }}.yaml"
       when: env.z.lpar2.create is true
 
     - name: Boot and install RHEL for a second KVM host.
-      import_role:
+      ansible.builtin.import_role:
         name: create_kvm_host
       when: env.z.lpar2.create is true
 
@@ -83,11 +83,11 @@
   connection: local
   tasks:
     - name: Include vars for third KVM host.
-      include_vars:
+      ansible.builtin.include_vars:
         file: "{{ inventory_dir }}/host_vars/{{ env.z.lpar3.hostname }}.yaml"
       when: env.z.lpar3.create is true
 
     - name: Boot and install RHEL for a third KVM host.
-      import_role:
+      ansible.builtin.import_role:
         name: create_kvm_host
       when: env.z.lpar3.create is true

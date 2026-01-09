@@ -43,7 +43,7 @@
       rescue:
         - name: Package 'expect' must be installed on the jumphost, attempting to install it. #Using 'block' and 'rescue' to avoid running the 'package' module (which requires 'sudo') unless necessary.
           become: true
-          package:
+          ansible.builtin.package:
             name: expect
           when: (env.network_mode | upper == "NAT") and (env.jumphost.ip is not none)
   roles:
