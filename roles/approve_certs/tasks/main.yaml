@@ -1,4 +1,13 @@
 ---
+- name: Debug, get current CSRs
+  ansible.builtin.command: oc get csr
+  register: cmd_output
+  changed_when: false
+  ignore_errors: true
+
+- name: Show CSR output
+  ansible.builtin.debug:
+    var: cmd_output.stdout_lines
 
 - name: Debug issue with cancel
   ansible.builtin.debug:
