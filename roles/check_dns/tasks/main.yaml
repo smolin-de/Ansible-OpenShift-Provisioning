@@ -14,13 +14,13 @@
     - "apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}"
     - "test.apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}"
   register: services_lookup
-  failed_when: ((env.bastion.options.loadbalancer.on_bastion == True) and (env.bastion.networking.ip != services_lookup.stdout)) or ((env.bastion.options.loadbalancer.on_bastion == False) and (env.bastion.options.loadbalancer.public_ip != services_lookup.stdout))
+  failed_when: (env.bastion.options.loadbalancer.on_bastion and (env.bastion.networking.ip != services_lookup.stdout)) or ((env.bastion.options.loadbalancer.on_bastion == False) and (env.bastion.options.loadbalancer.public_ip != services_lookup.stdout))
 
 - name: Check internal cluster DNS resolution for internal API services
   tags: check_dns, dns
   ansible.builtin.shell: "dig +short api-int.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }} | tail -n1"
   register: api_int_lookup
-  failed_when: ((env.bastion.options.loadbalancer.on_bastion == True) and (env.bastion.networking.ip != api_int_lookup.stdout)) or ((env.bastion.options.loadbalancer.on_bastion == False) and (env.bastion.options.loadbalancer.private_ip != api_int_lookup.stdout) )
+  failed_when: (env.bastion.options.loadbalancer.on_bastion and (env.bastion.networking.ip != api_int_lookup.stdout)) or ((env.bastion.options.loadbalancer.on_bastion == False) and (env.bastion.options.loadbalancer.private_ip != api_int_lookup.stdout) )
 
 - name: Check internal cluster DNS resolution for bootstrap
   tags: check_dns, dns
@@ -40,7 +40,7 @@
   ansible.builtin.shell: "dig +short {{ env.cluster.nodes.control.hostname[i] }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}  | tail -n1"
   register: control_lookup
   failed_when: env.cluster.nodes.control.ip[i] != control_lookup.stdout
-  with_sequence: start=0 end={{(env.cluster.nodes.control.hostname | length) - 1}} stride=1
+  with_sequence: start=0 end={{ (env.cluster.nodes.control.hostname | length) - 1 }} stride=1
   loop_control:
     extended: yes
     index_var: i
@@ -50,7 +50,7 @@
   ansible.builtin.shell: "dig +short {{ env.cluster.nodes.compute.hostname[i] }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}  | tail -n1"
   register: compute_lookup
   failed_when: env.cluster.nodes.compute.ip[i] != compute_lookup.stdout
-  with_sequence: start=0 end={{(env.cluster.nodes.compute.hostname | length) - 1}} stride=1
+  with_sequence: start=0 end={{ (env.cluster.nodes.compute.hostname | length) - 1 }} stride=1
   loop_control:
     extended: yes
     index_var: i

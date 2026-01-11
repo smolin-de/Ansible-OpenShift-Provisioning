@@ -8,8 +8,8 @@
     META="{{ env.cluster.networking.metadata_name }}"
     virsh vol-delete --pool "${META}-vdisk" "/var/lib/libvirt/images/${META}/{{ item }}.qcow2" || true
     virsh vol-delete --pool "${META}-vdisk" "/var/lib/libvirt/images/${META}/{{ item }}-1.qcow2" || true
-  loop: "{{ ([ env.cluster.nodes.bootstrap.vm_name | default()] + \
-          (env.cluster.nodes.control.vm_name | default([]))+ \
+  loop: "{{ ([env.cluster.nodes.bootstrap.vm_name | default()] + \
+          (env.cluster.nodes.control.vm_name | default([])) + \
           (env.cluster.nodes.compute.vm_name | default([]))) | select() }}"
   register: delete_nodes
   changed_when: "('destroyed' in delete_nodes.stdout) or ('undefined' in delete_nodes.stdout)"
