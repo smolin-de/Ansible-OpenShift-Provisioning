@@ -15,12 +15,15 @@
   register: ssh_directory_creation
   when: not ssh_directory_exists_check.stat.exists
 
-- name: Generate an OpenSSH keypair with the default values (4096 bits, rsa) and encrypted private key.
+- name: Generate an OpenSSH keypair (4096 bits, RSA)
   tags: ssh_ocp_key_gen
   community.crypto.openssh_keypair:
     path: "/root/.ssh/id_rsa"
+    type: rsa
+    size: 4096
     backend: opensshbin
     owner: root
+    mode: "0600"
     passphrase: ""
     comment: "{{ env.ocp_ssh_key_comment }}"
     regenerate: full_idempotence
@@ -28,9 +31,8 @@
 
 - name: Print results of SSH key generation
   tags: ssh_ocp_key_gen
-  when: ssh_ocp.changed
   ansible.builtin.debug:
-    var: ssh_ocp.public_key
+    msg: "Public Key Generated: {{ ssh_ocp.public_key }}"
 
 - name: Set SSH key permissions
   tags: ssh_ocp_key_gen
