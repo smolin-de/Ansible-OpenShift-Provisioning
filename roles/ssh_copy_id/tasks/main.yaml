@@ -23,6 +23,7 @@
   ansible.builtin.template:
     src: ssh-copy-id.exp.j2
     dest: "{{ role_path }}/files/ssh-copy-id-expect-pass.exp"
+    mode: "0700"
     force: yes
   delegate_to: 127.0.0.1
 
@@ -76,10 +77,3 @@
     path: "{{ role_path }}/files/ssh-copy-id-expect-pass.exp"
     state: absent
   when: "inventory_hostname != '127.0.0.1'"
-
-- name: Ensure ssh-copy-id files folder exists for future runs.
-  tags: ssh_copy_id, ssh
-  ansible.builtin.file:
-    path: "{{ role_path }}/files/"
-    state: directory
-  delegate_to: 127.0.0.1
