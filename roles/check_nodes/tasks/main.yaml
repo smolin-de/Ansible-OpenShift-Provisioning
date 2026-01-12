@@ -11,6 +11,7 @@
   loop_control:
     loop_var: node
   register: cmd_output
+  changed_when: false
   until: ("Ready" == cmd_output.stdout) or ("NotReady" == cmd_output.stdout)
   retries: 60
   delay: 30

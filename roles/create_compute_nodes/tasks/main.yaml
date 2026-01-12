@@ -45,7 +45,7 @@
   loop_control:
     extended: yes
     index_var: i
-  when: env.cluster.nodes.compute.hostname[0] is defined and env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname
+  when: env.cluster.nodes.compute.hostname[0] is defined and not env.z.high_availability and inventory_hostname == env.z.lpar1.hostname
 
 # If cluster is to be highly available, split control and infra nodes into lists corresponding to their future KVM hosts.
 
@@ -100,7 +100,7 @@
   when: env.z.high_availability and compute_hostname[i] is defined
 
 # - name: Attach compute node disks
-#   when: env.cluster.nodes.compute.vm_name[0] is defined and env.z.high_availability == False and inventory_hostname == env.z.lpar1.hostname
+#   when: env.cluster.nodes.compute.vm_name[0] is defined and not env.z.high_availability and inventory_hostname == env.z.lpar1.hostname
 #   tags: attach_compute_node_disks
 #   block:
 #     - name: Attach compute node disks
