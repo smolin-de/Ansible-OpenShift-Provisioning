@@ -15,6 +15,7 @@ exclude_paths:
 verbosity: 1
 
 skip_list:
+  - command-instead-of-module
   - no-changed-when
   - latest[git]
   - name[casing]

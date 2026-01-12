@@ -39,8 +39,6 @@
         path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
       when: env.z.lpar1.hostname is defined
       register: lpar_host_vars
-      # TODO:
-      # use: failed_when: not lpar_host_vars.stat.exists
       failed_when: not lpar_host_vars.stat.exists
       ignore_errors: true
 

@@ -125,6 +125,7 @@
         state: directory
       when: not home_config_libvirt.stat.exists
 
+    # TODO: fix hack
     - name: Hack for bug 'https://github.com/IBM/Ansible-OpenShift-Provisioning/issues/188'
       tags: libvirt
       ansible.builtin.shell: |
