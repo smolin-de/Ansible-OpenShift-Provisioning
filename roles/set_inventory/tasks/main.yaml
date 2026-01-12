@@ -2,8 +2,11 @@
 
 - name: Find inventory directory from ansible.cfg
   tags: set_inventory
-  ansible.builtin.shell: cat {{ ansible_config_file }} | grep 'inventory=' | cut -f2 -d"="
+  ansible.builtin.shell: |
+    set -o pipefail
+    cat {{ ansible_config_file }} | grep 'inventory=' | cut -f2 -d"="
   register: find_inventory
+  changed_when: false
 
 - name: Find absolute path to project.
   tags: set_inventory
@@ -11,6 +14,7 @@
     ansible_config="{{ ansible_config_file }}"
     echo "${ansible_config%/*}/"
   register: find_project
+  changed_when: false
 
 - name: Fail if network_mode is NAT and jumphost vars are undefined.
   tags: set_inventory
@@ -41,6 +45,7 @@
   tags: set_inventory
   ansible.builtin.command: ansible-inventory --list
   register: inv_check
+  changed_when: false
   failed_when: inv_check.rc != 0
 
 - name: Re-read facts after changes made to inventory
