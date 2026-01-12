@@ -27,6 +27,7 @@
   ansible.builtin.template:
     src: hosts.j2
     dest: "{{ find_project.stdout }}{{ find_inventory.stdout }}/hosts"
+    mode: "0644"
     force: yes
 
 - name: Refresh inventory

@@ -1,4 +1,12 @@
 ---
+- name: Delete OCP download directory for idempotency, because ignition files deprecate after 24 hours.
+  tags: get_ocp
+  become: true
+  ansible.builtin.file:
+    path: /root/ocpinst
+    state: absent
+
+
 - name: Delete ignition folder for idempotency
   tags: get_ocp
   ansible.builtin.file:
@@ -15,19 +23,12 @@
     owner: "root"
     group: "root"
 
-- name: Delete OCP download directory for idempotency, because ignition files deprecate after 24 hours.
-  tags: get_ocp
-  become: true
-  ansible.builtin.file:
-    path: /root/ocpinst
-    state: absent
-
 - name: Create OCP download directory
   tags: get_ocp
   ansible.builtin.file:
     path: /root/ocpinst
     state: directory
-    mode: '0755'
+    mode: "0755"
 
 # Replaced with lagacy curl cmd, because it is not supported anymore on our Jenkins server
 # # Required rootfs image, when use KVM bootstrap or other kVM node
@@ -132,6 +133,7 @@
   ansible.builtin.template:
     src: install-config.yaml.j2
     dest: "{{ item }}"
+    mode: "0644"
     force: yes
   loop:
     - /root/ocpinst/install-config.yaml
@@ -153,6 +155,7 @@
   ansible.builtin.template:
     src: agent-config.yaml.j2
     dest: "{{ item }}"
+    mode: "0644"
     force: yes
   loop:
     - /root/ocpinst/agent-config.yaml
@@ -242,6 +245,7 @@
   ansible.builtin.file:
     state: directory
     path: ~/.kube
+    mode: "0755"
 
 - name: Create directory in root's home for default kubeconfig.
   tags: get_ocp, config
@@ -249,6 +253,7 @@
   ansible.builtin.file:
     state: directory
     path: ~/.kube
+    mode: "0755"
 
 - name: Make kubeconfig admin user's default (for non-root user).
   tags: get_ocp, config
@@ -258,6 +263,7 @@
     owner: "{{ env.bastion.access.user }}"
     group: "{{ env.bastion.access.user }}"
     remote_src: yes
+    mode: "0644"
   when: env.bastion.access.user != "root"
 
 - name: Make kubeconfig admin user's default (for root user).
@@ -268,6 +274,7 @@
     owner: "{{ env.bastion.access.user }}"
     group: "{{ env.bastion.access.user }}"
     remote_src: yes
+    mode: "0644"
   when: env.bastion.access.user == "root"
 
 - name: Make kubeconfig root user's default.
@@ -278,6 +285,7 @@
     owner: root
     group: root
     remote_src: yes
+    mode: "0644"
 
 - name: Create ignition directory in HTTP-accessible directory.
   tags: get_ocp
@@ -285,6 +293,7 @@
   ansible.builtin.file:
     path: /var/www/html/ignition
     state: directory
+    mode: "0755"
 
 - name: Copy ignition files to HTTP-accessible directory.
   tags: get_ocp
@@ -293,7 +302,7 @@
     src: /root/ocpinst/{{ item }}.ign
     dest: /var/www/html/ignition
     remote_src: yes
-    mode: "775"
+    mode: "644"
     group: root
     owner: root
   loop:

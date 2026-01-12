@@ -92,4 +92,4 @@
   become: true
   roles:
     - common
-    - { role: get_ocp, when: abi.flag is not defined or abi.flag != True }
+    - get_ocp

@@ -1,11 +1,5 @@
 ---
 
-- name: Check to see if local SSH directory exists
-  tags: ssh_ocp_key_gen
-  ansible.builtin.stat:
-    path: /root/.ssh
-  register: ssh_directory_exists_check
-
 - name: Create SSH local directory if it doesn't already exist
   tags: ssh_ocp_key_gen
   ansible.builtin.file:
@@ -13,7 +7,6 @@
     state: directory
     mode: "0700"
   register: ssh_directory_creation
-  when: not ssh_directory_exists_check.stat.exists
 
 - name: Generate an OpenSSH keypair (4096 bits, RSA)
   tags: ssh_ocp_key_gen
@@ -33,17 +26,3 @@
   tags: ssh_ocp_key_gen
   ansible.builtin.debug:
     msg: "Public Key Generated: {{ ssh_ocp.public_key }}"
-
-- name: Set SSH key permissions
-  tags: ssh_ocp_key_gen
-  ansible.builtin.command: chmod 600  /root/.ssh/{{ item }}
-  loop:
-    - id_rsa
-    - id_rsa.pub
-
-- name: Set SSH key ownership
-  tags: ssh_ocp_key_gen
-  ansible.builtin.command: chown root:root /root/.ssh/{{ item }}
-  loop:
-    - id_rsa
-    - id_rsa.pub
