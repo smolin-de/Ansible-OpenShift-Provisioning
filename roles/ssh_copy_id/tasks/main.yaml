@@ -32,6 +32,7 @@
   ansible.builtin.copy:
     src: "{{ role_path }}/files/ssh-copy-id-expect-pass.exp"
     dest: "~/.ssh/ssh-copy-id-expect-pass.exp"
+    mode: "0755"
   when: "inventory_hostname != '127.0.0.1'"
 
 - name: Print results of copying ssh id to remote host
