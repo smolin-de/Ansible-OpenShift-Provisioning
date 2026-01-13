@@ -31,7 +31,7 @@
       # Retry on busy msg:
       # "msg": "HTTPError: 409,2: The operation could not be completed because the object is busy with another operation.
       # Wait for that operation to complete, and then try this operation again.
-      retries: 6
+      retries: 30
       delay: 30
 
     - name: Show above command output
