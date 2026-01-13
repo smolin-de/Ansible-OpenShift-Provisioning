@@ -23,7 +23,7 @@
   register: co_check
   # Check for "True" and "False", in case output was empty for any reason
   until: ("True" not in co_check.stdout) and ("False" in co_check.stdout)
-  retries: 5
+  retries: 8
   delay: 60
   ignore_errors: true
   when: not cluster_operators_ok
