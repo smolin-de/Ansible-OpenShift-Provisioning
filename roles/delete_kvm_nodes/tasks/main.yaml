@@ -31,7 +31,7 @@
     - name: Get virsh image list
       ansible.builtin.shell: |
         META="{{ env.cluster.networking.metadata_name }}"
-        virsh vol-list "${META}-vdisk"
+        virsh vol-list "${META}-vdisk" 2> /dev/null || true
       register: cmd_virsh_image_list
 
     - name: Print virsh image list
