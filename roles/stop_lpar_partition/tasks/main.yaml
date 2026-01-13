@@ -4,6 +4,10 @@
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
 
+- name: Show zHMC User ID
+  ansible.builtin.debug:
+    msg: "zHMC User ID: {{ _node.hmc.auth.user }}"
+
 - name: Stop and configure dpm mode partition
   when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   vars:
