@@ -5,6 +5,8 @@
   ansible.builtin.shell: |
     set -o pipefail
     cat {{ ansible_config_file }} | grep 'inventory=' | cut -f2 -d"="
+  args:
+    executable: /bin/bash
   register: find_inventory
   changed_when: false
 
