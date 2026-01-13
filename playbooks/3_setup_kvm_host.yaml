@@ -123,13 +123,16 @@
       ansible.builtin.file:
         path: "{{ user_home.stdout }}/.config/libvirt"
         state: directory
+        mode: "0755"
       when: not home_config_libvirt.stat.exists
 
     # TODO: fix hack
     - name: Hack for bug 'https://github.com/IBM/Ansible-OpenShift-Provisioning/issues/188'
       tags: libvirt
-      ansible.builtin.shell: |
-        mkdir -p /home/root/.config/libvirt
+      ansible.builtin.file:
+        path: "/home/root/.config/libvirt"
+        state: directory
+        mode: "0755"
 
     - name: Create file for user's custom libvirt configurations.
       tags: libvirt
@@ -138,6 +141,7 @@
         state: touch
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
+        mode: "0644"
 
     - name: Set default uri connection to qemu:///system.
       tags: libvirt
