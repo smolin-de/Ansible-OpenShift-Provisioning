@@ -19,7 +19,9 @@
     for i in {1..100} ; do
         # Approve all pending requests
         LIST=$(oc get csr 2> /dev/null | grep -i pending | awk '{print $1}')
-        [ ! -z "${LIST}" ] && echo "${LIST}" | xargs oc adm certificate approve || true
+        if [ -n "$LIST" ]; then
+            echo "$LIST" | xargs oc adm certificate approve || true
+        fi
         sleep 30
     done
   # Run for 50 min
