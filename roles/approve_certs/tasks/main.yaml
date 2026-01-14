@@ -18,8 +18,8 @@
     set -o pipefail
     for i in {1..90} ; do
         # Approve all pending requests
-        oc get csr -o go-template='{{range .items}}{{if not .status}}{{.metadata.name}}{{"\n"}}{{end}}{{end}}' \
-        | xargs --no-run-if-empty oc adm certificate approve
+        LIST=$(oc get csr 2> /dev/null | grep -i pending | awk '{print $1}')
+        [ ! -z "${LIST}" ] && echo "${LIST}" | xargs oc adm certificate approve || true
         sleep 30
     done
   # Run for 50 min
