@@ -136,6 +136,8 @@
       param_control_node: "{{ day2_control_node }}"
 
     - role: approve_certs
+      vars:
+        approve_certs_cleanup: false
     - role: wait_for_node
       wait_for_node_name: "{{ day2_control_node.vm_hostname }}"
     - role: approve_certs
