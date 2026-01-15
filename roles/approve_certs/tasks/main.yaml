@@ -1,7 +1,7 @@
 ---
-- name: Debug issue with cancel
+- name: Debug issue with approve_certs_cleanup
   ansible.builtin.debug:
-    var: approve_certs_task
+    var: approve_certs_cleanup
 
 - name: Cancel async 'approve_certs_task', if exists
   tags: approve_certs
@@ -20,7 +20,7 @@
         # Approve all pending requests
         LIST=$(oc get csr 2> /dev/null | grep -i pending | awk '{print $1}')
         if [ -n "$LIST" ]; then
-            echo "$LIST" | xargs oc adm certificate approve || true
+            echo "$LIST" | xargs --no-run-if-empty oc adm certificate approve || true
         fi
         sleep 30
     done
