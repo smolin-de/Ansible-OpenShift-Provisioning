@@ -1,4 +1,5 @@
 ---
+# TODO: This role has several bugs
 - name: Create directory in <storage.pool_path> for this cluster's storage pool.
   tags: configure_storage, pool
   ansible.builtin.file:
@@ -26,6 +27,7 @@
     extended_allitems: false
     label: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
   when: "storage.pool_path.split('/')[:i] | join('/') != ''"
+  ignore_errors: true
 
 - name: Define a new storage pool
   tags: configure_storage, pool
