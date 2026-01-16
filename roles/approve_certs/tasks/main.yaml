@@ -11,12 +11,12 @@
     mode: cleanup
   failed_when: false
 
-- name: Approve all pending CSRs in the next 50 min (async task)
+- name: Approve all pending CSRs in the next 40 min (async task)
   tags: approve_certs
   when: not approve_certs_cleanup
   ansible.builtin.shell: |
     # Do not use pipefail
-    for i in {1..100} ; do
+    for i in {1..80} ; do
         # Approve all pending requests
         LIST=$(oc get csr 2> /dev/null | grep -i pending | awk '{print $1}')
         if [ -n "$LIST" ]; then
@@ -24,8 +24,8 @@
         fi
         sleep 30
     done
-  # Run for 50 min
-  async: 3000
+  # Run for 40 min
+  async: 2400
   poll: 0
   register: approve_certs_task
 
