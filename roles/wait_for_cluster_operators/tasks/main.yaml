@@ -25,7 +25,7 @@
   until: ("True" in co_check.stdout) and ("False" not in co_check.stdout)
   retries: 15
   delay: 30
-  ignore_errors: true
+  failed_when: false
 
 - name: Check cluster version operators
   tags: wait_for_cluster_operators

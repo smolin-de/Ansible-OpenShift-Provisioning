@@ -25,7 +25,7 @@
   until: ("True" not in co_check.stdout) and ("False" in co_check.stdout)
   retries: 8
   delay: 60
-  ignore_errors: true
+  failed_when: false
   when: not cluster_operators_ok
 
 - name: Update local variable, if required

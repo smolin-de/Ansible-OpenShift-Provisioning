@@ -104,7 +104,7 @@
     curl -sSL -o "/root/ocpinst/coreos-installer" \
     "https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer_{{ env.install_config.control.architecture }}"
     chmod +x /root/ocpinst/coreos-installer
-  ignore_errors: true
+  failed_when: false
 
 - name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
   tags: get_ocp
@@ -160,7 +160,7 @@
   loop:
     - /root/ocpinst/agent-config.yaml
     - /root/ocpinst/agent-config-backup.yaml
-  ignore_errors: true
+  failed_when: false
 
 - name: Create manifests
   tags: get_ocp
@@ -309,4 +309,4 @@
     - bootstrap
     - master
     - worker
-  ignore_errors: true
+  failed_when: false

@@ -27,7 +27,7 @@
     extended_allitems: false
     label: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
   when: "storage.pool_path.split('/')[:i] | join('/') != ''"
-  ignore_errors: true
+  failed_when: false
 
 - name: Define a new storage pool
   tags: configure_storage, pool

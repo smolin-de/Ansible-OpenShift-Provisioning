@@ -130,11 +130,11 @@
   tasks:
     - name: Delete haproxy bootstrap entries
       when: env.bastion.options.loadbalancer.on_bastion
-      ignore_errors: true
       block:
         - name: Delete haproxy bootstrap entries
           ansible.builtin.command: |
             sed -i "/server {{ env.cluster.nodes.bootstrap.hostname }}/d" /etc/haproxy/haproxy.cfg
+          failed_when: false
         - name: Restart haproxy
           ansible.builtin.service:
             name: haproxy.service

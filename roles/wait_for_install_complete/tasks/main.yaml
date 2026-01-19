@@ -15,7 +15,7 @@
     state: present
     # When you are running AOP inside a container, then you must enable 'unsafe_writes'
     unsafe_writes: true
-  ignore_errors: true
+  failed_when: false
 
 - name: Get OCP URL
   tags: wait_for_install_complete
