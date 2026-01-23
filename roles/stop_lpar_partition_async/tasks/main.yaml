@@ -28,8 +28,7 @@
       poll: 30        # How often (in seconds) to check if the task is finished
       register: task_result
       until:
-        - task_result.partition is defined
-        - '"busy with another operation" not in (task_result.msg | default(""))'
+        - '"object is busy with another operation" not in (task_result.msg | default(""))'
       retries: 30
       delay: 30
       # Retry on busy msg:

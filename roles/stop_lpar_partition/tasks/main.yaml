@@ -30,10 +30,11 @@
           maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
       register: task_result
       until:
-        - task_result.partition is defined
-        - '"busy with another operation" not in (task_result.msg | default(""))'
+        - '"object is busy with another operation" not in (task_result.msg | default(""))'
       # Retry on busy msg:
       # "msg": "HTTPError: 409,2: The operation could not be completed because the object is busy with another operation.
+      # Do not retry on:
+      # "msg": "ServerAuthError: HTTP authentication failed with 403,0: Login failed.  Try the operation again.  If the problem persists, contact your security administrator."
       # Wait for that operation to complete, and then try this operation again.
       retries: 30
       delay: 30
