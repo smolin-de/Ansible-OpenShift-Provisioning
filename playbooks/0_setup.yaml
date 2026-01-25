@@ -23,6 +23,8 @@
     - name: Ensure Ansible Galaxy collections have been installed
       tags: galaxy
       ansible.builtin.shell: |
+        sudo ansible-galaxy collection install ansible.posix
+        ansible-galaxy collection install ansible.posix
         ansible-galaxy collection install {{ item }}
       loop: "{{ env.pkgs.galaxy }}"
 
