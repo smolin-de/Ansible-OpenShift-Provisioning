@@ -10,6 +10,15 @@
     - set_inventory
 
   post_tasks:
+    - name: Test Ansible Galaxy collections connection
+      ansible.builtin.shell: |
+        curl -I https://galaxy.ansible.com/api/
+      register: cmd_output
+
+    - name: Print above cmd output
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines
+
     - name: Ensure Ansible Galaxy collections have been installed
       tags: galaxy
       ansible.builtin.command: ansible-galaxy collection install {{ item }}
