@@ -12,6 +12,7 @@
   post_tasks:
     - name: Test Ansible Galaxy collections connection
       ansible.builtin.shell: |
+        ansible-galaxy --version
         curl -I https://galaxy.ansible.com/api/
       register: cmd_output
 
