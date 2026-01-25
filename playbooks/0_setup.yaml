@@ -27,13 +27,13 @@
         ansible-galaxy collection install ansible.posix
         ansible-galaxy collection install {{ item }}
       loop: "{{ env.pkgs.galaxy }}"
+      # Ignore errors
+      failed_when: false
 
     - name: Ensure Ansible Galaxy collections have been installed with latest version
       tags: galaxy
       ansible.builtin.command: ansible-galaxy collection install {{ item }} --upgrade
       loop: "{{ env.pkgs.galaxy }}"
-      # Ignore errors
-      failed_when: false
 
     - name: Find ibm_zhmc collection install location, required for LPAR mode
       tags: galaxy
