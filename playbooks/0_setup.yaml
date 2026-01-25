@@ -21,7 +21,8 @@
 
     - name: Ensure Ansible Galaxy collections have been installed
       tags: galaxy
-      ansible.builtin.command: ansible-galaxy collection install {{ item }}
+      ansible.builtin.shell: |
+        ansible-galaxy collection install {{ item }}
       loop: "{{ env.pkgs.galaxy }}"
 
     - name: Ensure Ansible Galaxy collections have been installed with latest version
