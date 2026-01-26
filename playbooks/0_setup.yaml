@@ -20,6 +20,9 @@
       ansible.builtin.debug:
         var: cmd_output.stdout_lines
 
+    # Bypass Galaxy via GitHub
+    # ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.posix.git
+
     - name: Ensure Ansible Galaxy collections have been installed
       tags: galaxy
       ansible.builtin.shell: |

@@ -49,7 +49,8 @@
 - name: Copy Red Hat CoreOS rootfs image
   tags: get_ocp
   ansible.builtin.shell: |
-    curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_rootfs }}" "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
+    #curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_rootfs }}" "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
+    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"""
   register: cmd_output
 
 - name: Print above cmd output
@@ -60,7 +61,8 @@
 - name: Copy Red Hat CoreOS qemu image
   tags: get_ocp
   ansible.builtin.shell: |
-    curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_qemu }}" "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
+    # curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_qemu }}" "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
+    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
   register: cmd_output
 
 - name: Print above cmd output
@@ -71,7 +73,8 @@
 - name: Copy Red Hat CoreOS ISO image
   tags: get_ocp
   ansible.builtin.shell: |
-    curl -sSL -o "/root/ocpinst/rhcos.iso" "{{ rhcos_download_url }}{{ rhcos_live_iso }}"
+    # curl -sSL -o "/root/ocpinst/rhcos.iso" "{{ rhcos_download_url }}{{ rhcos_live_iso }}"
+    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_iso }}"
   register: cmd_output
 
 - name: Print above cmd output
