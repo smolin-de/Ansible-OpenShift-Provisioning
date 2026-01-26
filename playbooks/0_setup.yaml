@@ -39,7 +39,7 @@
 
     - name: Print above cmd output
       ansible.builtin.debug:
-        var: cmd_output.stdout_lines
+        var: cmd_output
 
     - name: Ensure Ansible Galaxy collections have been installed
       tags: galaxy
