@@ -20,9 +20,7 @@
       ansible.builtin.debug:
         var: cmd_output.stdout_lines
 
-    # TODO
-    # Use local galaxy collections installation
-    - name: Install Galaxy collections from git
+    - name: Install Galaxy collections from local git repository
       tags: galaxy
       ansible.builtin.shell: |
         cd "{{ ansible_env.PWD }}/../collections"
@@ -35,17 +33,14 @@
         ansible-galaxy collection install ./community-kubernetes-2.0.1.tar.gz
         ansible-galaxy collection install ./ibm-ibm_zhmc-1.10.0.tar.gz
       register: cmd_output
-      ignore_errors: true
 
     - name: Print above cmd output
       ansible.builtin.debug:
-        var: cmd_output
+        var: cmd_output.stdout_lines
 
     - name: Ensure Ansible Galaxy collections have been installed with latest version
       tags: galaxy
       ansible.builtin.command: ansible-galaxy collection install {{ item }} --upgrade
-      # Ignore errors
-      failed_when: false
       loop: "{{ env.pkgs.galaxy }}"
       # Ignore errors
       failed_when: false
