@@ -28,13 +28,12 @@
         cd "{{ ansible_env.PWD }}/../collections"
         pwd
         ls -al
-        ansible-galaxy collection install \
-          ./ansible-posix-2.1.0.tar.gz \
-          ./community-general-12.2.0.tar.gz \
-          ./community-libvirt-2.0.0.tar.gz \
-          ./community-crypto-3.1.0.tar.gz \
-          ./community-kubernetes-2.0.1.tar.gz \
-          ./ibm-ibm_zhmc-1.10.0.tar.gz
+        ansible-galaxy collection install ./ansible-posix-2.1.0.tar.gz
+        ansible-galaxy collection install ./community-general-12.2.0.tar.gz
+        ansible-galaxy collection install ./community-libvirt-2.0.0.tar.gz
+        ansible-galaxy collection install ./community-crypto-3.1.0.tar.gz
+        ansible-galaxy collection install ./community-kubernetes-2.0.1.tar.gz
+        ansible-galaxy collection install ./ibm-ibm_zhmc-1.10.0.tar.gz
       register: cmd_output
       ignore_errors: true
 
