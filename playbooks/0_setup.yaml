@@ -27,6 +27,7 @@
       ansible.builtin.shell: |
         cd "{{ ansible_env.PWD }}/../collections"
         pwd
+        ls -al
         ansible-galaxy collection install \
           ./ansible-posix-2.1.0.tar.gz \
           ./community-general-12.2.0.tar.gz \
