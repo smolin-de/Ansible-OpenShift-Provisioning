@@ -192,26 +192,6 @@
     replace: ": false"
   when: (env.cluster.nodes.compute.hostname | default('')) | length > 0
 
-- name: Set permissions for ocpinst directory contents to root
-  tags: get_ocp
-  become: true
-  ansible.builtin.command: chmod 0755 /root/ocpinst/{{ item }}
-  loop:
-    - manifests
-    - openshift
-    - .openshift_install.log
-    - .openshift_install_state.json
-
-- name: Set ownership of ocpinst directory contents to root
-  tags: get_ocp
-  become: true
-  ansible.builtin.command: chown root:root /root/ocpinst/{{ item }}
-  loop:
-    - manifests
-    - openshift
-    - .openshift_install.log
-    - .openshift_install_state.json
-
 - name: Create ignition files
   tags: get_ocp
   become: true
