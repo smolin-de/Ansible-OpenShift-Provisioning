@@ -50,7 +50,7 @@
   tags: get_ocp
   ansible.builtin.shell: |
     #curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_rootfs }}" "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
-    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"""
+    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
   register: cmd_output
 
 - name: Print above cmd output
