@@ -132,14 +132,15 @@
         param_dns_ip: "{{ day2_control_node.ip }}"
 
     - role: create_control_node
-      # Some tasks will be delegated to the bastion host and target KVM host
-      param_control_node: "{{ day2_control_node }}"
+      vars:
+        param_control_node: "{{ day2_control_node }}"
 
     - role: approve_certs
       vars:
         approve_certs_cleanup: false
     - role: wait_for_node
-      wait_for_node_name: "{{ day2_control_node.vm_hostname }}"
+      vars:
+        wait_for_node_name: "{{ day2_control_node.vm_hostname }}"
     - role: approve_certs
       vars:
         approve_certs_cleanup: true
