@@ -104,7 +104,6 @@
     - role: common
     - role: delete_compute_node
       vars:
-        # Some tasks will be delegated to the bastion host and target KVM host
         param_compute_node: "{{ day2_compute_node }}"
 
     - role: print_node_status
@@ -119,7 +118,6 @@
 
     - role: create_compute_node
       vars:
-        # Some tasks will be delegated to the bastion host and target KVM host
         param_compute_node: "{{ day2_compute_node }}"
 
     - role: approve_certs
