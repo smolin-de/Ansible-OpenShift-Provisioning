@@ -4,7 +4,7 @@
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
 
-- name: Stop and configure dpm mode partition (async)
+- name: Stop dpm mode partition (async)
   when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   vars:
     _zhmc_auth:
@@ -12,20 +12,16 @@
       password: "{{ _node.hmc.auth.pass }}"
       verify: false
   block:
-    - name: "Stop and configure dpm mode partition (async) {{ _node.lpar.name }}"
+    - name: "Stop dpm mode partition (async) {{ _node.lpar.name }}"
       ibm.ibm_zhmc.zhmc_partition:
         hmc_host: "{{ _node.hmc.host }}"
         hmc_auth: "{{ _zhmc_auth }}"
         cpc_name: "{{ _node.cpc_name }}"
         name: "{{ _node.lpar.name }}"
         state: stopped
-        properties:
-          description: "{{ _node.lpar.description }}"
-          ifl_processors: "{{ _node.lpar.ifl.count }}"
-          initial_memory: "{{ _node.lpar.ifl.initial_memory }}"
-          maximum_memory: "{{ _node.lpar.ifl.max_memory }}"
-      async: 900      # Maximum time allowed (in seconds) for the task to run
-      poll: 30        # How often (in seconds) to check if the task is finished
+      # Run in background for up to 10 mins, return immediately
+      async: 600
+      poll: 0
       register: task_result
       until: >
         "object is busy with another operation" not in (task_result.msg | default(""))
@@ -38,17 +34,3 @@
       # Wait for that operation to complete, and then try this operation again.
       # Other error:
       # "msg": "HTTPError: 409,131: An error has occurred while trying to obtain a list of the software that can be loaded.
-
-# Alternative solution:
-#
-# async: 600
-#   poll: 0
-#   register: partition_job
-
-# - name: Wait for partition configuration to complete
-#   async_status:
-#     jid: "{{ partition_job.ansible_job_id }}"
-#   register: job_result
-#   until: job_result.finished
-#   retries: 30
-#   delay: 10

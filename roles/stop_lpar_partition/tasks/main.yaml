@@ -4,11 +4,7 @@
     file: "{{ inventory_dir }}/host_vars/{{ lpar_name }}.yaml"
     name: _node
 
-- name: Show zHMC User ID
-  ansible.builtin.debug:
-    msg: "zHMC User ID: {{ _node.hmc.auth.user }}"
-
-- name: Stop and configure dpm mode partition
+- name: Stop dpm mode partition
   when: _node.cpc_dpm_enabled is defined and _node.cpc_dpm_enabled
   vars:
     _zhmc_auth:
@@ -16,7 +12,7 @@
       password: "{{ _node.hmc.auth.pass }}"
       verify: false
   block:
-    - name: "Stop and configure dpm mode partition {{ _node.lpar.name }}"
+    - name: "Stop dpm mode partition {{ _node.lpar.name }}"
       ibm.ibm_zhmc.zhmc_partition:
         hmc_host: "{{ _node.hmc.host }}"
         hmc_auth: "{{ _zhmc_auth }}"
@@ -24,8 +20,10 @@
         name: "{{ _node.lpar.name }}"
         state: stopped
       register: task_result
-      until:
-        - '"object is busy with another operation" not in (task_result.msg | default(""))'
+      until: >
+        "object is busy with another operation" not in (task_result.msg | default(""))
+        and
+        "trying to obtain a list of the software" not in (task_result.msg | default(""))
       # Retry on busy msg:
       # "msg": "HTTPError: 409,2: The operation could not be completed because the object is busy with another operation.
       # Do not retry on:
