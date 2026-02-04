@@ -30,7 +30,7 @@
     state: directory
     mode: "0755"
 
-# Replaced with lagacy curl cmd, because it is not supported anymore on our Jenkins server
+# Replaced with legacy wget cmd, because it is not supported anymore on our Jenkins server
 # # Required rootfs image, when use KVM bootstrap or other kVM node
 # - name: Copy Red Hat CoreOS rootfs file to bastion, if it's not there already.
 #   tags: get_ocp
