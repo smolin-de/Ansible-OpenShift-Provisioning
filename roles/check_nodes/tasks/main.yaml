@@ -15,3 +15,7 @@
   until: ("Ready" == cmd_output.stdout) or ("NotReady" == cmd_output.stdout)
   retries: 60
   delay: 30
+
+- name: Print above cmd output
+  ansible.builtin.debug:
+    var: cmd_output
