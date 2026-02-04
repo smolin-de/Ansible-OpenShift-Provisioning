@@ -27,13 +27,17 @@
       async: 900      # Maximum time allowed (in seconds) for the task to run
       poll: 30        # How often (in seconds) to check if the task is finished
       register: task_result
-      until:
-        - '"object is busy with another operation" not in (task_result.msg | default(""))'
+      until: >
+        "object is busy with another operation" not in (task_result.msg | default(""))
+        and
+        "trying to obtain a list of the software" not in (task_result.msg | default(""))
       retries: 30
       delay: 30
       # Retry on busy msg:
       # "msg": "HTTPError: 409,2: The operation could not be completed because the object is busy with another operation.
       # Wait for that operation to complete, and then try this operation again.
+      # Other error:
+      # "msg": "HTTPError: 409,131: An error has occurred while trying to obtain a list of the software that can be loaded.
 
 # Alternative solution:
 #

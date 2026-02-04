@@ -4,7 +4,7 @@
   tags: create_control_nodes
   ansible.builtin.shell: |
     # Define CPU model based on architecture
-    CPU_MODEL="--cpu host"
+    CPU_MODEL="--cpu host-model"
     if [ $(uname -m) == "aarch64" ]; then
       # arm64 does not support host as CPU model
       CPU_MODEL="--cpu host-passthrough"
@@ -51,7 +51,7 @@
   tags: create_control_nodes
   ansible.builtin.shell: |
     # Define CPU model based on architecture
-    CPU_MODEL="--cpu host"
+    CPU_MODEL="--cpu host-model"
     if [ $(uname -m) == "aarch64" ]; then
       # arm64 does not support host as CPU model
       CPU_MODEL="--cpu host-passthrough"
@@ -91,7 +91,7 @@
   tags: create_control_nodes
   ansible.builtin.shell: |
     # Define CPU model based on architecture
-    CPU_MODEL="--cpu host"
+    CPU_MODEL="--cpu host-model"
     if [ $(uname -m) == "aarch64" ]; then
       # arm64 does not support host as CPU model
       CPU_MODEL="--cpu host-passthrough"
@@ -131,7 +131,7 @@
   tags: create_control_nodes
   ansible.builtin.shell: |
     # Define CPU model based on architecture
-    CPU_MODEL="--cpu host"
+    CPU_MODEL="--cpu host-model"
     if [ $(uname -m) == "aarch64" ]; then
       # arm64 does not support host as CPU model
       CPU_MODEL="--cpu host-passthrough"
