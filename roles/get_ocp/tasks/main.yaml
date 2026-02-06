@@ -6,7 +6,6 @@
     path: /root/ocpinst
     state: absent
 
-
 - name: Delete ignition folder for idempotency
   tags: get_ocp
   ansible.builtin.file:
@@ -96,18 +95,34 @@
   tags: get_ocp
   ansible.builtin.shell: |
     set -o pipefail
-    curl -sSL "{{ item }}" | tar xzf - -C /root/ocpinst/
-  loop:
-    - "{{ ocp_download_url }}{{ ocp_client_tgz }}"
-    - "{{ ocp_download_url }}{{ ocp_install_tgz }}"
+    cd /root/ocpinst/
+    TOOL="openshift-client-linux-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/').tar.gz"
+    echo "Download and install $TOOL"
+    curl -sSL "{{ ocp_download_url }}${TOOL}" | tar xzf - -C /root/ocpinst/
+    TOOL="openshift-install-linux-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/').tar.gz"
+    echo "Download and install ${TOOL}"
+    curl -sSL "{{ ocp_download_url }}${TOOL}" | tar xzf - -C /root/ocpinst/
+  register: cmd_output
+
+- name: Print above cmd output
+  tags: get_ocp
+  ansible.builtin.debug:
+    var: cmd_output
 
 - name: Get latest coreos_installer
   tags: get_ocp
   ansible.builtin.shell: |
+    set -o pipefail
     curl -sSL -o "/root/ocpinst/coreos-installer" \
-    "https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer_{{ env.install_config.control.architecture }}"
+    "https://mirror.openshift.com/pub/openshift-v4/clients/coreos-installer/latest/coreos-installer_$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')"
     chmod +x /root/ocpinst/coreos-installer
   failed_when: false
+  register: cmd_output
+
+- name: Print above cmd output
+  tags: get_ocp
+  ansible.builtin.debug:
+    var: cmd_output
 
 - name: Copy kubectl, oc, and openshift-install binaries to /usr/local/sbin
   tags: get_ocp
@@ -151,25 +166,24 @@
     - /root/ocpinst/install-config.yaml
     - /root/ocpinst/install-config-backup.yaml
 
-- name: Use template file to create agent-config and backup.
-  tags: get_ocp
-  vars:
-    use_proxy: "{{ 'True' if (proxy_env.http_proxy is defined or proxy_env.https_proxy is defined or proxy_env.no_proxy is defined) else 'False' }}"
-  ansible.builtin.template:
-    src: agent-config.yaml.j2
-    dest: "{{ item }}"
-    mode: "0644"
-    force: yes
-  loop:
-    - /root/ocpinst/agent-config.yaml
-    - /root/ocpinst/agent-config-backup.yaml
-  failed_when: false
+# - name: Use template file to create agent-config and backup.
+#   tags: get_ocp
+#   vars:
+#     use_proxy: "{{ 'True' if (proxy_env.http_proxy is defined or proxy_env.https_proxy is defined or proxy_env.no_proxy is defined) else 'False' }}"
+#   ansible.builtin.template:
+#     src: agent-config.yaml.j2
+#     dest: "{{ item }}"
+#     mode: "0644"
+#     force: yes
+#   loop:
+#     - /root/ocpinst/agent-config.yaml
+#     - /root/ocpinst/agent-config-backup.yaml
+#   failed_when: false
 
 - name: Create manifests
   tags: get_ocp
   ansible.builtin.shell: |
     set -o pipefail
-    {{ 'export OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE=quay.io/openshift-release-dev/ocp-release:' if disconnected.enabled }}{{ disconnected.mirroring.oc_mirror.release_image_tag if disconnected.enabled and not disconnected.mirroring.legacy.platform }}{{ disconnected.mirroring.legacy.ocp_quay_release_image_tag if disconnected.enabled and disconnected.mirroring.legacy.platform }}
     /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
   become: true
   when: env.cluster.nodes.control.hostname | default('') | length != 1
