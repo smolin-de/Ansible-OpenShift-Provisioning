@@ -96,12 +96,12 @@
   ansible.builtin.shell: |
     set -o pipefail
     cd /root/ocpinst/
-    TOOL="openshift-client-linux-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/').tar.gz"
+    TOOL="openshift-client-linux.tar.gz"
     echo "Download and install $TOOL"
-    curl -sSL "{{ ocp_download_url }}${TOOL}" | tar xzf - -C /root/ocpinst/
-    TOOL="openshift-install-linux-$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/').tar.gz"
+    curl -sSL "{{ ocp_download_url }}../$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')/${TOOL}" | tar xzf - -C /root/ocpinst/
+    TOOL="openshift-install-linux.tar.gz"
     echo "Download and install ${TOOL}"
-    curl -sSL "{{ ocp_download_url }}${TOOL}" | tar xzf - -C /root/ocpinst/
+    curl -sSL "{{ ocp_download_url }}../$(uname -m | sed 's/aarch64/arm64/;s/x86_64/amd64/')/${TOOL}" | tar xzf - -C /root/ocpinst/
   register: cmd_output
 
 - name: Print above cmd output
