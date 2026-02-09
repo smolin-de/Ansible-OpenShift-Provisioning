@@ -44,4 +44,4 @@ bootstrapInPlace:
   installationDisk: {{ env.sno_install_disk }}
 {% endif %}
 fips: {{ env.install_config.fips }}
-pullSecret: '{{ id_redhat.pull_secret if not disconnected.enabled else disconnected.registry.pull_secret }}'
+pullSecret: '{{ id_redhat.pull_secret }}'
