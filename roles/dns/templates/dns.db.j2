@@ -1,0 +1,34 @@
+$TTL 1D
+@ IN SOA {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. root (
+                                            {{ now(fmt='%y%m%d%H%M') }} ; Serial
+                                            3H ; Secondary server refresh
+                                            30M ; Secondary server retry
+                                            1W ; Secondary server expire
+                                            1D ) ; Minimum TTL
+;Nameserver / Bastion Information
+  IN NS {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
+
+;IP address for Nameserver
+{{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
+
+;IP address for helper nodes
+helper.{{ env.cluster.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
+helper.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
+
+;The api identifies the IP of your load balancer
+api.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.     IN A {{ env.bastion.networking.ip }}
+api-int.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
+
+;The wildcard also identifies the load balancer
+apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.  IN A {{ env.bastion.networking.ip }}
+*.apps.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.  IN A {{ env.bastion.networking.ip }}
+
+{% if (env.cluster.nodes.bootstrap.hostname is defined) %}
+;entry for bootstrap host
+{{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}. IN A {{ env.cluster.nodes.bootstrap.ip }}
+{% endif %}
+;entries for the control nodes
+
+;entries for the compute nodes
+
+;EOF

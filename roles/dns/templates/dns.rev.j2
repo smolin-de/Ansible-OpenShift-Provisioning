@@ -1,0 +1,19 @@
+$TTL 1D
+@ IN SOA {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. root (
+                                            {{ now(fmt='%y%m%d%H%M') }} ; Serial
+                                            3H ; Secondary server refresh
+                                            30M ; Secondary server retry
+                                            1W ; Secondary server expire
+                                            1D ) ; Minimum TTL
+;Nameserver Information
+  IN NS {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
+
+;Reverse lookup for Nameserver
+{{ bastion_split_ip.3 }}.{{ bastion_split_ip.2 }} IN PTR {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}.
+
+;PTR Record IP address to Hostname
+{% if (env.cluster.nodes.bootstrap.hostname is defined) %}
+{{ bootstrap_split_ip.3 }}.{{ bootstrap_split_ip.2 }}     IN      PTR     {{ env.cluster.nodes.bootstrap.hostname }}.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
+{% endif %}
+{{ bastion_split_ip.3 }}.{{ bastion_split_ip.2 }}     IN      PTR     api-int.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
+{{ bastion_split_ip.3 }}.{{ bastion_split_ip.2 }}     IN      PTR     api.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}.
