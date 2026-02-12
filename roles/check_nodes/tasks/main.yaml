@@ -27,5 +27,5 @@
   changed_when: false
   # Logic: Current count must be >= expected inventory count
   until: node_count_check.stdout | trim | int >= expected_count | int
-  retries: 60
-  delay: 30
+  retries: 20
+  delay: 60
