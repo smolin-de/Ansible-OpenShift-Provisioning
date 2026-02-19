@@ -1,5 +1,4 @@
 ---
-# TODO: This role has several bugs
 - name: Create directory in <storage.pool_path> for this cluster's storage pool.
   tags: configure_storage, pool
   ansible.builtin.file:
@@ -12,38 +11,52 @@
     mode: '0770'
     recurse: true
 
-- name: Ensure qemu has execute permissions for all parent directories of the directory that will be used as a storage pool for this cluster.
-  tags: configure_storage, pool
-  ansible.builtin.file:
-    path: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
-    state: directory
-    group: qemu
-    mode: g+x
-    recurse: false
-  loop: "{{ range(0, storage.pool_path.split('/') | length + 1) }}"
-  loop_control:
-    extended: yes
-    index_var: i
-    extended_allitems: false
-    label: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
-  when: "storage.pool_path.split('/')[:i] | join('/') != ''"
-  failed_when: false
+# - name: Ensure qemu has execute permissions for all parent directories of the directory that will be used as a storage pool for this cluster.
+#   tags: configure_storage, pool
+#   ansible.builtin.file:
+#     path: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
+#     state: directory
+#     group: qemu
+#     mode: g+x
+#     recurse: false
+#   loop: "{{ range(0, storage.pool_path.split('/') | length + 1) }}"
+#   loop_control:
+#     extended: yes
+#     index_var: i
+#     extended_allitems: false
+#     label: "{{ storage.pool_path.split('/')[:i] | join('/') }}"
+#   when: "storage.pool_path.split('/')[:i] | join('/') != ''"
+#   failed_when: false
 
-- name: Define a new storage pool
+- name: Create storage pool, if not exists
   tags: configure_storage, pool
-  community.libvirt.virt_pool:
-    command: define
-    name: "{{ env.cluster.networking.metadata_name }}-vdisk"
-    xml: '{{ lookup("template", "vdisk.xml.j2") }}'
+  block:
+    - name: Create storage pool, if not exists
+      ansible.builtin.shell: |
+        set -o pipefail
+        NAME="{{ env.cluster.networking.metadata_name }}"
+        if ! virsh pool-list | grep -q "^ ${NAME}-vdisk." ; then
+          virsh pool-define-as ${NAME}-vdisk dir - - - - "/var/lib/libvirt/images/${NAME}"
+          virsh pool-build ${NAME}-vdisk
+          virsh pool-start ${NAME}-vdisk
+          virsh pool-autostart ${NAME}-vdisk
+          virsh pool-list
+        fi
+      register: cmd_output
 
-- name: Set storage pool to active.
-  tags: configure_storage, pool
-  community.libvirt.virt_pool:
-    name: "{{ env.cluster.networking.metadata_name }}-vdisk"
-    state: active
+    - name: Print above cmd output
+      when: ("Pool " in cmd_output.stdout_lines | join)
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines
 
-- name: Set storage pool to autostart.
-  tags: configure_storage, pool
-  community.libvirt.virt_pool:
-    name: "{{ env.cluster.networking.metadata_name }}-vdisk"
-    autostart: yes
+# - name: Set storage pool to active.
+#   tags: configure_storage, pool
+#   community.libvirt.virt_pool:
+#     name: "{{ env.cluster.networking.metadata_name }}-vdisk"
+#     state: active
+
+# - name: Set storage pool to autostart.
+#   tags: configure_storage, pool
+#   community.libvirt.virt_pool:
+#     name: "{{ env.cluster.networking.metadata_name }}-vdisk"
+#     autostart: yes
