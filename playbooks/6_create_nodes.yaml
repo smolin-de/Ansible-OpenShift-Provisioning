@@ -127,7 +127,7 @@
   gather_facts: true
   roles:
     - wait_for_bootstrap
-  tasks:
+  post_tasks:
     - name: Delete haproxy bootstrap entries
       when: env.bastion.options.loadbalancer.on_bastion
       block:

@@ -18,7 +18,7 @@
     # Do not use pipefail
     for i in {1..80} ; do
         # Approve all pending requests
-        LIST=$(oc get csr 2> /dev/null | grep -i pending | awk '{print $1}')
+        LIST=$(oc get csr --no-headers 2> /dev/null | grep -i pending | awk '{print $1}')
         if [ -n "$LIST" ]; then
             echo "$LIST" | xargs --no-run-if-empty oc adm certificate approve || true
         fi
