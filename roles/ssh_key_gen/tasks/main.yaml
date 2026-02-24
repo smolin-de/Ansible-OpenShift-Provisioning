@@ -24,6 +24,16 @@
     regenerate: full_idempotence
   register: ssh_key_creation
 
+# TODO
+# - name: Generate a modern Ed25519 SSH keypair
+#   community.crypto.openssh_keypair:
+#     path: "~/.ssh/{{ env.ansible_key_name }}"
+#     type: ed25519
+#     state: present
+#     mode: '0600'
+#     comment: "AOP-Ed25519"
+#   register: ssh_key_creation
+
 - name: Print results of ssh key pair creation
   tags: ssh_key_gen, ssh
   ansible.builtin.debug:

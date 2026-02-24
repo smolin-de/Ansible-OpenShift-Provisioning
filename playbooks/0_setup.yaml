@@ -63,31 +63,6 @@
         extra_args: --upgrade
       when: zhmc_path.rc != 0
 
-    - name: Check KVM host 1 inventory host_vars with matching hostname
-      tags: lpar_check
-      ansible.builtin.stat:
-        path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar1.hostname }}.yaml"
-      when: env.z.lpar1.hostname is defined
-      register: lpar_host_vars
-      failed_when: not lpar_host_vars.stat.exists
-      ignore_errors: true
-
-    - name: Check KVM host 2 inventory host_vars with matching hostname
-      tags: lpar_check
-      ansible.builtin.stat:
-        path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar2.hostname }}.yaml"
-      when: env.z.lpar2.hostname is defined
-      register: lpar_host_vars
-      failed_when: not lpar_host_vars.stat.exists
-
-    - name: Check KVM host 3 inventory host_vars with matching hostname
-      tags: lpar_check
-      ansible.builtin.stat:
-        path: "{{ inventory_dir }}/host_vars/{{ env.z.lpar3.hostname }}.yaml"
-      when: env.z.lpar3.hostname is defined
-      register: lpar_host_vars
-      failed_when: not lpar_host_vars.stat.exists
-
 - name: Setup ssh keys
   hosts: localhost
   connection: local
@@ -98,4 +73,3 @@
   roles:
     - ssh_key_gen
     - ssh_agent
-#    - ssh_copy_id #to file server
