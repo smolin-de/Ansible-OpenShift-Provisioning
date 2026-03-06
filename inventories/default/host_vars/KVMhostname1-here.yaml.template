@@ -8,8 +8,9 @@ networking:
   gateway: #X
   ipv6_gateway: #X
   nameserver1: #X
+#  nameserver2: 
   device1: #X
-#  device2:
+#  device2: 
 
 storage:
   pool_path: #X
@@ -18,7 +19,7 @@ storage:
 # Variables below this point only need to be filled out if   #
 # env.z.lpar1.create is True or if you are doing a lpar      #
 # based installation. Meaning, if the LPARs you will         #
-# be using as KVM host(s) already exist and have RHEL        #
+# be using as KVM host(s) already exist and have RHEL        #   
 # installed, the variables below are not required. However   #
 # for lpar based installation you must provide below vars    #
 ##############################################################
@@ -59,10 +60,10 @@ lpar:
         port: #X
         dev_num: #X
 #      card2:
-#        name:
-#        adapter:
-#        port:
-#        dev_num:
+#        name: 
+#        adapter: 
+#        port: 
+#        dev_num: 
 
 # Section 6 - Storage
   storage_group_1:
@@ -77,19 +78,19 @@ lpar:
     lun_name: #X
 #  storage_group_2:
 #    auto_config: True
-#    name:
+#    name: 
 #    type: fcp
 #    storage_wwpn:
-#      -
-#      -
-#      -
-#      -
-#    dev_num:
+#      - 
+#      - 
+#      - 
+#      - 
+#    dev_num: 
 #    lun_name:
 
 # Section 7 -live disk info
   livedisk:
-    livedisktype: #X
+    livedisktype: #X 
     lun: #X
     wwpn: #X
     devicenr: #X

@@ -1,6 +1,6 @@
 ---
 - name: 4 Create storage pool play
-  hosts: kvm_host, kvm_host_bastion
+  hosts: kvm_host
   gather_facts: false
   pre_tasks:
     - name: Create storage pool, if not exists
@@ -22,6 +22,7 @@
           when: ("Pool " in cmd_output.stdout_lines | join)
           ansible.builtin.debug:
             var: cmd_output.stdout_lines
+
   roles:
     - destroy_bastion
 

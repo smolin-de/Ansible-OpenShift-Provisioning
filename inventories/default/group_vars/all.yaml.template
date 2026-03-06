@@ -72,6 +72,7 @@ env:
       ipv6_gateway: #X
       ipv6_prefix: #X
       nameserver1: #X
+#      nameserver2:
       forwarder: 1.1.1.1
       interface: #X
     access:
@@ -95,6 +96,7 @@ env:
       ipv6_gateway: #X
       ipv6_prefix: #X
       nameserver1: #X
+#      nameserver2:
       forwarder: 1.1.1.1
       interface: #X
 
