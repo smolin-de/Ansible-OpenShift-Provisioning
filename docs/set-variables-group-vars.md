@@ -72,7 +72,6 @@
 **env.bastion.networking.ipv6_gateway** | IPv6 of he bastion's gateway server. | fd00::1
 **env.bastion.networking.ipv6_prefix** | IPv6 prefix. | 64
 **env.bastion.networking.nameserver1** | IPv4 address of the server that resolves the bastion's hostname. | 192.168.10.200
-**env.bastion.networking.nameserver2** | <b>(Optional)</b> A second IPv4 address that resolves the bastion's hostname. | 192.168.10.201
 **env.bastion.networking.interface** | Name of the networking interface on the bastion from Linux's perspective. Most likely enc1. | enc1
 **env.bastion.access.user** | What would you like the admin's username to be on the bastion? If root, make pass and root_pass vars the same. | admin
 **env.bastion.access.pass** | The password to the bastion's admin user. If using root, make pass and root_pass vars the same. | cH4ngeM3!
@@ -91,7 +90,6 @@
 **env.bastion.networking.ipv6_gateway** | IPv6 of he bastion's gateway server. | fd00::1
 **env.bastion.networking.ipv6_prefix** | IPv6 prefix. | 64
 **env.cluster.networking.nameserver1** | IPv4 address that the cluster get its hostname resolution from. If env.bastion.options.dns is True, this should be the IP address of the bastion. | 192.168.10.200
-**env.cluster.networking.nameserver2** | <b>(Optional)</b> A second IPv4 address will the cluster get its hostname resolution from? If env.bastion.options.dns is True, this should be left commented out. | 192.168.10.201
 **env.cluster.networking.interface** | Name of the networking interface on the bastion from Linux's perspective. Most likely enc1. | enc1
 
 ## 7 - Bootstrap Node
