@@ -12,7 +12,6 @@ $TTL 1D
 {{ env.bastion.networking.hostname }}.{{ env.bastion.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
 
 ;IP address for helper nodes
-helper.{{ env.cluster.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
 helper.{{ env.cluster.networking.metadata_name }}.{{ env.cluster.networking.base_domain }}. IN A {{ env.bastion.networking.ip }}
 
 ;The api identifies the IP of your load balancer
