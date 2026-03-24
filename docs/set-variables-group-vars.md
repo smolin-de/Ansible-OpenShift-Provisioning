@@ -1,5 +1,7 @@
 # Step 2: Set Variables (group_vars)
+
 ## Overview
+
 * In a text editor of your choice, open the template of the [environment variables file](https://github.com/IBM/Ansible-OpenShift-Provisioning/blob/main/inventories/default/group_vars/all.yaml.template). Make a copy of it called all.yaml and paste it into the same directory with its template.
 * all.yaml is your master variables file and you will likely reference it many times throughout the process. The default inventory can be found at [inventories/default](https://github.com/IBM/Ansible-OpenShift-Provisioning/blob/main/inventories/default).
 * The variables marked with an `X` are required to be filled in. Many values are pre-filled or are optional. Optional values are commented out; in order to use them, remove the `#` and fill them in.
@@ -8,32 +10,35 @@
 * Scroll the table to the right to see examples for each variable.
 
 ## 1 - Controller
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.controller.sudo_pass** | The password to the machine running Ansible (localhost). This will only be used for two things. To ensure you've installed the pre-requisite packages if you're on Linux, and to add the login URL to your /etc/hosts file. | Pas$w0rd!
 
 ## 2 - LPAR(s)
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
-**env.z.high_availability** | Is this cluster spread across three LPARs? If yes, mark True. If not (just in one LPAR), mark False | True
-**env.z.ip_forward** | This variable specifies if ip forwarding is enabled or not if NAT network is selected. If ip_forwarding is set to 0, the installed OCP cluster will not be able to access external services because using NAT keep the nodes isolated. This parameter will be set via sysctl on the KVM host. The change of the value is instantly active. This setting will be configured during 3_setup_kvm playbook. If NAT will be configured after 3_setup_kvm playbook, the setup needs to be done manually before bastion is being created, configured or reconfigured by running the 3_setup_kvm playbook with parameter: --tags cfg_ip_forward | 1
-**env.z.lpar1.create** | To have Ansible create an LPAR and install RHEL on it for the KVM host, mark True. If using a pre-existing LPAR with RHEL already installed, mark False. | True
-**env.z.lpar1.hostname** | The hostname of the KVM host. | kvm-host-01
-**env.z.lpar1.ip** | The IPv4 address of the KVM host. | 192.168.10.1
-**env.z.lpar1.user** | Username for Linux admin on KVM host 1. Recommended to run as a non-root user with sudo access. | admin
-**env.z.lpar1.pass** | The password for the user that will be created or exists on the KVM host.  | ch4ngeMe!
-**env.z.lpar2.create** | To create a second LPAR and install RHEL on it to act as another KVM host, mark True. If using pre-existing LPAR(s) with RHEL already installed, mark False. | True
-**env.z.lpar2.hostname** | <b>(Optional)</b> The hostname of the second KVM host. | kvm-host-02
-**env.z.lpar2.ip** | <b>(Optional)</b> The IPv4 address of the second KVM host. | 192.168.10.2
-**env.z.lpar2.user** | Username for Linux admin on KVM host 2. Recommended to run as a non-root user with sudo access. | admin
-**env.z.lpar2.pass** | <b>(Optional)</b> The password for the admin user on the second KVM host. | ch4ngeMe!
-**env.z.lpar3.create** | To create a third LPAR and install RHEL on it to act as another KVM host, mark True. If using pre-existing LPAR(s) with RHEL already installed, mark False. | True
-**env.z.lpar3.hostname** | <b>(Optional)</b> The hostname of the third KVM host. | kvm-host-03
-**env.z.lpar3.ip** | <b>(Optional)</b> The IPv4 address of the third KVM host. | 192.168.10.3
-**env.z.lpar3.user** | Username for Linux admin on KVM host 3. Recommended to run as a non-root user with sudo access. | admin
-**env.z.lpar3.pass** | <b>(Optional)</b> The password for the admin user on the third KVM host. | ch4ngeMe!
+**env.systems.high_availability** | Is this cluster spread across three LPARs? If yes, mark True. If not (just in one LPAR), mark False | True
+**env.systems.ip_forward** | This variable specifies if ip forwarding is enabled or not if NAT network is selected. If ip_forwarding is set to 0, the installed OCP cluster will not be able to access external services because using NAT keep the nodes isolated. This parameter will be set via sysctl on the KVM host. The change of the value is instantly active. This setting will be configured during 3_setup_kvm playbook. If NAT will be configured after 3_setup_kvm playbook, the setup needs to be done manually before bastion is being created, configured or reconfigured by running the 3_setup_kvm playbook with parameter: --tags cfg_ip_forward | 1
+**env.systems.host1.create** | To have Ansible create an LPAR and install RHEL on it for the KVM host, mark True. If using a pre-existing LPAR with RHEL already installed, mark False. | True
+**env.systems.host1.hostname** | The hostname of the KVM host. | kvm-host-01
+**env.systems.host1.ip** | The IPv4 address of the KVM host. | 192.168.10.1
+**env.systems.host1.user** | Username for Linux admin on KVM host 1. Recommended to run as a non-root user with sudo access. | admin
+**env.systems.host1.pass** | The password for the user that will be created or exists on the KVM host.  | ch4ngeMe!
+**env.systems.host2.create** | To create a second LPAR and install RHEL on it to act as another KVM host, mark True. If using pre-existing LPAR(s) with RHEL already installed, mark False. | True
+**env.systems.host2.hostname** | <b>(Optional)</b> The hostname of the second KVM host. | kvm-host-02
+**env.systems.host2.ip** | <b>(Optional)</b> The IPv4 address of the second KVM host. | 192.168.10.2
+**env.systems.host2.user** | Username for Linux admin on KVM host 2. Recommended to run as a non-root user with sudo access. | admin
+**env.systems.host2.pass** | <b>(Optional)</b> The password for the admin user on the second KVM host. | ch4ngeMe!
+**env.systems.host3.create** | To create a third LPAR and install RHEL on it to act as another KVM host, mark True. If using pre-existing LPAR(s) with RHEL already installed, mark False. | True
+**env.systems.host3.hostname** | <b>(Optional)</b> The hostname of the third KVM host. | kvm-host-03
+**env.systems.host3.ip** | <b>(Optional)</b> The IPv4 address of the third KVM host. | 192.168.10.3
+**env.systems.host3.user** | Username for Linux admin on KVM host 3. Recommended to run as a non-root user with sudo access. | admin
+**env.systems.host3.pass** | <b>(Optional)</b> The password for the admin user on the third KVM host. | ch4ngeMe!
 
 ## 3 - File Server
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.file_server.ip** | IPv4 address for the file server that will be used to pass config files and iso to KVM host LPAR(s) and bastion VM during their first boot. | 192.168.10.201
@@ -46,6 +51,7 @@
 **env.file_server.cfgs_dir** | Directory path relative to to the HTTP/FTP accessible directory where configuration files can be stored. For example, if FTP root is /home/user1 and you would like to store the configs at /home/user1/ocpz-config then this variable would be ocpz-config. No slash before or after. | ocpz-config
 
 ## 4 - Red Hat Info
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.redhat.username** | Red Hat username with a valid license or free trial to Red Hat OpenShift Container Platform (RHOCP), which comes with necessary licenses for Red Hat Enterprise Linux (RHEL) and Red Hat CoreOS (RHCOS). | redhat.user
@@ -54,6 +60,7 @@
 **env.redhat.pull_secret** | Pull secret for OpenShift, comes from Red Hat's [Hybrid Cloud Console](https://console.redhat.com/openshift/install/ibmz/user-provisioned). Make sure to enclose in 'single quotes'.  | '{"auths":{"cloud.openshift.com":{"auth":"b3Blb...4yQQ==","email":"redhat.user@gmail.com"}}}'
 
 ## 5 - Bastion
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.bastion.create** | True or False. Would you like to create a bastion KVM guest to host essential infrastructure services like DNS, load balancer, firewall, etc? Can de-select certain services with the env.bastion.options variables below. | True
@@ -77,13 +84,14 @@
 **env.bastion.access.user** | What would you like the admin's username to be on the bastion? If root, make pass and root_pass vars the same. | admin
 **env.bastion.access.pass** | The password to the bastion's admin user. If using root, make pass and root_pass vars the same. | cH4ngeM3!
 **env.bastion.access.root_pass** | The root password for the bastion. If using root, make pass and root_pass vars the same. | R0OtPa$s!
-**env.bastion.options.dns** | Would you like the bastion to host the DNS information for the cluster? True or False. If false, resolution must come from elsewhere in your environment. Make sure to add IP addresses for KVM hosts, bastion, bootstrap, control, compute nodes, AND api, api-int and *.apps as described [here](https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal/installing-bare-metal-network-customizations.html) in section "User-provisioned DNS Requirements" Table 5. If True this will be done for you in the dns and check_dns roles. | True
+**env.bastion.options.dns** | Would you like the bastion to host the DNS information for the cluster? True or False. If false, resolution must come from elsewhere in your environment. Make sure to add IP addresses for KVM hosts, bastion, bootstrap, control, compute nodes, AND api, api-int and *.apps as described [here](https://docs.openshift.com/container-platform/4.8/installing/installing_bare_metal/installing-bare-metal-network-customizations.html) in section "User-provisioned DNS Requirements" Table 5. If True this will be done for you in the dns and dns_check roles. | True
 **env.bastion.options.dns_forwarder** | What IPv4 address will be used to make external DNS calls for the bastion? Can use 1.1.1.1 or 8.8.8.8 as defaults. | 8.8.8.8
 **env.bastion.options.loadbalancer.on_bastion** | Would you like the bastion to host the load balancer (HAProxy) for the cluster? True or False (boolean). If false, this service must be provided elsewhere in your environment, and public and private IP of the load balancer must be provided in the following two variables. | True
 **env.bastion.options.loadbalancer.public_ip** | (Only required if env.bastion.options.loadbalancer.on_bastion is True). The public IPv4 address for your environment's loadbalancer. api, apps, *.apps must use this. | 192.168.10.50
 **env.bastion.options.loadbalancer.private_ip** | (Only required if env.bastion.options.loadbalancer.on_bastion is True). The private IPv4 address for your environment's loadbalancer. api-int must use this. | 10.24.17.12
 
 ## 6 - Cluster Networking
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.cluster.networking.metadata_name** | Name to describe the cluster as a whole, can be anything if DNS will be hosted on the bastion. If DNS is not on the bastion, must match your DNS configuration. Will be combined with the base_domain and hostnames to create Fully Qualified Domain Names (FQDN). | ocpz
@@ -95,6 +103,7 @@
 **env.cluster.networking.interface** | Name of the networking interface on the bastion from Linux's perspective. Most likely enc1. | enc1
 
 ## 7 - Bootstrap Node
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.cluster.nodes.bootstrap.disk_size** | How much disk space do you want to allocate to the bootstrap node (in Gigabytes)? Bootstrap node is temporary and will be brought down automatically when its job completes. 120 or more recommended. | 120
@@ -107,6 +116,7 @@
 **env.cluster.nodes.bootstrap.hostname** | Hostname of the temporary boostrap node. If DNS is hosted on the bastion, this can be anything. If DNS is hosted elsewhere, this must match DNS definition. This will be combined with the metadata_name and base_domain to create a Fully Qualififed Domain Name (FQDN). | bootstrap-ocpz
 
 ## 8 - Control Nodes
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.cluster.nodes.control.disk_size** | How much disk space do you want to allocate to each control node (in Gigabytes)? 120 or more recommended. | 120
@@ -119,6 +129,7 @@
 **env.cluster.nodes.control.hostname** | Hostnames for control nodes. Must match the total number of IP addresses for control nodes (usually 3). If DNS is hosted on the bastion, this can be anything. If DNS is hosted elsewhere, this must match DNS definition. This will be combined with the metadata_name and base_domain to create a Fully Qualififed Domain Name (FQDN). | control-01control-02control-03
 
 ## 9 - Compute Nodes
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.cluster.nodes.compute.disk_size** | How much disk space do you want to allocate to each compute node (in Gigabytes)? 120 or more recommended. | 120
@@ -132,6 +143,7 @@
 **env.cluster.nodes.compute.hostname** | Hostnames for compute nodes. Must match the total number of IP addresses and VM names for compute nodes. If DNS is hosted on the bastion, this can be anything. If DNS is hosted elsewhere, this must match DNS definition. This will be combined with the metadata_name and base_domain to create a Fully Qualififed Domain Name (FQDN). | compute-01compute-02
 
 ## 11 - (Optional) Packages
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.pkgs.galaxy** | A list of Ansible Galaxy collections that will be installed during the setup playbook. The collections listed are required. Feel free to add more as needed, just make sure to follow the same list format. | community.general
@@ -140,6 +152,7 @@
 **env.pkgs.bastion** | A list of packages that will be installed on the bastion during the setup_bastion playbook. Feel free to add more as needed, just make sure to follow the same list format. | haproxy
 
 ## 12 - OpenShift Settings
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.install_config.api_version** | Kubernetes API version for the cluster. These install_config variables will be passed to the OCP install_config file. This file is templated in the get_ocp role during the setup_bastion playbook. To make more fine-tuned adjustments to the install_config, you can find it at roles/get_ocp/templates/install-config.yaml.j2 | v1
@@ -154,6 +167,7 @@
 **env.install_config.fips** | True or False (boolean) for whether or not to use the United States' Federal Information Processing Standards (FIPS). Not yet certified on IBM zSystems. Enclosed in 'single quotes'. | 'false'
 
 ## 13 - (Optional) Proxy
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.proxy.http** | (Optional) A proxy URL to use for creating HTTP connections outside the cluster. Will be used in the install-config and applied to other Ansible hosts unless set otherwise in no_proxy below. Must follow this pattern: http://username:pswd>@ip:port | http://ocp-admin:Pa$sw0rd@9.72.10.1:80
@@ -161,6 +175,7 @@
 **env.proxy.no** | (Optional) A comma-separated list (no spaces) of destination domain names, IP addresses, or other network CIDRs to exclude from proxying. When using a proxy, all necessary IPs and domains for your cluster will be added automatically. See roles/get_ocp/templates/install-config.yaml.j2 for more details on the template. Preface a domain with . to match subdomains only. For example, .y.com matches x.y.com, but not y.com. Use * to bypass the proxy for all listed destinations. | example.com,192.168.10.1
 
 ## 14 - (Optional) Misc
+
 **Variable Name** | **Description** | **Example**
 :--- | :--- | :---
 **env.language** | What language would you like Red Hat Enterprise Linux to use? In UTF-8 language code. Available languages and their corresponding codes can be found [here](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/5/html-single/international_language_support_guide/index), in the "Locale" column of Table 2.1. | en_US.UTF-8
@@ -206,89 +221,3 @@
 **day2_compute_node.hostname** | The hostname of the KVM host | kvm-host-01
 **day2_compute_node.host_user** | KVM host user which is used to create the VM | root
 **day2_compute_node.host_arch** | KVM host architecture.  | s390x
-
-## 18 - (Optional) Agent Based Installer
-
-**Variable Name** | **Description** | **Example**
-:--- | :--- | :---
-**abi.flag** | This is the flag, Will be used to identify during execution. Few checks in the playbook will be depend on this (default value will be False)  | True
-**abi.ansible_workdir** | This will be work directory name, it will keep required data that need to be present during or after execution | ansible_workdir
-**abi.ocp_installer_version** | Version will contain value of openshift-installer binary version user desired to be used | '4.15.0-rc.8'
-**abi.ocp_installer_url** | This is the base url of openshift installer binary it will remain same as static value, User Do not need to give value until user wants to change the mirror | 'https://mirror.openshift.com/pub/openshift-v4/s390x/clients/ocp/'
-
-
-## Hosted Control Plane ( Optional )
-**Variable Name** | **Description** | **Example**
-:--- | :--- | :---
-**hcp.compute_node_type** | Select the compute node type for HCP , either zKVM or zVM | zvm
-**hcp.mgmt_cluster_nameserver** | IP Address of Nameserver of Management Cluster | 192.168.10.1
-**hcp.oc_url** | URL for OC Client that you want to install on the host | https://... ..openshift-client-linux-4.13.0-ec.4.tar.gz
-**hcp.ansible_key_name** | ssh key name | ansible-ocpz
-**hcp.pkgs** | list of packages for different hosts | 
-**hcp.mce.version** | version for multicluster-engine Operator | 2.4
-**hcp.mce.instance_name** | name of the MultiClusterEngine instance | engine
-**hcp.mce.delete** | true or false - deletes mce and related resources while running deletion playbook | true
-**hcp.asc.url_for_ocp_release_file** | Add URL for OCP release.txt File | https://...  ..../release.txt
-**hcp.asc.db_volume_size** | DatabaseStorage Volume Size | 10Gi
-**hcp.asc.fs_volume_size** | FileSystem Storage Volume Size | 10Gi
-**hcp.asc.ocp_version** | OCP Version for AgentServiceConfig | 4.13.0-ec.4
-**hcp.asc.iso_url** | Give URL for ISO image | https://...  ...s390x-live.s390x.iso
-**hcp.asc.root_fs_url** | Give URL for rootfs image | https://...  ... live-rootfs.s390x.img
-**hcp.asc.mce_namespace** | Namespace where your Multicluster Engine Operator is installed.  Recommended Namespace for MCE is 'multicluster-engine'.  Change this only if MCE is installed in other namespace. | multicluster-engine
-**hcp.control_plane.high_availabiliy** | Availability for Control Plane | true
-**hcp.control_plane.clusters_namespace** | Namespace for Creating Hosted Control Plane | clusters
-**hcp.control_plane.hosted_cluster_name** | Name for the Hosted Cluster  | hosted0
-**hcp.control_plane.basedomain** | Base domain for Hosted Cluster | example.com
-**hcp.control_plane.pull_secret_file** | Path for the pull secret  No need to change this as we are copying the pullsecret to same file  /root/ansible_workdir/auth_file | /root/ansible_workdir/auth_file
-**hcp.control_plane.ocp_release_image** | OCP Release version for Hosted Control Cluster and Nodepool | 4.13.0-rc.4-multi
-**hcp.control_plane.arch** | Architecture for InfraEnv and AgentServiceConfig" | s390x
-**hcp.control_plane.additional_flags** | Any additional flags for creating hcp ( In hcp create cluster agent command ) | --fips
-**hcp.control_plane.pull_secret** | Pull Secret of Management Cluster  Make sure to enclose pull_secret in 'single quotes' | '{"auths":{"cloud.openshift.com":{"auth":"b3Blb...4yQQ==","email":"redhat.user@gmail.com"}}}'
-**hcp.bastion_params.create** | true or false - create bastion with the provided IP | true
-**hcp.bastion_params.ip** | IPv4 address for bastion of Hosted Cluster | 192.168.10.1
-**hcp.bastion_params.user** | User for bastion of Hosted Cluster | root
-**hcp.bastion_params.host** | IPv4 address of KVM host  (kvm host where you want to run all oc commands and create VMs)| 192.168.10.1
-**hcp.bastion_params.host_user** | User for KVM host | root
-**hcp.bastion_params.hostname** | Hostname for bastion | bastion
-**hcp.bastion_params.base_domain** | DNS base domain for the bastion. | ihost.com
-**hcp.bastion_params.nameserver** | Nameserver for creating bastion | 192.168.10.1
-**hhcp.bastion_params.gateway** | Gateway IP for creating bastion  This is how it well be used ip=<ipv4 address>::<nameserver>:<subnet mask> | 192.168.10.1
-**hcp.bastion_params.subnet_mask** |  IPv4 address of subnetmask | 255.255.255.0
-**hcp.bastion_params.interface** | Interface for bastion | enc1
-**hcp.bastion_params.file_server.ip** | IPv4 address for the file server that will be used to pass config files and iso to KVM host LPAR(s) and bastion VM during their first boot. | 192.168.10.201
-**hcp.bastion_params.file_server.protocol** | Protocol used to serve the files, either 'ftp' or 'http' | http
-**hcp.bastion_params.file_server.iso_mount_dir** | Directory path relative to the HTTP/FTP accessible directory where RHEL ISO is mounted. For example, if the FTP root is at /home/user1 and the ISO is mounted at /home/user1/RHEL/8.7 then this variable would be RHEL/8.7 - no slash before or after. | RHEL/8.7
-**hcp.bastion_params.disk** | rhel os variant for creating bastion | 8.7
-**hcp.bastion_params.network_name** | rhel os variant for creating bastion | 8.7
-**hcp.bastion_params.networking_device** | The network interface card from Linux's perspective.  Usually enc and then a number that comes from the dev_num of the network adapter. | enc1100
-**hcp.bastion_params.language** | What language would you like Red Hat Enterprise Linux to use? In UTF-8 language code. Available languages and their corresponding codes can be found here, in the "Locale" column of Table 2.1. | en_US.UTF-8
-**hcp.bastion_params.timezone** | Which timezone would you like Red Hat Enterprise Linux to use? A list of available timezone options can be found here. | America/New_York
-**hcp.bastion_params.keyboard** | Which keyboard layout would you like Red Hat Enterprise Linux to use? | us
-**hcp.data_plane.compute_count** | Number of agents for the hosted cluster  The same number of compute nodes will be attached to Hosted Cotrol Plane | 2
-**hcp.data_plane.vcpus** | vCPUs for compute nodes | 4
-**hcp.data_plane.memory** | RAM for compute nodes | 16384
-**hcp.data_plane.nameserver** | Nameserver for compute nodes | 192.168.10.1
-**hcp.data_plane.storage.type** | Storage type for KVM guests  qcow/dasd | qcow
-**hcp.data_plane.storage.qcow.disk_size** | Disk size for kvm guests | 100G
-**hcp.data_plane.storage.qcow.pool_path** | Storage pool path for creating disks | /home/images/
-**hcp.data_plane.storage.dasd** | dasd disks for kvm guests | /disk
-**hcp.data_plane.kvm.ip_params.static_ip.enabled** | true or false - use static IPs for agents using NMState | true
-**hcp.data_plane.kvm.ip_params.static_ip.ip** | List of IP addresses for agents | 192.168.10.1
-**hcp.data_plane.kvm.ip_params.static_ip.interface** | Interface for agents for configuring NMStateConfig | eth0
-**hcp.data_plane.kvm.ip_params.mac** | List of macaddresses for the agents.  Configure in DHCP if you are using dynamic IPs for Agents. | - 52:54:00:ba:d3:f7 
-**hcp.data_plane.zvm.network_mode** | Network mode for zvm nodes  Supported modes: vswitch,osa, RoCE  |  vswitch
-**hcp.data_plane.zvm.disk_type** | Disk type for zvm nodes  Supported disk types: fcp, dasd | dasd
-**hcp.data_plane.zvm.subnetmask** | Subnet mask for compute nodes | 255.255.255.0
-**hcp.data_plane.zvm.gateway** | Gateway for compute nodes | 192.168.10.1
-**hcp.data_plane.zvm.nodes** | Set of parameters for zvm nodes  Give the details of each zvm node here | 
-**hcp.data_plane.zvm.name** | Name of the zVM guest | m1317002
-**hcp.data_plane.zvm.nodes.host** | Host name of the zVM guests  which we use to login 3270 console | boem1317
-**hcp.data_plane.zvmnodes.user** | Username for zVM guests to login | m1317002
-**hcp.data_plane.zvm.nodes.password** | password for the zVM guests to login | password
-**hcp.data_plane.zvm.nodes.interface.ifname** | Network interface name for zVM guests | encbdf0
-**hcp.data_plane.zvm.nodes.interface.nettype** | Network type for zVM guests for network connectivity | qeth
-**hcp.data_plane.zvm.nodes.interface.subchannels** | subchannels for zVM guests interfaces | 0.0.bdf0,0.0.bdf1,0.0.bdf2
-**hcp.data_plane.zvm.nodes.interface.options** | Configurations options  | layer2=1
-**hcp.data_plane.zvm.interface.ip** | IP addresses for to be used for zVM nodes | 192.168.10.1
-**hcp.data_plane.zvm.nodes.dasd.disk_id** | Disk id for dasd disk to be used for zVM node | 4404 
-**hcp.data_plane.zvm.nodes.lun** | Disk details of fcp disk to be used for zVM node | 4404

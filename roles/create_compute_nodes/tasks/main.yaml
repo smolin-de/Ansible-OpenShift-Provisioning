@@ -45,7 +45,7 @@
   loop_control:
     extended: yes
     index_var: i
-  when: env.cluster.nodes.compute.hostname[0] is defined and not env.z.high_availability and inventory_hostname == env.z.lpar1.hostname
+  when: env.cluster.nodes.compute.hostname[0] is defined and not env.systems.high_availability and inventory_hostname == env.systems.host1.hostname
 
 # If cluster is to be highly available, split control and infra nodes into lists corresponding to their future KVM hosts.
 
@@ -56,7 +56,7 @@
     compute_hostname: "{{ env.cluster.nodes.compute.hostname[groups['kvm_host'].index(inventory_hostname) :: groups['kvm_host'] | length] }}"
     compute_ip: "{{ env.cluster.nodes.compute.ip[groups['kvm_host'].index(inventory_hostname) :: groups['kvm_host'] | length] }}"
     compute_ipv6: "{{ env.cluster.nodes.compute.ipv6[groups['kvm_host'].index(inventory_hostname) :: groups['kvm_host'] | length] }}"
-  when: env.z.high_availability
+  when: env.systems.high_availability
 
 - name: Create CoreOS compute nodes on KVM hosts, if cluster is to be highly available.
   tags: create_compute_nodes
@@ -97,10 +97,10 @@
   loop_control:
     extended: yes
     index_var: i
-  when: env.z.high_availability and compute_hostname[i] is defined
+  when: env.systems.high_availability and compute_hostname[i] is defined
 
 # - name: Attach compute node disks
-#   when: env.cluster.nodes.compute.vm_name[0] is defined and not env.z.high_availability and inventory_hostname == env.z.lpar1.hostname
+#   when: env.cluster.nodes.compute.vm_name[0] is defined and not env.systems.high_availability and inventory_hostname == env.systems.host1.hostname
 #   tags: attach_compute_node_disks
 #   block:
 #     - name: Attach compute node disks
