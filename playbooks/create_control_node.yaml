@@ -107,8 +107,8 @@
         - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_kernel }}" }
 #       - { baseurl: "{{ rhcos_download_url }}", file: "{{ rhcos_live_iso }}" }
       register: cmd_output
-      remote_user: "{{ env.z.hmc_ftp_server.user }}"
-      delegate_to: "{{ env.z.hmc_ftp_server.ip }}"
+      remote_user: "{{ env.systems.hmc_ftp_server.user }}"
+      delegate_to: "{{ env.systems.hmc_ftp_server.ip }}"
 
   roles:
     # # Delete control node, if it already exists

@@ -9,23 +9,23 @@ env:
   controller:
     sudo_pass: #X
 
-# Section 2 - LPAR(s)
-  z:
+  # Section 2 - Target Systems (IBM Z, x86, or ARM)
+  systems:
     high_availability: False
     ip_forward: "{{ 1 if network_mode | upper == 'NAT' else 0 }}"
-    lpar1:
+    host1:
       create: True
       hostname: #X
       ip: #X
       user: #X
       pass: #X
-    lpar2:
+    host2:
       create: False
 #      hostname:
 #      ip:
 #      user:
 #      pass:
-    lpar3:
+    host3:
       create: False
 #      hostname:
 #      ip:
