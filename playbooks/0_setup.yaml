@@ -73,3 +73,14 @@
   roles:
     - ssh_key_gen
     - ssh_agent
+  post_tasks:
+    - name: Test nslookup
+      ansible.builtin.shell: |
+        nslookup a3ep60
+        nslookup a314lp60
+      register: cmd_output
+
+    - name: Print above cmd output
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines
+
