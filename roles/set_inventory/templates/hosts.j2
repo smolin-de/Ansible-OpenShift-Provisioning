@@ -13,19 +13,23 @@ ansible_python_interpreter=auto
 {% endif %}
 
 [kvm_host]
-{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_become_password={{ env.systems.host1.pass }}
-{{ (env.systems.host2.hostname + ' ansible_host=' + env.systems.host2.ip + ' ansible_user=' + env.systems.host2.user + ' ansible_become_password=' + env.systems.host2.pass ) if env.systems.host2.hostname is defined else '' }}
-{{ (env.systems.host3.hostname + ' ansible_host=' + env.systems.host3.ip + ' ansible_user=' + env.systems.host3.user + ' ansible_become_password=' + env.systems.host3.pass ) if env.systems.host3.hostname is defined else '' }}
+{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_password={{ env.systems.host1.pass }} ansible_become_password={{ env.systems.host1.pass }}
+{% if (env.systems.host2.hostname is defined) %}
+{{ env.systems.host2.hostname }} ansible_host={{ env.systems.host2.ip }} ansible_user={{ env.systems.host2.user }} ansible_password={{ env.systems.host2.pass }} ansible_become_password={{ env.systems.host2.pass }}
+{% endif %}
+{% if (env.systems.host3.hostname is defined) %}
+{{ env.systems.host3.hostname }} ansible_host={{ env.systems.host3.ip }} ansible_user={{ env.systems.host3.user }} ansible_password={{ env.systems.host3.pass }} ansible_become_password={{ env.systems.host3.pass }}
+{% endif %}
 
 [kvm_host_bastion]
 {% if (env.systems.bastion.hostname is defined) %}
-{{ env.systems.bastion.hostname }} ansible_host={{ env.systems.bastion.ip }} ansible_user={{ env.systems.bastion.user }} ansible_become_password={{ env.systems.bastion.pass }}
+{{ env.systems.bastion.hostname }} ansible_host={{ env.systems.bastion.ip }} ansible_user={{ env.systems.bastion.user }} ansible_password={{ env.systems.bastion.pass }} ansible_become_password={{ env.systems.bastion.pass }}
 {% else %}
-{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_become_password={{ env.systems.host1.pass }}
+{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_password={{ env.systems.host1.pass }} ansible_become_password={{ env.systems.host1.pass }}
 {% endif %}
 
 [kvm_host_bootstrap]
-{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_become_password={{ env.systems.host1.pass }}
+{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_password={{ env.systems.host1.pass }} ansible_become_password={{ env.systems.host1.pass }}
 
 {% if (env.rhocpv1.hostname is defined) %}
 [rhocpv_host]
@@ -36,4 +40,4 @@ ansible_python_interpreter=auto
 {% endif %}
 
 [bastion]
-{{ env.bastion.networking.hostname }} ansible_host={{ env.bastion.networking.ip }} ansible_user={{ env.bastion.access.user }} ansible_become_password={{ env.bastion.access.pass }}
+{{ env.bastion.networking.hostname }} ansible_host={{ env.bastion.networking.ip }} ansible_user={{ env.bastion.access.user }}  ansible_password={{ env.bastion.access.pass }} ansible_become_password={{ env.bastion.access.pass }}
