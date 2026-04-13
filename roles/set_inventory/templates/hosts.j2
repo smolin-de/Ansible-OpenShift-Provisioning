@@ -13,7 +13,6 @@ ansible_python_interpreter=auto
 {% endif %}
 
 [kvm_host]
-{{ env.systems.host1.ip }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_become_password={{ env.systems.host1.pass }}
 {{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_become_password={{ env.systems.host1.pass }}
 {{ (env.systems.host2.hostname + ' ansible_host=' + env.systems.host2.ip + ' ansible_user=' + env.systems.host2.user + ' ansible_become_password=' + env.systems.host2.pass ) if env.systems.host2.hostname is defined else '' }}
 {{ (env.systems.host3.hostname + ' ansible_host=' + env.systems.host3.ip + ' ansible_user=' + env.systems.host3.user + ' ansible_become_password=' + env.systems.host3.pass ) if env.systems.host3.hostname is defined else '' }}
