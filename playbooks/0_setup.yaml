@@ -73,14 +73,3 @@
   roles:
     - ssh_key_gen
     - ssh_agent
-
-- name: Setup ssh keys 2
-  hosts: localhost
-  connection: local
-  become: false
-  gather_facts: true
-  vars:
-    ssh_target: ["{{ env.systems.hoost2.ip }}", "{{ env.systems.hoost2.user }}", "{{ env.systems.host2.pass }}", "{{ path_to_key_pair }}"]
-  roles:
-    - ssh_key_gen
-    - ssh_agent
