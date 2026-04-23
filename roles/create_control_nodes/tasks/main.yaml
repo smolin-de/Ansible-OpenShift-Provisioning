@@ -1,5 +1,16 @@
 ---
 
+# - name: Iterate over control node creation
+#   include_tasks: create_vm_logic.yml
+#   loop: "{{ range(0, env.cluster.nodes.control.hostname | length) | list }}"
+#   loop_control:
+#     index_var: i
+#   when:
+#     - not env.systems.high_availability
+#     - inventory_hostname == env.systems.host1.hostname
+#   tags: create_control_nodes
+
+
 - name: Create CoreOS control nodes on the the KVM host.
   tags: create_control_nodes
   ansible.builtin.shell: |

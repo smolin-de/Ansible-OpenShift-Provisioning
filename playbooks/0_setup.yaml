@@ -63,13 +63,13 @@
         extra_args: --upgrade
       when: zhmc_path.rc != 0
 
-- name: Setup ssh keys
-  hosts: localhost
-  connection: local
-  become: false
-  gather_facts: true
-  vars:
-    ssh_target: ["{{ env.file_server.ip }}", "{{ env.file_server.user }}", "{{ env.file_server.pass }}", "{{ path_to_key_pair }}"]
-  roles:
-    - ssh_key_gen
-    - ssh_agent
+# - name: Setup ssh keys
+#   hosts: localhost
+#   connection: local
+#   become: false
+#   gather_facts: true
+#   vars:
+#     ssh_target: ["{{ env.file_server.ip }}", "{{ env.file_server.user }}", "{{ env.file_server.pass }}", "{{ path_to_key_pair }}"]
+#   roles:
+#     - ssh_key_gen
+#     - ssh_agent
