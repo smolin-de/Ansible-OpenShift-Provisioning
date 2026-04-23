@@ -5,20 +5,22 @@
 ansible_python_interpreter=auto
 
 [file_server]
-{{ env.file_server.ip }} ansible_connection=ssh ansible_user={{ env.file_server.user }} ansible_become_password={{ env.file_server.pass }}
+{{ env.file_server.ip }} ansible_user={{ env.file_server.user }} {{ ('ansible_ssh_private_key_file=' + env.file_server.key_path) if env.file_server.key_path is defined }}
 
-{% if (env.hmc_ftp_server is defined) %}
-[hmc_ftp_server]
-{{ env.hmc_ftp_server.hostname + ' ansible_connection=ssh ansible_host=' +env.hmc_ftp_server.ip + ' ansible_become_password=' + env.hmc_ftp_server.user + ' ansible_password=' + env.hmc_ftp_server.pass }}
-{% endif %}
+#{% if (env.hmc_ftp_server is defined) %}
+#[hmc_ftp_server]
+#{{ env.hmc_ftp_server.hostname }} ansible_host={{ env.hmc_ftp_server.ip }} ansible_user={{ env.hmc_ftp_server.user }} {{ ('ansible_ssh_private_key_file=' + env.hmc_ftp_server.key_path) if env.hmc_ftp_server.key_path is defined }}
+#{% endif %}
 
 [kvm_host]
-{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_become_password={{ env.systems.host1.pass }} ansible_connection=ssh ansible_ssh_private_key_file=~/.ssh/openshift-ocpz
+# KVM Hosts does not have a 'sudo' password
+# {{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} ansible_password={{ env.systems.host2.pass }} {{ ('ansible_ssh_private_key_file=' + env.systems.host1.key_path) if env.systems.host1.key_path is defined }}
+{{ env.systems.host1.hostname }} ansible_host={{ env.systems.host1.ip }} ansible_user={{ env.systems.host1.user }} {{ ('ansible_ssh_private_key_file=' + env.systems.host1.key_path) if env.systems.host1.key_path is defined }}
 {% if (env.systems.host2.hostname is defined) %}
-{{ env.systems.host2.hostname }} ansible_host={{ env.systems.host2.ip }} ansible_user={{ env.systems.host2.user }} ansible_password={{ env.systems.host2.pass }} ansible_become_password={{ env.systems.host2.pass }}
+{{ env.systems.host2.hostname }} ansible_host={{ env.systems.host2.ip }} ansible_user={{ env.systems.host2.user }} {{ ('ansible_ssh_private_key_file=' + env.systems.host1.key_path) if env.systems.host2.key_path is defined }}
 {% endif %}
 {% if (env.systems.host3.hostname is defined) %}
-{{ env.systems.host3.hostname }} ansible_host={{ env.systems.host3.ip }} ansible_user={{ env.systems.host3.user }} ansible_password={{ env.systems.host3.pass }} ansible_become_password={{ env.systems.host3.pass }}
+{{ env.systems.host3.hostname }} ansible_host={{ env.systems.host3.ip }} ansible_user={{ env.systems.host3.user }} {{ ('ansible_ssh_private_key_file=' + env.systems.host1.key_path) if env.systems.host3.key_path is defined }}
 {% endif %}
 
 [kvm_host_bastion]
