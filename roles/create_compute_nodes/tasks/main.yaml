@@ -32,7 +32,7 @@
     {% endif %}
     --extra-args "nameserver={{ env.cluster.networking.nameserver1 }}" \
     --extra-args "{{ _vm_console }}" \
-    --memballoon none \
+    --memballoon model=virtio \
     --graphics none \
     --wait=-1 \
     --noautoconsole
@@ -84,7 +84,7 @@
     {% endif %}
     --extra-args "nameserver={{ env.cluster.networking.nameserver1 }}" \
     --extra-args "{{ _vm_console }}" \
-    --memballoon none \
+    --memballoon model=virtio \
     --graphics none \
     --wait=-1 \
     --noautoconsole
