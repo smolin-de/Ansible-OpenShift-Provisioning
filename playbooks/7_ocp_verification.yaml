@@ -6,9 +6,9 @@
     KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
   gather_facts: true
   roles:
-    - role: approve_certs
-      vars:
-        approve_certs_cleanup: false
+    #- role: approve_certs
+    #  vars:
+    #    approve_certs_cleanup: false
     - check_nodes
     - role: approve_certs
       vars:

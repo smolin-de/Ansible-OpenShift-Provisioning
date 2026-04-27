@@ -6,28 +6,13 @@
   tags: check_nodes
   ansible.builtin.shell: |
     set -o pipefail
-    oc get nodes | grep "^{{ node | lower }}" | awk '{print $2}'
-  loop: "{{ env.cluster.nodes.control.hostname + (env.cluster.nodes.compute.hostname | default([])) }}"
+    oc get nodes -o wide --no-headers | grep "{{ ip | lower }}" | awk '{print $2}'
+  loop: "{{ env.cluster.nodes.control.ip + (env.cluster.nodes.compute.ip | default([])) }}"
   loop_control:
-    loop_var: node
+    loop_var: ip
   register: cmd_output
   changed_when: false
   until: ("Ready" == cmd_output.stdout) or ("NotReady" == cmd_output.stdout)
   retries: 30
   delay: 30
   failed_when: false
-
-
-# - name: Verify that at least the defined number of nodes are present (Ready or NotReady)
-#   tags: check_nodes
-#   ansible.builtin.shell: |
-#     set -o pipefail
-#     oc get nodes --no-headers | wc -l
-#   vars:
-#     expected_count: "{{ (env.cluster.nodes.control.hostname | length) + (env.cluster.nodes.compute.hostname | default([]) | length) }}"
-#   register: node_count_check
-#   changed_when: false
-#   # Logic: Current count must be >= expected inventory count
-#   until: node_count_check.stdout | trim | int >= expected_count | int
-#   retries: 20
-#   delay: 60

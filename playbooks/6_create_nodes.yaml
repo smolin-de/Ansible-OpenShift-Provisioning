@@ -127,6 +127,9 @@
   gather_facts: true
   roles:
     - wait_for_bootstrap
+    - role: approve_certs
+      vars:
+        approve_certs_cleanup: false
   post_tasks:
     - name: Delete haproxy bootstrap entries
       when: env.bastion.options.loadbalancer.on_bastion
