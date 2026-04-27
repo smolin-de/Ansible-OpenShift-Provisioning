@@ -126,11 +126,53 @@
     KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
   gather_facts: true
   roles:
-    - wait_for_bootstrap
+    - wait_for_bootstrap_approved
     - role: approve_certs
       vars:
         approve_certs_cleanup: false
-  post_tasks:
+
+- name: 6 create nodes - create compute nodes using KVM
+  hosts: kvm_host
+  tags: create_compute_nodes
+  gather_facts: false
+  roles:
+    - common
+    - role: create_compute_nodes
+      when: env.cluster.nodes.compute.vm_name[0] is defined
+#    - role: attach_compute_nodes_disk
+#      when: env.cluster.nodes.compute.vm_name[0] is defined
+
+- name: 6 create nodes - create compute nodes using LPAR boot from ftp
+  hosts: localhost
+  tasks:
+    - name: Boot LPAR from ftp
+      when: (env.cluster.nodes.compute.lpar_name | default(none)) is not none
+      ansible.builtin.include_role:
+        name: boot_lpar_from_ftp
+      vars:
+        node: "{{ env.cluster.nodes.compute }}"
+      loop: "{{ env.cluster.nodes.compute.lpar_name }}"
+      loop_control:
+        loop_var: lpar_name
+        index_var: idx
+
+
+- name: 6 create nodes - wait for bootstrap completion
+  hosts: bastion
+  become: true
+  environment:
+    KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
+  gather_facts: true
+  roles:
+    - wait_for_bootstrap_completed
+
+- name: 6 create nodes - wait for bootstrap to connect to control plane
+  hosts: bastion
+  become: true
+  environment:
+    KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
+  gather_facts: true
+  tasks:
     - name: Delete haproxy bootstrap entries
       when: env.bastion.options.loadbalancer.on_bastion
       block:
@@ -169,28 +211,3 @@
           tags: create_nodes, teardown_bootstrap
           ansible.builtin.debug:
             var: cmd_output.stdout_lines
-
-- name: 6 create nodes - once bootstrapping is complete, create compute nodes.
-  hosts: kvm_host
-  tags: create_compute_nodes
-  gather_facts: false
-  roles:
-    - common
-    - role: create_compute_nodes
-      when: env.cluster.nodes.compute.vm_name[0] is defined
-#    - role: attach_compute_nodes_disk
-#      when: env.cluster.nodes.compute.vm_name[0] is defined
-
-- name: 6 create nodes - create compute nodes using LPAR boot from ftp
-  hosts: localhost
-  tasks:
-    - name: Boot LPAR from ftp
-      when: (env.cluster.nodes.compute.lpar_name | default(none)) is not none
-      ansible.builtin.include_role:
-        name: boot_lpar_from_ftp
-      vars:
-        node: "{{ env.cluster.nodes.compute }}"
-      loop: "{{ env.cluster.nodes.compute.lpar_name }}"
-      loop_control:
-        loop_var: lpar_name
-        index_var: idx
