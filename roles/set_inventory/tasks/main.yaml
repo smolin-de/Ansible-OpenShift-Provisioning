@@ -18,12 +18,6 @@
   register: find_project
   changed_when: false
 
-- name: Fail if network_mode is NAT and jumphost vars are undefined.
-  tags: set_inventory
-  ansible.builtin.fail:
-    msg: "Error jumphost vars undefined: when env.network_mode is NAT, you must set all env.jumphost variables."
-  when: ( env.network_mode | upper == 'NAT' ) and (env.jumphost.name is none or env.jumphost.ip is none or env.jumphost.user is none or env.jumphost.pass is none or env.jumphost.path_to_keypair is none)
-
 - name: Create inventory with localhost, file server, KVM host, jumphost(optional) and bastion
   tags: set_inventory
   ansible.builtin.template:
