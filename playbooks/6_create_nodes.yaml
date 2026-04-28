@@ -92,6 +92,7 @@
 
 - name: 6 create nodes - create bootstrap using LPAR boot from ftp
   hosts: localhost
+  gather_facts: false
   tasks:
     - name: Boot bootstrap LPAR from ftp
       when: (env.cluster.nodes.bootstrap.lpar_name | default(none)) is not none
@@ -107,6 +108,7 @@
 
 - name: 6 create nodes - create control using LPAR boot from ftp
   hosts: localhost
+  gather_facts: false
   tasks:
     - name: Boot control LPAR from ftp
       when: (env.cluster.nodes.control.lpar_name | default(none)) is not none
@@ -144,6 +146,7 @@
 
 - name: 6 create nodes - create compute nodes using LPAR boot from ftp
   hosts: localhost
+  gather_facts: false
   tasks:
     - name: Boot LPAR from ftp
       when: (env.cluster.nodes.compute.lpar_name | default(none)) is not none
@@ -166,7 +169,7 @@
   roles:
     - wait_for_bootstrap_completed
 
-- name: 6 create nodes - wait for bootstrap to connect to control plane
+- name: 6 create nodes - bootstrapping is complete, remove haproxy entries
   hosts: bastion
   become: true
   environment:
@@ -186,7 +189,7 @@
             state: restarted
             enabled: true
 
-- name: 6 create nodes - once bootstrapping is complete, tear down bootstrap.
+- name: 6 create nodes - bootstrapping is complete, tear down bootstrap.
   hosts: kvm_host_bootstrap
   tags: create_nodes, teardown_bootstrap
   gather_facts: false

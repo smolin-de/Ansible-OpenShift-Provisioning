@@ -10,40 +10,40 @@
     - set_inventory
 
   post_tasks:
-    - name: Test Ansible Galaxy collections connection
-      ansible.builtin.shell: |
-        ansible-galaxy --version
-        curl -I https://galaxy.ansible.com/api/
-      register: cmd_output
+    # - name: Test Ansible Galaxy collections connection
+    #   ansible.builtin.shell: |
+    #     ansible-galaxy --version
+    #     curl -I https://galaxy.ansible.com/api/
+    #   register: cmd_output
 
-    - name: Print above cmd output
-      ansible.builtin.debug:
-        var: cmd_output.stdout_lines
+    # - name: Print above cmd output
+    #   ansible.builtin.debug:
+    #     var: cmd_output.stdout_lines
 
-    - name: Install Galaxy collections from local git repository
-      tags: galaxy
-      ansible.builtin.shell: |
-        cd "{{ ansible_env.PWD }}/../collections"
-        pwd
-        ls -al
-        ansible-galaxy collection install ./ansible-posix-2.1.0.tar.gz
-        ansible-galaxy collection install ./community-general-12.2.0.tar.gz
-        ansible-galaxy collection install ./community-libvirt-2.0.0.tar.gz
-        ansible-galaxy collection install ./community-crypto-3.1.0.tar.gz
-        ansible-galaxy collection install ./community-kubernetes-2.0.1.tar.gz
-        ansible-galaxy collection install ./ibm-ibm_zhmc-1.10.0.tar.gz
-      register: cmd_output
+    - name: Attempt to install collections from Galaxy, fallback to local tarballs
+      block:
+        - name: Install Ansible Galaxy collections
+          ansible.builtin.command: "ansible-galaxy collection install {{ env.pkgs.galaxy | join(' ') }}"
+          when: env.pkgs.galaxy | length > 0
 
-    - name: Print above cmd output
-      ansible.builtin.debug:
-        var: cmd_output.stdout_lines
+      rescue:
+        - name: Install Galaxy collections from local git repository
+          tags: galaxy
+          ansible.builtin.shell: |
+            cd "{{ ansible_env.PWD }}/../collections"
+            pwd
+            ls -al
+            ansible-galaxy collection install ./ansible-posix-2.1.0.tar.gz
+            ansible-galaxy collection install ./community-crypto-3.1.0.tar.gz
+            ansible-galaxy collection install ./community-general-12.2.0.tar.gz
+            ansible-galaxy collection install ./community-kubernetes-2.0.1.tar.gz
+            ansible-galaxy collection install ./community-libvirt-2.0.0.tar.gz
+            ansible-galaxy collection install ./ibm-ibm_zhmc-1.10.0.tar.gz
+          register: cmd_output
 
-    # - name: Ensure Ansible Galaxy collections have been installed with latest version
-    #   tags: galaxy
-    #   ansible.builtin.command: ansible-galaxy collection install {{ item }} --upgrade
-    #   loop: "{{ env.pkgs.galaxy }}"
-    #   # Ignore errors
-    #   failed_when: false
+        - name: Print above cmd output
+          ansible.builtin.debug:
+            var: cmd_output.stdout_lines
 
     - name: Find ibm_zhmc collection install location, required for LPAR mode
       tags: galaxy
