@@ -1,0 +1,5 @@
+---
+- name: "Load SSH key generate task to create '{{ parm_ssh_key_path }}'"
+  tags: ssh_key_gen, ssh
+  ansible.builtin.include_tasks: "key_gen.yaml"
+  when: parm_ssh_key_path is defined

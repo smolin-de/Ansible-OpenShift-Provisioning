@@ -1,0 +1,18 @@
+---
+#- debug:
+#    var: parm_host
+
+- name: Process SSH key distribution for defined hosts
+  when: parm_host.ip is defined
+  block:
+    - name: "Add SSH key to Server '{{ parm_host.ip | default('127.0.0.1') }}'"
+      ansible.posix.authorized_key:
+        user: "{{ parm_host.user | default('unknown') }}"
+        state: present
+        key: "{{ lookup('file', env_ssh_key_path ~ '.pub') }}"
+      delegate_to: "{{ parm_host.ip | default('127.0.0.1') }}"
+      vars:
+        ansible_connection: ssh
+        ansible_user: "{{ parm_host.user | default('unknown') }}"
+        ansible_password: "{{ parm_host.pass | default('') }}"
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no"

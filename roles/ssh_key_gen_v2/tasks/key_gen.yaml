@@ -1,0 +1,34 @@
+---
+- name: Create SSH local directory if it doesn't already exist
+  tags: ssh_key_gen, ssh
+  block:
+    - name: Check to see if local SSH directory exists
+      ansible.builtin.stat:
+        path: "~/.ssh"
+      register: ssh_directory_exists_check
+
+    - name: Create SSH local directory if it doesn't already exist
+      ansible.builtin.file:
+        path: "~/.ssh"
+        state: directory
+        mode: '0700' # Best practice: use leading zero for octal permissions
+      register: ssh_directory_creation
+      when: not ssh_directory_exists_check.stat.exists
+
+# "{{ lookup('env', 'HOME') }}/.ssh/ansible-vip-{{ lookup('env', 'USER') }}"
+- name: Check if SSH key already exists
+  tags: ssh_key_gen, ssh
+  ansible.builtin.stat:
+    path: "{{ parm_ssh_key_path }}"
+  register: ssh_key_exists_check
+
+- name: Generate Ed25519 SSH keypairs for all defined keys
+  tags: ssh_key_gen, ssh
+  community.crypto.openssh_keypair:
+    path: "{{ parm_ssh_key_path }}"
+    type: ed25519
+    comment: "{{ parm_ssh_key_path }} - {{ now(fmt='%d-%m-%Y') }}"
+    force: false # Explicitly ensures an existing key is never overwritten
+    mode: '0600' # Best practice: restrict private key permissions
+  when:
+    - not ssh_key_exists_check.stat.exists
