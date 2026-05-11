@@ -1,5 +1,8 @@
 ---
 
+# TODO
+# ~/.kube/config
+
 - name: Create directory bin for mirrors
   tags: get_ocp
   ansible.builtin.file:
@@ -194,47 +197,37 @@
   ansible.builtin.shell: |
     set -o pipefail
     /root/ocpinst/openshift-install create ignition-configs  --dir=/root/ocpinst/
-    # Add core password
-    CORE_PWD=$(mkpasswd -m yescrypt "{{ env.bastion.access.root_pass }}")
-    mv /root/ocpinst/bootstrap.ign /root/ocpinst/bootstrap.ign.orig
-    cat /root/ocpinst/bootstrap.ign.orig | jq '.passwd.users[0] += {"passwordHash":"'$CORE_PWD'"}' > /root/ocpinst/bootstrap.ign
 
-- name: Set ownership to root and permissions of ignitions and related files.
-  tags: get_ocp
-  ansible.builtin.file:
-    state: "{{ item.state }}"
-    path: /root/ocpinst/{{ item.path }}
-    owner: root
-    group: root
-    mode: "{{ item.mode }}"
-  loop:
-    - { state: file, path: bootstrap.ign, mode: "755" }
-    - { state: file, path: master.ign, mode: "755" }
-    - { state: file, path: worker.ign, mode: "755" }
-    - { state: file, path: metadata.json, mode: "755" }
-    - { state: directory, path: auth, mode: "755" }
-    - { state: file, path: auth/kubeconfig, mode: "644" }
-    - { state: file, path: auth/kubeadmin-password, mode: "644" }
+#     # # Add core password
+#     # CORE_PWD=$(mkpasswd -m yescrypt "{{ env.bastion.access.root_pass }}")
+#     # mv /root/ocpinst/bootstrap.ign /root/ocpinst/bootstrap.ign.orig
+#     # cat /root/ocpinst/bootstrap.ign.orig | jq '.passwd.users[0] += {"passwordHash":"'$CORE_PWD'"}' > /root/ocpinst/bootstrap.ign
+
+# - name: Set ownership to root and permissions of ignitions and related files.
+#   tags: get_ocp
+#   ansible.builtin.file:
+#     state: "{{ item.state }}"
+#     path: /root/ocpinst/{{ item.path }}
+#     owner: root
+#     group: root
+#     mode: "{{ item.mode }}"
+#   loop:
+#     - { state: file, path: bootstrap.ign, mode: "755" }
+#     - { state: file, path: master.ign, mode: "755" }
+#     - { state: file, path: worker.ign, mode: "755" }
+#     - { state: file, path: metadata.json, mode: "755" }
+#     - { state: directory, path: auth, mode: "755" }
+#     - { state: file, path: auth/kubeconfig, mode: "644" }
+#     - { state: file, path: auth/kubeadmin-password, mode: "644" }
 
 - name: Create directory in admin user's home for default kubeconfig.
   tags: get_ocp, config
   ansible.builtin.file:
     state: directory
-    path: ~/.kube
+    path: /root/.kube
     mode: "0755"
 
-- name: Make kubeconfig admin user's default (for root user).
-  tags: get_ocp, config
-  ansible.builtin.copy:
-    src: /root/ocpinst/auth/kubeconfig
-    dest: /{{ env.bastion.access.user }}/.kube/config
-    owner: "{{ env.bastion.access.user }}"
-    group: "{{ env.bastion.access.user }}"
-    remote_src: yes
-    mode: "0644"
-  when: env.bastion.access.user == "root"
-
-- name: Make kubeconfig root user's default.
+- name: Make kubeconfig root user's default
   tags: get_ocp, config
   ansible.builtin.copy:
     src: /root/ocpinst/auth/kubeconfig
