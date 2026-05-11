@@ -167,16 +167,15 @@
     replace: ": false"
   when: (env.cluster.nodes.compute.hostname | default('')) | length > 0
 
-# - name: Copy multipath manifest files
-#   tags: get_ocp
-#   become: true
-#   ansible.builtin.copy:
-#     src: "{{ item }}"
-#     dest: "/root/ocpinst/manifests/{{ item }}"
-#     mode: "0644"
-#   loop:
-#     - 99-master-kargs-mpath.yaml
-#     - 99-worker-kargs-mpath.yaml
+- name: Add machine config files for control and compute, if defined
+  tags: get_ocp
+  ansible.builtin.template:
+    src: "{{ item }}"
+    dest: "/root/ocpinst/manifests/{{ item }}"
+    mode: "0644"
+  loop: "{{ (env.cluster.nodes.control.mc | default([])) + (env.cluster.nodes.compute.mc | default([])) }}"
+  when:
+    - env.cluster.nodes.control.mc is defined or env.cluster.nodes.compute.mc is defined
 
 - name: List the files in the manifests directory
   tags: get_ocp
