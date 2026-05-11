@@ -4,10 +4,14 @@
   hosts: localhost
   tags: ssh, ssh_copy_id, section_1
   gather_facts: true
-  vars:
-    ssh_target: ["{{ env.bastion.networking.ip }}", "{{ env.bastion.access.user }}", "{{ env.bastion.access.pass }}", "{{ path_to_key_pair }}"]
   roles:
-    - ssh_copy_id
+    - role: ssh_copy_id_v2
+      vars:
+        parm_host:
+          ip: "{{ env.bastion.networking.ip }}"
+          user: "{{ env.bastion.access.user }}"
+          pass: "{{ env.bastion.access.pass }}"
+        parm_ssh_key_path: "{{ env_ssh_key_path }}"
 
 - name: 5 setup bastion - configure bastion node with essential services
   hosts: bastion

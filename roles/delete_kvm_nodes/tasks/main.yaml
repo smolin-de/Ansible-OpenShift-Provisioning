@@ -2,12 +2,17 @@
 
 - name: Delete bootstrap, control and compute nodes, if exists
   tags: delete_nodes
+  vars:
+    meta_name: "{{ env.cluster.networking.metadata_name }}"
+    pool_name: "{{ meta_name }}-vdisk"
   ansible.builtin.shell: |
-    virsh destroy {{ item }} || true
-    virsh undefine {{ item }} --remove-all-storage --nvram || true
-    META="{{ env.cluster.networking.metadata_name }}"
-    virsh vol-delete --pool "${META}-vdisk" "/var/lib/libvirt/images/${META}/{{ item }}.qcow2" || true
-    virsh vol-delete --pool "${META}-vdisk" "/var/lib/libvirt/images/${META}/{{ item }}-1.qcow2" || true
+    virsh destroy "{{ item }}" 2>/dev/null || true
+    virsh undefine "{{ item }}" --remove-all-storage --nvram 2>/dev/null || true
+
+    VOLUMES=$(virsh vol-list {{ pool_name }} | awk '/^ {{ item }}/ {print $1}')
+    for vol in $VOLUMES; do
+      virsh vol-delete --pool {{ pool_name }} "$vol"
+    done
   loop: "{{ ([env.cluster.nodes.bootstrap.vm_name | default()] + \
           (env.cluster.nodes.control.vm_name | default([])) + \
           (env.cluster.nodes.compute.vm_name | default([]))) | select() }}"

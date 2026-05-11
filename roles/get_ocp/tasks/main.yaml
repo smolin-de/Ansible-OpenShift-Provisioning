@@ -1,7 +1,30 @@
 ---
+
+- name: Create directory bin for mirrors
+  tags: get_ocp
+  ansible.builtin.file:
+    path: /var/www/html/bin
+    state: directory
+    mode: "0755"
+    owner: "root"
+    group: "root"
+
+- name: Copy Red Hat CoreOS rootfs image
+  tags: get_ocp
+  ansible.builtin.shell: |
+    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
+  register: cmd_output
+  changed_when: "'saved' in cmd_output.stdout"
+
+- name: Copy Red Hat CoreOS qemu image
+  tags: get_ocp
+  ansible.builtin.shell: |
+    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
+  register: cmd_output
+  changed_when: "'saved' in cmd_output.stdout"
+
 - name: Delete OCP download directory for idempotency, because ignition files deprecate after 24 hours.
   tags: get_ocp
-  become: true
   ansible.builtin.file:
     path: /root/ocpinst
     state: absent
@@ -14,53 +37,6 @@
     mode: "0755"
     owner: "root"
     group: "root"
-
-- name: Delete ignition folder for idempotency
-  tags: get_ocp
-  ansible.builtin.file:
-    path: /var/www/html/ignition
-    state: absent
-
-- name: Create directory bin for mirrors
-  tags: get_ocp
-  become: true
-  ansible.builtin.file:
-    path: /var/www/html/bin
-    state: directory
-    mode: "0755"
-    owner: "root"
-    group: "root"
-
-# Replaced with legacy wget cmd, because it is not supported anymore on our Jenkins server
-# # Required rootfs image, when use KVM bootstrap or other kVM node
-# - name: Copy Red Hat CoreOS rootfs file to bastion, if it's not there already.
-#   tags: get_ocp
-#   get_url:
-#     url: "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
-#     dest: "/var/www/html/bin/{{ rhcos_live_rootfs }}"
-#     mode: "0644"
-
-# - name: Copy Red Hat CoreOS qemu image file to bastion, if it's not there already.
-#   tags: get_ocp
-#   get_url:
-#     url: "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
-#     dest: "/var/www/html/bin/{{ rhcos_live_qemu }}"
-#     mode: "0644"
-
-- name: Copy Red Hat CoreOS rootfs image
-  tags: get_ocp
-  ansible.builtin.shell: |
-    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_rootfs }}"
-  register: cmd_output
-  changed_when: "'saved' in cmd_output.stdout"
-
-- name: Copy Red Hat CoreOS qemu image
-  tags: get_ocp
-  ansible.builtin.shell: |
-    # curl -sS -L -o "/var/www/html/bin/{{ rhcos_live_qemu }}" "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
-    wget -N -P /var/www/html/bin/ "{{ rhcos_download_url }}{{ rhcos_live_qemu }}"
-  register: cmd_output
-  changed_when: "'saved' in cmd_output.stdout"
 
 - name: Copy Red Hat CoreOS ISO image
   tags: get_ocp
@@ -180,9 +156,8 @@
   become: true
   when: (env.cluster.nodes.control.hostname | default('') | length) == 1
 
-- name: Set masters schedulable parameter to false when not SNO
+- name: Set masters schedulable parameter to false, when not SNO
   tags: get_ocp
-  become: true
   ansible.builtin.replace:
     path: /root/ocpinst/manifests/cluster-scheduler-02-config.yml
     regexp: ": true"
@@ -202,7 +177,6 @@
 
 - name: List the files in the manifests directory
   tags: get_ocp
-  become: true
   command: "ls -lrt /root/ocpinst/manifests/"
   register: cmd_output
 
@@ -212,13 +186,11 @@
 
 - name: Backup manifests directory
   tags: get_ocp
-  become: true
   ansible.builtin.command:
     cmd: cp -a /root/ocpinst/manifests /root/ocpinst/manifests.bak
 
 - name: Create ignition files
   tags: get_ocp
-  become: true
   ansible.builtin.shell: |
     set -o pipefail
     /root/ocpinst/openshift-install create ignition-configs  --dir=/root/ocpinst/
@@ -246,30 +218,10 @@
 
 - name: Create directory in admin user's home for default kubeconfig.
   tags: get_ocp, config
-  become: false
   ansible.builtin.file:
     state: directory
     path: ~/.kube
     mode: "0755"
-
-- name: Create directory in root's home for default kubeconfig.
-  tags: get_ocp, config
-  become: true
-  ansible.builtin.file:
-    state: directory
-    path: ~/.kube
-    mode: "0755"
-
-- name: Make kubeconfig admin user's default (for non-root user).
-  tags: get_ocp, config
-  ansible.builtin.copy:
-    src: /root/ocpinst/auth/kubeconfig
-    dest: /home/{{ env.bastion.access.user }}/.kube/config
-    owner: "{{ env.bastion.access.user }}"
-    group: "{{ env.bastion.access.user }}"
-    remote_src: yes
-    mode: "0644"
-  when: env.bastion.access.user != "root"
 
 - name: Make kubeconfig admin user's default (for root user).
   tags: get_ocp, config
@@ -291,6 +243,12 @@
     group: root
     remote_src: yes
     mode: "0644"
+
+- name: Delete ignition folder for idempotency
+  tags: get_ocp
+  ansible.builtin.file:
+    path: /var/www/html/ignition
+    state: absent
 
 - name: Create ignition directory in HTTP-accessible directory.
   tags: get_ocp

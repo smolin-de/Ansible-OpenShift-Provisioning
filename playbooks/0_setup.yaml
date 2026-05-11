@@ -1,75 +1,66 @@
 ---
 
-- name: Setup inventory
+- name: Setup localhost environment
   hosts: localhost
   tags: localhost
   connection: local
   become: false
   gather_facts: true
+  pre_tasks:
+    - name: Setup Ansible Galaxy Collections
+      ansible.builtin.include_role:
+        name: galaxy_setup
+
+    - name: Define 'env_ssh_key_path' variable
+      when: env_ssh_key_path is not defined
+      ansible.builtin.lineinfile:
+        path: "{{ playbook_dir }}/../inventories/default/group_vars/all.yaml"
+        regexp: '^env_ssh_key_path:'
+        line: "env_ssh_key_path: {{ lookup('config', 'DEFAULT_PRIVATE_KEY_FILE') | default('~/.ssh/ansible-ocp-vip', true) }}"
+        state: present
+
+    - name: Check if AOP_RELEASE environment variable is defined
+      ansible.builtin.set_fact:
+        aop_release_value: "{{ lookup('env', 'AOP_RELEASE') }}"
+
+    - name: Update 'env_ocp_release' and reload OCP release variables, if AOP_RELEASE is set
+      when: aop_release_value | length > 0
+      block:
+        - name: "Update 'env_ocp_release' in all.yaml file to {{  aop_release_value }}"
+          ansible.builtin.lineinfile:
+            path: "{{ playbook_dir }}/../inventories/default/group_vars/all.yaml"
+            regexp: '^env_ocp_release:\s+'
+            line: 'env_ocp_release: "{{ aop_release_value }}"'
+            backrefs: false
+
+        - name: Display current env_ocp_release value
+          ansible.builtin.debug:
+            msg: "env_ocp_release is set to: '{{ aop_release_value }}'"
+
+    - name: Reload group_vars to pick up the updated env_ocp_release
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/../inventories/default/group_vars/all.yaml"
+
   roles:
+    - ssh_key_gen_v2      # Create required SSH key on controller
     - set_inventory
 
+  # Info:
+  # - role: ssh_copy_id_v2
+  #   vars:
+  #     parm_host: "{{ env.systems.host1 | default('') }}"
   post_tasks:
-    # - name: Test Ansible Galaxy collections connection
-    #   ansible.builtin.shell: |
-    #     ansible-galaxy --version
-    #     curl -I https://galaxy.ansible.com/api/
-    #   register: cmd_output
-
-    # - name: Print above cmd output
-    #   ansible.builtin.debug:
-    #     var: cmd_output.stdout_lines
-
-    - name: Attempt to install collections from Galaxy, fallback to local tarballs
-      block:
-        - name: Install Ansible Galaxy collections
-          ansible.builtin.command: "ansible-galaxy collection install {{ env.pkgs.galaxy | join(' ') }}"
-          when: env.pkgs.galaxy | length > 0
-
-      rescue:
-        - name: Install Galaxy collections from local git repository
-          tags: galaxy
-          ansible.builtin.shell: |
-            cd "{{ ansible_env.PWD }}/../collections"
-            pwd
-            ls -al
-            ansible-galaxy collection install ./ansible-posix-2.1.0.tar.gz
-            ansible-galaxy collection install ./community-crypto-3.1.0.tar.gz
-            ansible-galaxy collection install ./community-general-12.2.0.tar.gz
-            ansible-galaxy collection install ./community-kubernetes-2.0.1.tar.gz
-            ansible-galaxy collection install ./community-libvirt-2.0.0.tar.gz
-            ansible-galaxy collection install ./ibm-ibm_zhmc-1.10.0.tar.gz
-          register: cmd_output
-
-        - name: Print above cmd output
-          ansible.builtin.debug:
-            var: cmd_output.stdout_lines
-
-    - name: Find ibm_zhmc collection install location, required for LPAR mode
-      tags: galaxy
-      ansible.builtin.shell: |
-        set -o pipefail
-        ansible-galaxy collection list ibm.ibm_zhmc | awk '/ansible/{print $2}'
-      args:
-        executable: /bin/bash
-      register: zhmc_path
-      changed_when: false
-
-    - name: Ensure zhmcclient requirements are installed.
-      tags: galaxy
-      ansible.builtin.pip:
-        requirements: "{{ zhmc_path.stdout }}/ibm/ibm_zhmc/requirements.txt"
-        executable: pip3
-        extra_args: --upgrade
-      when: zhmc_path.rc != 0
-
-# - name: Setup ssh keys
-#   hosts: localhost
-#   connection: local
-#   become: false
-#   gather_facts: true
-#   vars:
-#     ssh_target: ["{{ env.file_server.ip }}", "{{ env.file_server.user }}", "{{ env.file_server.pass }}", "{{ path_to_key_pair }}"]
-#   roles:
-#     - ssh_key_gen
-#     - ssh_agent
+    - name: Execute ssh_copy_id_v2 for all defined systems and file_server
+      ansible.builtin.include_role:
+        name: ssh_copy_id_v2
+      loop:
+        - "{{ env.systems.host1 | default('') }}"
+        - "{{ env.systems.host2 | default('') }}"
+        - "{{ env.systems.host3 | default('') }}"
+        - "{{ env.file_server | default('') }}"
+      vars:
+        parm_host: "{{ item }}"
+      when: item.ip is defined
+      loop_control:
+        # This prevents Ansible from dumping the variable data into the logs.
+        label: "Delegate to host IP {{ item.ip | default('') }}"

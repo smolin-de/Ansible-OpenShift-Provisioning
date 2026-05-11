@@ -1,4 +1,5 @@
 ---
+
 - name: 4 Create storage pool play
   hosts: kvm_host
   gather_facts: false

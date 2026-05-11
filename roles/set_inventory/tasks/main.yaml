@@ -4,13 +4,13 @@
   tags: set_inventory
   ansible.builtin.shell: |
     set -o pipefail
-    cat {{ ansible_config_file }} | grep 'inventory=' | cut -f2 -d"="
+    cat {{ ansible_config_file }} | grep '^inventory' | cut -f2 -d"="
   args:
     executable: /bin/bash
   register: find_inventory
   changed_when: false
 
-- name: Find absolute path to project.
+- name: Find absolute path to project
   tags: set_inventory
   ansible.builtin.shell: |
     ansible_config="{{ ansible_config_file }}"
@@ -18,7 +18,7 @@
   register: find_project
   changed_when: false
 
-- name: Create inventory with localhost, file server, KVM host, jumphost(optional) and bastion
+- name: Create inventory with localhost, file server, KVM host, and bastion
   tags: set_inventory
   ansible.builtin.template:
     src: hosts.j2
@@ -30,20 +30,22 @@
   tags: set_inventory
   ansible.builtin.meta: refresh_inventory
 
-- name: Add path to Ansible private key in ansible.cfg
-  tags: set_inventory
-  ansible.builtin.lineinfile:
-    line: "private_key_file=~/.ssh/{{ env.ansible_key_name }}"
-    path: "{{ ansible_config_file }}"
-    regexp: "private_key_file"
-    state: present
+# - name: Update private_key_file in ansible.cfg
+#   tags: set_inventory
+#   community.general.ini_file:
+#     path: "{{ ansible_config_file }}"
+#     section: defaults
+#     option: private_key_file
+#     value: "{{ env_ssh_key_path }}"
+#     no_extra_spaces: yes
+#     state: present
+#     backup: no
 
 - name: check inventory setup
   tags: set_inventory
   ansible.builtin.command: ansible-inventory --list
   register: inv_check
   changed_when: false
-  failed_when: inv_check.rc != 0
 
 - name: Re-read facts after changes made to inventory
   tags: set_inventory

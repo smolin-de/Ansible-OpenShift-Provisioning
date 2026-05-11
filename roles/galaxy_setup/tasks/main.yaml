@@ -1,0 +1,42 @@
+---
+
+- name: Install required Ansible Galaxy collections (latest version), fallback to local tarballs if required
+  block:
+    - name: Install required Ansible Galaxy collections with latest versions
+      tags: galaxy
+      ansible.builtin.command: "ansible-galaxy collection install {{ env.pkgs.galaxy | join(' ') }}"
+      when: env.pkgs.galaxy | length > 0
+      register: cmd_output
+
+  rescue:
+    - name: Rescue - Install required Ansible Galaxy collections from local tarballs
+      tags: galaxy
+      ansible.builtin.shell: |
+        cd "{{ ansible_env.PWD }}/../collections"
+        for FILE in *.tar.gz; do
+            echo "Installing: ${FILE}"
+            ansible-galaxy collection install "${FILE}"
+        done
+      register: cmd_output
+
+- name: Print above cmd output
+  tags: galaxy
+  ansible.builtin.debug:
+    var: cmd_output.stdout_lines
+
+- name: Find ibm_zhmc collection install location, required for LPAR mode
+  tags: galaxy
+  ansible.builtin.shell: |
+    set -o pipefail
+    ansible-galaxy collection list ibm.ibm_zhmc | awk '/ansible/{print $2}'
+  args:
+    executable: /bin/bash
+  register: zhmc_path
+
+- name: Ensure zhmcclient requirements are installed.
+  tags: galaxy
+  ansible.builtin.pip:
+    requirements: "{{ zhmc_path.stdout }}/ibm/ibm_zhmc/requirements.txt"
+    executable: pip3
+    extra_args: --upgrade
+  when: zhmc_path.rc != 0
