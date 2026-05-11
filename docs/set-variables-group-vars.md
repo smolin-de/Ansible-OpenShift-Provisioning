@@ -138,7 +138,7 @@
 **env.cluster.nodes.compute.vcpu** | How many virtual CPUs would you like to allocate to each compute node? Recommended 2 or more. | 2
 **env.cluster.nodes.compute.vm_name** | Name of the compute node VMs. Arbitrary values. This list can be expanded to any number of nodes, minimum 2. Must match the total number of IP addresses and hostnames for compute nodes. Use provided list format. | compute-1compute-2
 **env.cluster.nodes.compute.ip** | IPv4 address of the compute nodes. Must match the total number of VM names and hostnames for compute nodes. Use provided list formatting. | 192.168.10.8192.168.10.9
-**env.cluster.nodes.control.ipv6** | IPv6 address for the compute nodes. Use iprovided list formatting (if use_ipv6 variable is 'True'). | fd00::8fd00::9
+**env.cluster.nodes.compute.ipv6** | IPv6 address for the compute nodes. Use iprovided list formatting (if use_ipv6 variable is 'True'). | fd00::8fd00::9
 **env.cluster.nodes.compute.mac** | MAC address for the compute node if use_dhcp variable is 'True'. | 52:54:00:18:1A:2B
 **env.cluster.nodes.compute.hostname** | Hostnames for compute nodes. Must match the total number of IP addresses and VM names for compute nodes. If DNS is hosted on the bastion, this can be anything. If DNS is hosted elsewhere, this must match DNS definition. This will be combined with the metadata_name and base_domain to create a Fully Qualififed Domain Name (FQDN). | compute-01compute-02
 

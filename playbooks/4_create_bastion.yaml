@@ -29,7 +29,6 @@
 
 - name: 4 create bastion
   hosts: kvm_host_bastion
-  become: false
   roles:
     - common
     - { role: create_bastion, when: env.bastion.create == True }
