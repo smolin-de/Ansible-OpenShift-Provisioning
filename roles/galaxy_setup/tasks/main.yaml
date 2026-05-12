@@ -5,6 +5,7 @@
     - name: Install required Ansible Galaxy collections with latest versions
       tags: galaxy
       ansible.builtin.shell:
+        which ansible-galaxy
         ansible-galaxy --version
         ansible-galaxy collection install "{{ env.pkgs.galaxy | join(' ') }}"
       when: env.pkgs.galaxy | length > 0
@@ -15,6 +16,7 @@
       tags: galaxy
       ansible.builtin.shell: |
         cd "{{ ansible_env.PWD }}/../collections"
+        which ansible-galaxy
         ansible-galaxy --version
         for FILE in *.tar.gz; do
             echo "Installing: ${FILE}"
