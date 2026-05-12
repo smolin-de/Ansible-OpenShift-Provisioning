@@ -1,19 +1,18 @@
 ---
 
 - name: Install required Ansible Galaxy collections (latest version), fallback to local tarballs if required
+  tags: galaxy
   block:
     - name: Install required Ansible Galaxy collections with latest versions
-      tags: galaxy
-      ansible.builtin.shell:
+      ansible.builtin.shell: |
         which ansible-galaxy
         ansible-galaxy --version
         ansible-galaxy collection install "{{ env.pkgs.galaxy | join(' ') }}"
-      when: env.pkgs.galaxy | length > 0
+      when: env.pkgs.galaxy | default([]) | length > 0
       register: cmd_output
 
   rescue:
     - name: Rescue - Install required Ansible Galaxy collections from local tarballs
-      tags: galaxy
       ansible.builtin.shell: |
         cd "{{ ansible_env.PWD }}/../collections"
         which ansible-galaxy

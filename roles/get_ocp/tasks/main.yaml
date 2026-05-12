@@ -179,7 +179,7 @@
 
 - name: List the files in the manifests directory
   tags: get_ocp
-  command: "ls -lrt /root/ocpinst/manifests/"
+  ansible.builtin.command: "ls -lrt /root/ocpinst/manifests/"
   register: cmd_output
 
 - name: Print above cmd output

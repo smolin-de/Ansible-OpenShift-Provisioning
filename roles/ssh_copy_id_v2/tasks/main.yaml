@@ -1,6 +1,4 @@
 ---
-#- debug:
-#    var: parm_host
 
 - name: Process SSH key distribution for defined hosts
   when: parm_host.ip is defined

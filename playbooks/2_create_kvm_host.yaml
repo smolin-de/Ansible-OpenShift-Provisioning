@@ -1,6 +1,5 @@
 ---
-
-- hosts: file_server
+- name: 2 Create KVM host
+  hosts: localhost
   tags: update_cfgs, update, kvm_host_1
-  become: false
-  gather_facts: false
+  connection: local
