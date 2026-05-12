@@ -4,7 +4,9 @@
   block:
     - name: Install required Ansible Galaxy collections with latest versions
       tags: galaxy
-      ansible.builtin.command: "ansible-galaxy collection install {{ env.pkgs.galaxy | join(' ') }}"
+      ansible.builtin.shell:
+        ansible-galaxy --version
+        ansible-galaxy collection install "{{ env.pkgs.galaxy | join(' ') }}"
       when: env.pkgs.galaxy | length > 0
       register: cmd_output
 
@@ -13,6 +15,7 @@
       tags: galaxy
       ansible.builtin.shell: |
         cd "{{ ansible_env.PWD }}/../collections"
+        ansible-galaxy --version
         for FILE in *.tar.gz; do
             echo "Installing: ${FILE}"
             ansible-galaxy collection install "${FILE}"
@@ -40,3 +43,13 @@
     executable: pip3
     extra_args: --upgrade
   when: zhmc_path.rc != 0
+
+- name: Show pip3 packages
+  tags: galaxy
+  ansible.builtin.shell: |
+    pip3 list
+  register: cmd_output
+
+- name: Show OCP payload
+  ansible.builtin.debug:
+    var: cmd_output.stdout_lines
