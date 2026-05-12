@@ -48,11 +48,11 @@
     executable: pip3
     extra_args: --upgrade
 
-- name: Show pip3 packages
+- name: Show list of installed pip3 packages
   tags: galaxy
-  ansible.builtin.shell: |
-    pip3 list
+  ansible.builtin.command: pip3 list
   register: cmd_output
+  changed_when: false
 
 - name: Print above cmd output
   ansible.builtin.debug:

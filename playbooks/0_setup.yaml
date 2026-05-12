@@ -10,6 +10,7 @@
     - name: Setup Ansible Galaxy Collections
       ansible.builtin.include_role:
         name: galaxy_setup
+      run_once: true
 
     - name: Define 'env_ssh_key_path' variable
       when: env_ssh_key_path is not defined
