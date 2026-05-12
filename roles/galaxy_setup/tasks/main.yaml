@@ -50,6 +50,6 @@
     pip3 list
   register: cmd_output
 
-- name: Show OCP payload
+- name: Print above cmd output
   ansible.builtin.debug:
     var: cmd_output.stdout_lines
