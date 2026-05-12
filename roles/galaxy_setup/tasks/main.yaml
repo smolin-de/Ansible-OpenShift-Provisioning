@@ -4,12 +4,11 @@
   tags: galaxy
   block:
     - name: Install required Ansible Galaxy collections with latest versions
-      ansible.builtin.shell: |
-        which ansible-galaxy
-        ansible-galaxy --version
-        ansible-galaxy collection install "{{ env.pkgs.galaxy | join(' ') }}"
-      when: env.pkgs.galaxy | default([]) | length > 0
+      ansible.builtin.command: ansible-galaxy collection install {{ item }} --upgrade
+      loop: "{{ env.pkgs.galaxy | default([]) }}"
+      when: env.pkgs.galaxy is defined and env.pkgs.galaxy | length > 0
       register: cmd_output
+      changed_when: "'nothing to do' not in cmd_output.stdout"
 
   rescue:
     - name: Rescue - Install required Ansible Galaxy collections from local tarballs
@@ -23,10 +22,10 @@
         done
       register: cmd_output
 
-- name: Print above cmd output
-  tags: galaxy
-  ansible.builtin.debug:
-    var: cmd_output.stdout_lines
+    - name: Print above cmd output
+      tags: galaxy
+      ansible.builtin.debug:
+        var: cmd_output.stdout_lines
 
 - name: Find ibm_zhmc collection install location, required for LPAR mode
   tags: galaxy

@@ -6,7 +6,6 @@
   connection: local
   become: false
   gather_facts: true
-  run_once: true
   pre_tasks:
     - name: Setup Ansible Galaxy Collections
       ansible.builtin.include_role:
@@ -65,3 +64,4 @@
       loop_control:
         # This prevents Ansible from dumping the variable data into the logs.
         label: "Delegate to host IP {{ item.ip | default('') }}"
+
