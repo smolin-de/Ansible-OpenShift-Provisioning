@@ -11,7 +11,7 @@
       ansible.builtin.include_role:
         name: galaxy_setup
 
-    - name: Define 'env_ssh_key_path' variable
+    - name: Define env_ssh_key_path variable
       when: env_ssh_key_path is not defined
       ansible.builtin.lineinfile:
         path: "{{ playbook_dir }}/../inventories/default/group_vars/all.yaml"
@@ -23,7 +23,7 @@
       ansible.builtin.set_fact:
         aop_release_value: "{{ lookup('env', 'AOP_RELEASE') }}"
 
-    - name: Update 'env_ocp_release' and reload OCP release variables, if AOP_RELEASE is set
+    - name: Update env_ocp_release and reload OCP release variables, if AOP_RELEASE is set
       when: aop_release_value | length > 0
       block:
         - name: "Update 'env_ocp_release' in all.yaml file to {{  aop_release_value }}"
@@ -33,7 +33,7 @@
             line: 'env_ocp_release: "{{ aop_release_value }}"'
             backrefs: false
 
-        - name: Display current env_ocp_release value
+        - name: Display mew env_ocp_release value
           ansible.builtin.debug:
             msg: "env_ocp_release is set to: '{{ aop_release_value }}'"
 
@@ -50,7 +50,7 @@
   #   vars:
   #     parm_host: "{{ env.systems.host1 | default('') }}"
   post_tasks:
-    - name: Execute ssh_copy_id_v2 for all defined systems and file_server
+    - name: Copy SSH key to all defined systems and file_server
       ansible.builtin.include_role:
         name: ssh_copy_id_v2
       loop:
@@ -64,4 +64,3 @@
       loop_control:
         # This prevents Ansible from dumping the variable data into the logs.
         label: "Delegate to host IP {{ item.ip | default('') }}"
-
