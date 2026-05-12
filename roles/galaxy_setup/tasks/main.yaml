@@ -38,9 +38,9 @@
     executable: /bin/bash
   register: zhmc_path
 
-- name: Print above cmd output
-  ansible.builtin.debug:
-    var: zhmc_path
+# - name: Print above cmd output
+#   ansible.builtin.debug:
+#     var: zhmc_path
 
 - name: Ensure zhmcclient requirements are installed.
   tags: galaxy
@@ -48,7 +48,6 @@
     requirements: "{{ zhmc_path.stdout }}/ibm/ibm_zhmc/requirements.txt"
     executable: pip3
     extra_args: --upgrade
-  # when: zhmc_path.rc != 0
 
 - name: Show pip3 packages
   tags: galaxy
