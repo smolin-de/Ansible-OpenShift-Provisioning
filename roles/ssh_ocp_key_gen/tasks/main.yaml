@@ -18,7 +18,8 @@
     owner: root
     mode: "0600"
     passphrase: ""
-    comment: "{{ env.ocp_ssh_key_comment }}"
+    # TODO
+    # comment: "{{ env.ocp_ssh_key_comment }}"
     regenerate: full_idempotence
   register: ssh_ocp
 
