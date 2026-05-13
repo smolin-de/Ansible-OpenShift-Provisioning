@@ -1,7 +1,7 @@
 ---
 # Under development
 ###################################################################################################
-#  To execute this playbook you need to create a node config yaml fiile with these parameters:
+#  To execute this playbook you need to create a node config yaml file with these parameters:
 # ---
 # day2_control_node:
 #   host_arch: <node architecture>

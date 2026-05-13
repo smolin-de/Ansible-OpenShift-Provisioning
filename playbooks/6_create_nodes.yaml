@@ -201,6 +201,7 @@
         - name: Delete bootstrap volumes and list cluster images
           tags: create_nodes, teardown_bootstrap
           ansible.builtin.shell: |
+            set -o pipefail
             META="{{ env.cluster.networking.metadata_name }}"
             virsh destroy {{ env.cluster.nodes.bootstrap.vm_name }} || true
             virsh undefine {{ env.cluster.nodes.bootstrap.vm_name }} --remove-all-storage --nvram || true

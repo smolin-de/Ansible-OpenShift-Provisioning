@@ -1,6 +1,6 @@
 ---
 ###################################################################################################
-#  To execute this playbook you need to create a node config yaml fiile with these parameters:
+#  To execute this playbook you need to create a node config yaml file with these parameters:
 # ---
 # day2_compute_node:
 #   vm_name: <your VM name>

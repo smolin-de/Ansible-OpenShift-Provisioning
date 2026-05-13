@@ -28,7 +28,8 @@
     path: "{{ parm_ssh_key_path }}"
     type: ed25519
     comment: "{{ parm_ssh_key_path }} - {{ now(fmt='%d-%m-%Y') }}"
+    mode: "0600"
     force: false # Explicitly ensures an existing key is never overwritten
-    mode: '0600' # Best practice: restrict private key permissions
+    # regenerate: partial_idempotence  # Better for updating comments without breaking keys
   when:
     - not ssh_key_exists_check.stat.exists

@@ -1,6 +1,6 @@
 ---
 
-- name: Create SSH local directory if it doesn't already exist
+- name: Create SSH local directory, if it doesn't already exist
   tags: ssh_ocp_key_gen
   ansible.builtin.file:
     path: /root/.ssh
@@ -22,6 +22,19 @@
     # comment: "{{ env.ocp_ssh_key_comment }}"
     regenerate: full_idempotence
   register: ssh_ocp
+
+# - name: Generate an OpenSSH keypair for OpenShift nodes
+#   tags: ssh_ocp_key_gen
+#   community.crypto.openssh_keypair:
+#     path: "{{ ocp_ssh_key_path | default(ansible_user_dir ~ '/.ssh/id_rsa_ocp') }}"
+#     type: ed25519
+#     backend: opensshbin
+#     owner: root
+#     group: root
+#     mode: "0600"
+#     comment: "{{ ocp_ssh_key_comment | default('admin@ocp-cluster') }}"
+#     regenerate: partial_idempotence  # Better for updating comments without breaking keys
+#   register: ssh_ocp
 
 - name: Print results of SSH key generation
   tags: ssh_ocp_key_gen
