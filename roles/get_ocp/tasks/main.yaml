@@ -1,5 +1,4 @@
 ---
-
 # TODO
 # ~/.kube/config
 
@@ -128,38 +127,13 @@
     - /root/ocpinst/install-config.yaml
     - /root/ocpinst/install-config-backup.yaml
 
-# - name: Use template file to create agent-config and backup.
-#   tags: get_ocp
-#   vars:
-#     use_proxy: "{{ 'True' if (proxy_env.http_proxy is defined or proxy_env.https_proxy is defined or proxy_env.no_proxy is defined) else 'False' }}"
-#   ansible.builtin.template:
-#     src: agent-config.yaml.j2
-#     dest: "{{ item }}"
-#     mode: "0644"
-#     force: yes
-#   loop:
-#     - /root/ocpinst/agent-config.yaml
-#     - /root/ocpinst/agent-config-backup.yaml
-#   failed_when: false
-
 - name: Create manifests
   tags: get_ocp
   ansible.builtin.shell: |
     set -o pipefail
     /root/ocpinst/openshift-install create manifests --dir=/root/ocpinst/
-  become: true
-  when: env.cluster.nodes.control.hostname | default('') | length != 1
 
-- name: Create SNO manifests
-  tags: get_ocp
-  ansible.builtin.shell: |
-    set -o pipefail
-    /root/ocpinst/openshift-install create single-node-ignition-config --dir=/root/ocpinst/
-    cp /root/ocpinst/bootstrap-in-place-for-live-iso.ign /root/ocpinst/master.ign
-  become: true
-  when: (env.cluster.nodes.control.hostname | default('') | length) == 1
-
-- name: Set masters schedulable parameter to false, when not SNO
+- name: Set masters schedulable parameter to false, when compute nodes defined
   tags: get_ocp
   ansible.builtin.replace:
     path: /root/ocpinst/manifests/cluster-scheduler-02-config.yml
@@ -191,77 +165,10 @@
   ansible.builtin.command:
     cmd: cp -a /root/ocpinst/manifests /root/ocpinst/manifests.bak
 
-- name: Create ignition files
-  tags: get_ocp
-  ansible.builtin.shell: |
-    set -o pipefail
-    /root/ocpinst/openshift-install create ignition-configs  --dir=/root/ocpinst/
+- name: Lood SNO config tasks
+  when: (env.cluster.nodes.control.hostname | default('') | length) == 1
+  ansible.builtin.include_tasks: "sno_cluster.yaml"
 
-#     # # Add core password
-#     # CORE_PWD=$(mkpasswd -m yescrypt "{{ env.bastion.access.root_pass }}")
-#     # mv /root/ocpinst/bootstrap.ign /root/ocpinst/bootstrap.ign.orig
-#     # cat /root/ocpinst/bootstrap.ign.orig | jq '.passwd.users[0] += {"passwordHash":"'$CORE_PWD'"}' > /root/ocpinst/bootstrap.ign
-
-# - name: Set ownership to root and permissions of ignitions and related files.
-#   tags: get_ocp
-#   ansible.builtin.file:
-#     state: "{{ item.state }}"
-#     path: /root/ocpinst/{{ item.path }}
-#     owner: root
-#     group: root
-#     mode: "{{ item.mode }}"
-#   loop:
-#     - { state: file, path: bootstrap.ign, mode: "755" }
-#     - { state: file, path: master.ign, mode: "755" }
-#     - { state: file, path: worker.ign, mode: "755" }
-#     - { state: file, path: metadata.json, mode: "755" }
-#     - { state: directory, path: auth, mode: "755" }
-#     - { state: file, path: auth/kubeconfig, mode: "644" }
-#     - { state: file, path: auth/kubeadmin-password, mode: "644" }
-
-- name: Create directory in admin user's home for default kubeconfig.
-  tags: get_ocp, config
-  ansible.builtin.file:
-    state: directory
-    path: /root/.kube
-    mode: "0755"
-
-- name: Make kubeconfig root user's default
-  tags: get_ocp, config
-  ansible.builtin.copy:
-    src: /root/ocpinst/auth/kubeconfig
-    dest: /root/.kube/config
-    owner: root
-    group: root
-    remote_src: yes
-    mode: "0644"
-
-- name: Delete ignition folder for idempotency
-  tags: get_ocp
-  ansible.builtin.file:
-    path: /var/www/html/ignition
-    state: absent
-
-- name: Create ignition directory in HTTP-accessible directory.
-  tags: get_ocp
-  become: true
-  ansible.builtin.file:
-    path: /var/www/html/ignition
-    state: directory
-    mode: "0755"
-
-- name: Copy ignition files to HTTP-accessible directory.
-  tags: get_ocp
-  become: true
-  ansible.builtin.copy:
-    src: /root/ocpinst/{{ item }}.ign
-    dest: /var/www/html/ignition
-    remote_src: yes
-    mode: "644"
-    group: root
-    owner: root
-  loop:
-    - bootstrap
-    - master
-    - worker
-  failed_when: false
+- name: Lood default cluster config tasks
+  when: (env.cluster.nodes.control.hostname | default('') | length) != 1
+  ansible.builtin.include_tasks: "default_cluster.yaml"

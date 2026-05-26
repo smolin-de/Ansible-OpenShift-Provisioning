@@ -1,7 +1,6 @@
 ---
 - name: 7 OCP verification
   hosts: bastion
-  become: true
   environment:
     KUBECONFIG: "{{ '/home/' if (env.bastion.access.user != 'root') else '/'}}{{ env.bastion.access.user }}/.kube/config"
   gather_facts: true

@@ -1,0 +1,65 @@
+---
+# - name: Create SNO ignition files, without bootstrap
+#   tags: get_ocp
+#   ansible.builtin.shell: |
+#     set -o pipefail
+#     /root/ocpinst/openshift-install create single-node-ignition-config --dir=/root/ocpinst/
+#     cp /root/ocpinst/bootstrap-in-place-for-live-iso.ign /root/ocpinst/master.ign
+#   become: true
+#   when: (env.cluster.nodes.control.hostname | default('') | length) == 1
+
+
+# openshift-install create manifests -
+
+- name: Create SNO ignition files, with bootstrap
+  tags: get_ocp
+  ansible.builtin.shell: |
+    set -o pipefail
+    /root/ocpinst/openshift-install create ignition-configs  --dir=/root/ocpinst/
+
+- name: Create directory in admin user's home for default kubeconfig.
+  tags: get_ocp, config
+  ansible.builtin.file:
+    state: directory
+    path: /root/.kube
+    mode: "0755"
+
+- name: Make kubeconfig root user's default
+  tags: get_ocp, config
+  ansible.builtin.copy:
+    src: /root/ocpinst/auth/kubeconfig
+    dest: /root/.kube/config
+    owner: root
+    group: root
+    remote_src: yes
+    mode: "0644"
+
+- name: Delete ignition folder for idempotency
+  tags: get_ocp
+  ansible.builtin.file:
+    path: /var/www/html/ignition
+    state: absent
+
+- name: Create ignition directory in HTTP-accessible directory.
+  tags: get_ocp
+  become: true
+  ansible.builtin.file:
+    path: /var/www/html/ignition
+    state: directory
+    mode: "0755"
+
+- name: Copy ignition files to HTTP-accessible directory.
+  tags: get_ocp
+  become: true
+  ansible.builtin.copy:
+    src: /root/ocpinst/{{ item }}.ign
+    dest: /var/www/html/ignition
+    remote_src: yes
+    mode: "644"
+    group: root
+    owner: root
+  loop:
+    - bootstrap
+    - master
+    - worker
+  failed_when: false
