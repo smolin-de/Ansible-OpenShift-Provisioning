@@ -1,9 +1,46 @@
+# Cluster data and generated files
 clusters
+.oc-mirror-results
+site
+
+# Scripts and internal roles
 get-sm-secret.py
 roles_internal
 Makefile
+
+# IDE and OS files
 .DS_Store
-.iso
 .vscode
-site
-.oc-mirror-results
+
+# ISO images
+.iso
+*.iso
+
+# Sensitive configuration files
+inventories/*/group_vars/all.yaml
+inventories/*/host_vars/*.yaml
+!inventories/*/host_vars/*.yaml.template
+!inventories/*/host_vars/vm-ips.md
+
+# Ansible vault files
+*.vault
+*vault.yml
+*vault.yaml
+
+# SSH keys and certificates
+*.pem
+*.key
+!*.key.pub
+*.crt
+*.csr
+
+# Logs and debug files
+*.log
+todo*.md
+bugs.md
+
+# Temporary files
+*.tmp
+*.bak
+*~
+.*.sw?
